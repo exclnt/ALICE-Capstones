@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
+@import 'tailwindcss';
+
+:root {
+  /* --- Light Mode Colors --- */
+  --color-bg-dark: #d1dfdd;
+  --color-bg-base: #f0fffd;
+  --color-bg-light: #ffffff;
+
+  --color-text-main: #0a1a1a;
+  --color-accent-aqua: #0d837c;
+  --color-accent-lime: #7a7e28;
+
+  --color-glow: #a0f3e6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --- Dark Mode Colors --- */
+    --color-bg-dark: #0a1a1a;
+    --color-bg-base: #122e28;
+    --color-bg-light: #1a453c;
+
+    --color-text-main: #c7f7f0;
+    --color-accent-aqua: #1fd2cd;
+    --color-accent-lime: #e0e949;
+
+    --color-glow: #d1fdf2;
+  }
+}
+
+@theme {
+  --font-geist: 'Geist Mono', monospace;
+  --font-mplus: 'M PLUS Rounded 1c', sans-serif;
+
+  --color-background-dark: var(--color-bg-dark);
+  --color-background-base: var(--color-bg-base);
+  --color-background-light: var(--color-bg-light);
+
+  --color-accent-primary: var(--color-accent-aqua);
+  --color-accent-secondary: var(--color-accent-lime);
+
+  --color-text-base: var(--color-text-main);
+  --color-glow-effect: var(--color-glow);
+}
+
+body{
+    background-color: var(--color-background-base);
+}
