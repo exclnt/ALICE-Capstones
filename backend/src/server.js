@@ -8,3 +8,5 @@ express.listen(PORT, () => {
   console.log(`Server : http://${HOST}:${PORT}`);
   console.log(`Docs : http://${HOST}:${PORT}/docs`);
 });
+
+export default express;
