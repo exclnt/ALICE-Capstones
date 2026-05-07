@@ -9,4 +9,4 @@ express.listen(PORT, () => {
   console.log(`Docs : http://${HOST}:${PORT}/docs`);
 });
 
-export default express;
+
