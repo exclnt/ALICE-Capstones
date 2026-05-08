@@ -1,17 +1,49 @@
 import express from 'express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import morgan from 'morgan';
+import router from './routes/index.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { NotFoundError } from './exceptions/index.js';
+
+import cors from 'cors';
 
 const app = express();
 
-app.get('/', (_req, res) => {
-  res.send('Hello Express!');
-});
+app.use(express.json());
 
-app.get('/api/users/:id', (_req, res) => {
-  res.json({ id: _req.params.id });
-});
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'A.L.I.C.E API Documentation',
+      version: '1.0.0',
+      description: 'API documentation for A.L.I.C.E application',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.js', './src/services/*/routes/*.js'],
+};
 
-app.get('/api/posts/:postId/comments/:commentId', (_req, res) => {
-  res.json({ postId: _req.params.postId, commentId: _req.params.commentId });
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(morgan('dev'));
+
+app.use(
+  cors({
+    origin: '*',
+    credentials: true,
+  }),
+);
+app.use(router);
+app.use((req, res, next) => {
+  next(new NotFoundError('route tidak tersedia'));
 });
+app.use(errorHandler);
 
 export default app;

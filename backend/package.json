@@ -1,9 +1,9 @@
 {
-  "name": "openjob-sm1",
+  "name": "alice-backend",
   "version": "1.0.0",
-  "description": "submission dicoding fundamental backend javascripts",
+  "description": "platform fintech untuk memudahkan transaksi keuangan yang terintegrasi ai untuk memberikan rekomendasi keuangan yang lebih baik",
   "license": "ISC",
-  "author": "Eko ramdani",
+  "author": "Eko Ramadani",
   "type": "module",
   "main": "./src/server.js",
   "scripts": {
