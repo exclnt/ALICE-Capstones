@@ -2,7 +2,6 @@ import {
   AuthentificationError,
   InvariantError,
 } from '../../../exceptions/index.js';
-import { verifyGoogleToken } from '../../../security/google.js';
 import tokenManager from '../../../security/tokenManager.js';
 import response from '../../../utils/response.js';
 import UserRepositories from '../../users/repositories/UserRepositories.js';
@@ -15,7 +14,9 @@ export const login = async (req, res, next) => {
 
   if (!userId) {
     return next(
-      new AuthentificationError('Kredensial yang Anda berikan salah'),
+      new AuthentificationError(
+        'Kredensial yang Anda berikan salah, pastikan email dan password benar',
+      ),
     );
   }
 

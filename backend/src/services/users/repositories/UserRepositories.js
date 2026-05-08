@@ -40,11 +40,11 @@ class UserRepositories {
     };
 
     const user = await this._pool.query(query);
-    if (!user) {
+    if (!user.rows.length) {
       return null;
     }
 
-    console.log(`user repo id ${user.rows[0]}`);
+    console.log(`user repo id ${user.rows[0].id}`);
     const { id, password: hashedPassword } = user.rows[0];
     const isPasswordNatch = await bcrypt.compare(password, hashedPassword);
     console.log(id);
