@@ -4,9 +4,9 @@ import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 import cors from 'cors';
 
-import router from '../routes/index.js';
-import errorHandler from '../middlewares/errorHandler.js';
-import { NotFoundError } from '../exceptions/index.js';
+import router from './routes/index.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { NotFoundError } from './exceptions/index.js';
 
 const app = express();
 
@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
     },
 
     documentation: {
-      swagger: '/docs',
+      url: process.env.APP_URL || 'http://localhost:3000',
     },
 
     resources: {
