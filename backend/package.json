@@ -16,7 +16,10 @@
     "format": "prettier --write ./src/",
     "format:check": "prettier --check ./src/",
     "test:api": "newman run ./test/Stater-Backend-Express.postman_collection.json --environment ./test/Stater-Backend-express-Env.postman_environment.json",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
+    "migrate:reset": "node-pg-migrate reset",
+    "migrate:fresh": "node-pg-migrate reset && node-pg-migrate up"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
