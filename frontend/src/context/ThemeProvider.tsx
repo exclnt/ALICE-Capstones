@@ -7,7 +7,7 @@ interface ThemeProviderProps {
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = React.useState(() => {
-    return localStorage.getItem('theme') || '';
+    return localStorage.getItem('theme') || 'dark';
   });
 
   useEffect(() => {
