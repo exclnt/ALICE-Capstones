@@ -1,9 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 
 export default function NavBar() {
-  const [activeId, setActiveId] = useState('home');
+  const location = useLocation();
+
+  const getActiveId = () => {
+    if (location.pathname === '/') return 'home';
+    if (location.pathname === '/analitik') return 'analitik';
+    if (location.pathname === '/alice') return 'alice';
+    if (location.pathname === '/profile') return 'profile';
+    return 'home';
+  };
+
+  const activeId = getActiveId();
 
   return (
     <nav className="flex w-full fixed bottom-0 ring-1 ring-accent-accent pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
@@ -19,7 +28,6 @@ export default function NavBar() {
               }
               label="Beranda"
               isActive={activeId === 'home'}
-              onClick={() => setActiveId('home')}
             />
           </Link>
         </li>
@@ -34,7 +42,6 @@ export default function NavBar() {
               }
               label="Analitik"
               isActive={activeId === 'analitik'}
-              onClick={() => setActiveId('analitik')}
             />
           </Link>
         </li>
@@ -57,7 +64,6 @@ export default function NavBar() {
               }
               label="A.L.I.C.E"
               isActive={activeId === 'alice'}
-              onClick={() => setActiveId('alice')}
             />
           </Link>
         </li>
@@ -76,7 +82,6 @@ export default function NavBar() {
               icon="material-symbols:person-2-rounded"
               label="Profile"
               isActive={activeId === 'profile'}
-              onClick={() => setActiveId('profile')}
             />
           </Link>
         </li>
@@ -90,16 +95,14 @@ interface LinkContainerProps {
   icon: string;
   label?: string;
   isActive: boolean;
-  onClick: () => void;
 }
 
-function LinkContainer({ icon, label, isActive, onClick }: LinkContainerProps) {
+function LinkContainer({ icon, label, isActive }: LinkContainerProps) {
   return (
     <div
       className={`flex  flex-col justify-center items-center cursor-pointer transition-all ${
         isActive ? 'text-primary' : 'text-text-muted'
       }`}
-      onClick={onClick}
     >
       <Icon icon={icon} className="text-3xl md:text-4xl md:mb-3" />
       <p className="text-base md:hidden ">{label}</p>

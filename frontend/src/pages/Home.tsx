@@ -1,13 +1,25 @@
 import AlertCard from '../components/home/AlertCard';
 import HeaderCard from '../components/home/HeaderCard';
+import RecommendationCard from '../components/home/RecommendationCard';
+import SavedBudgetCard from '../components/home/SavedBudgetCard';
+import SpendingActivityCard from '../components/home/SpendingActivityCard';
 
 export default function Home() {
   return (
-    <main className="flex flex-1 md:h-full md:bg-bg-main md:rounded-xl p-5 flex-col">
+    <main className="flex flex-1 lg:h-screen max-h-217 md:bg-bg-main md:rounded-xl p-5 flex-col gap-5 pb-30 md:pb-0 md:h-full">
       <HeaderCard />
-    
-      <section></section>
-      <section></section>
+      <div className="flex w-full">
+        <div className="flex flex-col gap-5 md:flex-row w-full">
+          <div className="flex flex-1 flex-col gap-5">
+            <AlertCard />
+            <RecommendationCard />
+            <SavedBudgetCard />
+          </div>
+          <div className="flex h-full flex-1">
+            <SpendingActivityCard />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

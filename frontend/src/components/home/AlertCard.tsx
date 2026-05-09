@@ -2,24 +2,22 @@ import { Icon } from '@iconify/react';
 
 export default function AlertCard() {
   return (
-    <section className="alert-anggaran z-20 p-5 absolute top-35 left-0">
-      <div className="bg-bg-main p-5 rounded-2xl shadow-2xl flex flex-col gap-3">
-        <h3 className="font-bold text-text-main">Anggaran Mingguan</h3>
-        <div className="flex flex-row justify-between text-sm">
+    <section className="">
+      <div className="bg-bg-main p-5 rounded-2xl  flex flex-col gap-3 ring-1 ring-primary/20 shadow-md">
+        <h2 className="font-bold text-text-main text-sm">Anggaran Mingguan</h2>
+        <div className="flex flex-row justify-between text-xs">
           <h2 className="text-text-muted">Rp 1.320.000 / Rp 1.500.000</h2>
-          <h2 className="font-bold text-red-600">88.0%</h2>
+          <h2 className="font-bold text-red-500">88.0%</h2>
         </div>
-        <ProgressBar />
-        <div className="flex flex-row items-center gap-3 bg-red-400/20 py-1 px-2 rounded-xl">
-          <div>
-            <Icon
-              icon={'material-symbols:warning-outline-rounded'}
-              className="text-3xl text-red-600"
-            />
-          </div>
+        <ProgressBar progress={88} />
 
-          <p className="text-red-600 text-sm">
-            Awas! Pengeluaranmu hampir melebihi batas. Tunda dulu pengluaran yang tidak penting.
+        <div className="flex flex-row items-center gap-3 bg-red-500/10 py-2 px-3 rounded-xl border border-red-500/20">
+          <Icon
+            icon="material-symbols:warning-rounded"
+            className="text-2xl text-red-500 shrink-0"
+          />
+          <p className="text-red-500 text-[12px] leading-tight">
+            Awas! Pengeluaranmu hampir melebihi batas. Tunda dulu pengeluaran yang tidak penting.
           </p>
         </div>
       </div>
@@ -27,11 +25,21 @@ export default function AlertCard() {
   );
 }
 
-const ProgressBar = ({ progress = 88 }) => {
+interface ProgressBarProps {
+  progress: number;
+}
+
+const ProgressBar = ({ progress }: ProgressBarProps) => {
   return (
-    <div className="w-full bg-gray-200 rounded-full h-3 dark:bg-gray-700">
+    <div
+      className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden"
+      role="progressbar"
+      aria-valuenow={progress}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
       <div
-        className="bg-red-600 h-3 rounded-full transition-all duration-500"
+        className="bg-red-500 h-full rounded-full transition-all duration-500 ease-out"
         style={{ width: `${progress}%` }}
       ></div>
     </div>

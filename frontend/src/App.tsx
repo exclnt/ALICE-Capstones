@@ -22,14 +22,16 @@ export default function App() {
         <Route path="/register" element={<Register />} />
       </Routes> */}
 
-      <div className="flex md:flex-row h-screen md:h-[calc(100vh-40px)] w-screen md:w-[calc(100vw-40px)] md:rounded-2xl md:bg-[rgba(144,144,144,0.3)] dark:md:bg-[rgba(50,49,49,0.65)] md:gap-5 md:p-5 md:ml-5 md:mt-5">
+      <div className="flex md:flex-row h-screen md:h-[calc(100vh-40px)] w-screen md:w-[calc(100vw-40px)] md:rounded-2xl md:bg-[rgba(144,144,144,0.3)] dark:md:bg-[rgba(50,49,49,0.65)] md:gap-5 md:p-5 md:ml-5 md:mt-5 overflow-hidden">
         <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/analitik" element={<Analytics />} />
-          <Route path="/alice" element={<Alice />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
+        <main className="flex-1 overflow-y-auto">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/analitik" element={<Analytics />} />
+            <Route path="/alice" element={<Alice />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </main>
       </div>
     </>
   );

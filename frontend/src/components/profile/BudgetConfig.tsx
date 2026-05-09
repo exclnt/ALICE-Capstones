@@ -5,9 +5,6 @@ import ConfigContainer from './ConfigContainer';
 export default function BudgetConfig() {
   const [weekBudget, setWeekBudget] = React.useState<string>('');
   const [monthBudget, setMonthBudget] = React.useState<string>('');
-  // const handleSave = (val: number) => {
-  //   console.log('Budget updated to:', val);
-  // };
 
   return (
     <ConfigContainer label="KONFIGRUASI ANGGARAN" icon="ph:gear-six-light">
