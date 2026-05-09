@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 
 export default function SavedBudgetCard() {
   return (
-    <section className="saved-budget-card flex flex-row bg-green-600/20  rounded-2xl gap-3 ring-1 ring-blue-600/40 shadow-md">
+    <section className="saved-budget-card flex flex-row bg-green-600/20  rounded-2xl gap-3 ring-1 ring-green-600/40 shadow-md">
       <div className="rounded-tl-2xl rounded-bl-2xl p-1 bg-green-600/30 flex items-center">
         <Icon
           icon={'material-symbols:money-bag-rounded'}
@@ -10,9 +10,8 @@ export default function SavedBudgetCard() {
         />
       </div>
 
-      <div className="flex flex-col items-start gap-2 mt-3 mb-3">
+      <div className="flex flex-col items-start gap-1 mt-3 mb-3">
         <h2 className="font-bold text-green-600 text-base">Anggaran Terjaga</h2>
-        <p className="text-green-600 text-base">Kamu berhasil mengamankan:</p>
         <h2 className="text-green-600 font-bold text-2xl">Rp 180.000</h2>
       </div>
     </section>
