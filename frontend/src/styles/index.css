@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
-@import 'tailwindcss';
 
 @import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {
   :root {
@@ -14,16 +15,14 @@
     --theme-text-muted: #68857f;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --theme-bg-main: #0a1715;
-      --theme-bg-content: #122b26;
-      --theme-primary: #2fb59c;
-      --theme-secondary: #176b5c;
-      --theme-accent: #f2c78d;
-      --theme-text-main: #edf5f3;
-      --theme-text-muted: #8ba6a0;
-    }
+  [data-theme='dark'] {
+    --theme-bg-main: #0a1715;
+    --theme-bg-content: #122b26;
+    --theme-primary: #2fb59c;
+    --theme-secondary: #176b5c;
+    --theme-accent: #f2c78d;
+    --theme-text-main: #edf5f3;
+    --theme-text-muted: #8ba6a0;
   }
 }
 
@@ -42,14 +41,6 @@
 
 body {
   background-color: var(--color-bg-main);
-}
-
-@media (width >= 48rem) {
-  body {
-    background-image: url('../../public/assets/img/background.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
 }
 
 html {
@@ -73,10 +64,29 @@ body {
   overflow: hidden;
 }
 
-
 .special-page-body {
   background-image: url('../../public/assets/img/background-mobile.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
+@media (width >= 48rem) {
+  body {
+    background-image: url('../../public/assets/img/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .special-page-body {
+    background-image: url('../../public/assets/img/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
 }
