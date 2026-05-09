@@ -6,7 +6,7 @@ import SpendingActivityCard from '../components/home/SpendingActivityCard';
 
 export default function Home() {
   return (
-    <main className="flex flex-1 lg:h-screen max-h-217 md:bg-bg-main md:rounded-xl p-5 flex-col gap-5 pb-30 md:pb-0 md:h-full">
+    <main className="flex flex-1 md:h-fit lg:h-screen md:max-h-217 md:bg-bg-main md:rounded-xl p-5 flex-col gap-5 pb-30 md:pb-5">
       <HeaderCard />
       <div className="flex w-full">
         <div className="flex flex-col gap-5 md:flex-row w-full">
@@ -15,7 +15,7 @@ export default function Home() {
             <RecommendationCard />
             <SavedBudgetCard />
           </div>
-          <div className="flex h-full flex-1">
+          <div className="flex md:h-full flex-1">
             <SpendingActivityCard />
           </div>
         </div>

@@ -4,7 +4,7 @@ import TransactionItem from '../TransactionItem';
 export default function SpendingActivityCard() {
   const date = '13 April 2026';
   return (
-    <section className="spending-activity-card bg-bg-main p-5 rounded-2xl h-full w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md">
+    <section className="spending-activity-card bg-bg-main p-5 rounded-2xl md:h-full w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md">
       <div className="flex justify-between w-full">
         <h2 className="font-medium">Aktivitas Pengeluaran</h2>
         <Link to={'/analitik'} className="text-primary font-bold">
