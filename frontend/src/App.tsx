@@ -21,17 +21,18 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes> */}
-
-      <div className="flex md:flex-row h-screen md:h-[calc(100vh-40px)] w-screen md:w-[calc(100vw-40px)] md:rounded-2xl md:bg-[rgba(144,144,144,0.3)] dark:md:bg-[rgba(50,49,49,0.65)] md:gap-5 md:p-5 md:ml-5 md:mt-5 overflow-hidden">
-        <NavBar />
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/analitik" element={<Analytics />} />
-            <Route path="/alice" element={<Alice />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </main>
+      <div className="h-screen w-screen p-5 overflow-hidden">
+        <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5 overflow-hidden">
+          <NavBar />
+          <main className="flex-1 overflow-y-auto bg-bg-main md:rounded-xl md:p-5">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/analitik" element={<Analytics />} />
+              <Route path="/alice" element={<Alice />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </>
   );
