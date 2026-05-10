@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
+@import 'tailwindcss';
+
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    --theme-bg-main: #f4f9f8;
+    --theme-bg-content: #e3f0ec;
+    --theme-primary: #176b5c;
+    --theme-secondary: #0d473c;
+    --theme-accent: #d4a363;
+    --theme-text-main: #0b2923;
+    --theme-text-muted: #68857f;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --theme-bg-main: #0a1715;
+      --theme-bg-content: #122b26;
+      --theme-primary: #2fb59c;
+      --theme-secondary: #176b5c;
+      --theme-accent: #f2c78d;
+      --theme-text-main: #edf5f3;
+      --theme-text-muted: #8ba6a0;
+    }
+  }
+}
+
+@theme {
+  --font-geist: 'Geist Mono', monospace;
+  --font-mplus: 'M PLUS Rounded 1c', sans-serif;
+
+  --color-bg-main: var(--theme-bg-main);
+  --color-bg-content: var(--theme-bg-content);
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-accent: var(--theme-accent);
+  --color-text-main: var(--theme-text-main);
+  --color-text-muted: var(--theme-text-muted);
+}
+
+body {
+  background-color: var(--color-bg-main);
+}
+
+@media (width >= 48rem) {
+  body {
+    background-image: url('../../public/assets/img/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mplus);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.special-page-body {
+  background-image: url('../../public/assets/img/background-mobile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}

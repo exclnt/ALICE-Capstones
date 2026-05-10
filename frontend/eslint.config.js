@@ -8,10 +8,11 @@ import reactDom from 'eslint-plugin-react-dom';
 import prettier from 'eslint-plugin-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import daStyle from 'eslint-config-dicodingacademy';
 
 export default defineConfig([
   globalIgnores(['dist', 'node_modules', 'build']),
-
+  daStyle,
   {
     files: ['**/*.{ts,tsx}'],
 
