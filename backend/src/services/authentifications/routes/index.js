@@ -165,14 +165,6 @@ router.delete(
  *     tags: [Authentication]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         description: Bearer access token, format `Bearer <token>`.
- *         required: true
- *         schema:
- *           type: string
- *           example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *     responses:
  *       200:
  *         description: User is authenticated
