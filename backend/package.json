@@ -18,11 +18,11 @@
     "test:api": "newman run ./test/Stater-Backend-Express.postman_collection.json --environment ./test/Stater-Backend-express-Env.postman_environment.json",
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    "migrate:reset": "node-pg-migrate reset",
-    "migrate:fresh": "node-pg-migrate reset && node-pg-migrate up"
+    "migrate:fresh": "node ./scripts/migrateFresh.js"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
+    "axios": "^1.16.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
