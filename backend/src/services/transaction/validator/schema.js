@@ -20,6 +20,9 @@ const getTransactionsSchema = Joi.object({
   startDate: Joi.date().optional(),
   endDate: Joi.date().optional(),
   category: Joi.string().optional(),
+  title: Joi.string().allow('').optional(),
+  page: Joi.number().integer().min(1).optional(),
+  limit: Joi.number().integer().min(1).max(100).optional(),
   type: Joi.string().valid('income', 'expense').optional(),
 });
 

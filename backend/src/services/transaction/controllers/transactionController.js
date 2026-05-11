@@ -35,7 +35,15 @@ export const createTransaction = async (req, res, next) => {
 
 export const getTransactions = async (req, res, next) => {
   const userId = req.user.id;
-  const { startDate, endDate, page = 1, limit = 10 } = req.validated;
+  const {
+    startDate,
+    endDate,
+    category,
+    title,
+    page = 1,
+    limit = 10,
+    type,
+  } = req.validated;
 
   if (!userId) {
     return next(
@@ -45,7 +53,7 @@ export const getTransactions = async (req, res, next) => {
 
   const transactions = await TransactionRepositories.getTransactionsByUserId(
     userId,
-    { startDate, endDate, page, limit },
+    { startDate, endDate, category, title, type, page, limit },
   );
 
   return response(res, 200, 'Transaksi berhasil diambil', {

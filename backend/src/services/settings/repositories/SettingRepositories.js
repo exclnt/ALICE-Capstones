@@ -8,7 +8,7 @@ class SettingRepositories {
 
   async getSettingByUserId(userid) {
     const query = {
-      text: 'SELECT monthly_income, weekly_budget, updated_at FROM settings WHERE user_id = $1',
+      text: 'SELECT monthly_income, weekly_budget, updated_at, segment FROM settings WHERE user_id = $1',
       values: [userid],
     };
 
@@ -42,6 +42,20 @@ class SettingRepositories {
         createdAt,
         createdAt,
       ],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows[0];
+  }
+
+  // eslint-disable-next-line camelcase
+  async updateSegmentByUserId(userid, segment = 0, segment_label) {
+    const updateAt = new Date().toISOString();
+
+    const query = {
+      text: 'UPDATE settings SET segment = $1 , segment_label = $4, updated_at = $3 WHERE user_id = $2 RETURNING segment, updated_at',
+      // eslint-disable-next-line camelcase
+      values: [segment, userid, updateAt, segment_label],
     };
 
     const result = await this._pool.query(query);

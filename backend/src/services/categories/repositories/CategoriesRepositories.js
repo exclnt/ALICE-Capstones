@@ -7,7 +7,7 @@ class CategoriesRepositories {
 
   async getCategories() {
     const query = {
-      text: 'SELECT name FROM categories',
+      text: 'SELECT id,name FROM categories',
     };
 
     const result = await this._pool.query(query);
@@ -15,7 +15,7 @@ class CategoriesRepositories {
     if (result.rowCount === 0) {
       return false;
     }
-    return result.rows.map((row) => row.name);
+    return result.rows;
   }
 }
 

@@ -36,6 +36,17 @@ export const up = (pgm) => {
       notNull: true,
     },
 
+    segment: {
+      type: 'FLOAT',
+      notNull: true,
+      default: 0,
+    },
+
+    // eslint-disable-next-line camelcase
+    segment_label: {
+      type: 'TEXT',
+    },
+
     // eslint-disable-next-line camelcase
     created_at: {
       type: 'TIMESTAMP',

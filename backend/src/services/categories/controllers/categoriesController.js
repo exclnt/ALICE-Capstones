@@ -10,6 +10,6 @@ export const getCategories = async (req, res, next) => {
   }
 
   return response(res, 200, 'Kategori berhasil diambil', {
-    categories: categories,
+    categories: categories.map((category) => category.name),
   });
 };
