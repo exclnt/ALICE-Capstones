@@ -19,7 +19,9 @@
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
     "migrate:fresh": "node ./scripts/migrateFresh.js",
-    "seed-tool": "node ./tools/seed-tool.js"
+    "seed-tool": "node ./tools/seed-tool.js",
+    "server:generate-seed": "node ./scripts/addSeed.js",
+    "server:reset-seed": "node ./scripts/resetSeed.js"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
