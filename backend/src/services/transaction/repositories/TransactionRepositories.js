@@ -6,13 +6,22 @@ class TransactionRepositories {
     this._pool = new Pool();
   }
 
-  async addTransaction({ userId, amount, category, type, title, date }) {
+  async addTransaction({
+    userId,
+    amount,
+    category,
+    type,
+    title,
+    date,
+    // eslint-disable-next-line
+    is_impulsive = false,
+  }) {
     const id = `INV-${Date.now()}-${nanoid(6)}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
     const query = {
-      text: 'INSERT INTO transactions (id, user_id, amount, category_id, type, title, transaction_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
+      text: 'INSERT INTO transactions (id, user_id, amount, category_id, type, title, transaction_date, created_at, updated_at, is_impulsive) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id',
       values: [
         id,
         userId,
@@ -23,6 +32,8 @@ class TransactionRepositories {
         date,
         createdAt,
         updatedAt,
+        // eslint-disable-next-line
+        is_impulsive,
       ],
     };
 
@@ -47,9 +58,6 @@ class TransactionRepositories {
 
     let paramIndex = 2;
 
-    // ==========================================
-    // TYPE FILTER
-    // ==========================================
     if (type && type !== 'all') {
       filters.push(`t.type = $${paramIndex}`);
 
@@ -58,9 +66,6 @@ class TransactionRepositories {
       paramIndex++;
     }
 
-    // ==========================================
-    // DATE FILTER
-    // ==========================================
     if (startDate && endDate) {
       filters.push(
         `DATE(t.transaction_date)
@@ -73,9 +78,6 @@ class TransactionRepositories {
       paramIndex += 2;
     }
 
-    // ==========================================
-    // CATEGORY FILTER
-    // ==========================================
     if (category) {
       filters.push(`LOWER(c.name) LIKE LOWER($${paramIndex})`);
 
@@ -84,9 +86,6 @@ class TransactionRepositories {
       paramIndex++;
     }
 
-    // ==========================================
-    // TITLE FILTER
-    // ==========================================
     if (title) {
       filters.push(`LOWER(t.title) LIKE LOWER($${paramIndex})`);
 
@@ -95,14 +94,8 @@ class TransactionRepositories {
       paramIndex++;
     }
 
-    // ==========================================
-    // WHERE CLAUSE
-    // ==========================================
     const whereClause = filters.join('\nAND ');
 
-    // ==========================================
-    // PAGINATION
-    // ==========================================
     let paginationQuery = '';
 
     if (limit) {
@@ -119,9 +112,6 @@ class TransactionRepositories {
       values.push(parsedLimit, offset);
     }
 
-    // ==========================================
-    // DATA QUERY
-    // ==========================================
     const dataQuery = {
       text: `
       SELECT
@@ -146,9 +136,6 @@ class TransactionRepositories {
       values,
     };
 
-    // ==========================================
-    // COUNT QUERY
-    // ==========================================
     const countValues = limit ? values.slice(0, -2) : values;
 
     const countQuery = {
@@ -165,9 +152,6 @@ class TransactionRepositories {
       values: countValues,
     };
 
-    // ==========================================
-    // EXECUTE QUERY
-    // ==========================================
     const [dataResult, countResult] = await Promise.all([
       this._pool.query(dataQuery),
       this._pool.query(countQuery),
@@ -175,9 +159,6 @@ class TransactionRepositories {
 
     const total = Number(countResult.rows[0].total);
 
-    // ==========================================
-    // RESPONSE
-    // ==========================================
     return {
       data: dataResult.rows,
 

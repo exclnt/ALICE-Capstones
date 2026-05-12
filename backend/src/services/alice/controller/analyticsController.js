@@ -95,25 +95,28 @@ export const predictBalance = async (req, res, next) => {
 export const budgetOptimization = async (req, res, next) => {
   const userId = req.user.id;
   const { endDate } = req.validated;
+  const { week = null, month = null } = req.body || {};
 
-  const dstartDate = getRangedDate(29, endDate).startDate;
+  const startDate = getRangedDate(29, endDate).startDate;
 
   try {
-    const transactionsInMonth =
-      await TransactionRepositories.getTransactionsByUserId(userId, {
-        dstartDate,
+    const [transactionsInMonth, categories, userSetting] = await Promise.all([
+      TransactionRepositories.getTransactionsByUserId(userId, {
+        startDate,
         endDate,
-      });
+      }),
+      CategoriesRepositories.getCategories(),
+      SettingRepositories.getSettingByUserId(userId),
+    ]);
 
-    const categorydb = await CategoriesRepositories.getCategories();
+    const transactions = transactionsInMonth?.data || [];
 
-    const userSetting = await SettingRepositories.getSettingByUserId(userId);
-
-    const st = categorydb.map((cat) => {
-      const total = transactionsInMonth.data.reduce((sum, transaction) => {
+    const categoryTotals = categories.map((cat) => {
+      const total = transactions.reduce((sum, transaction) => {
         if (transaction.category === cat.name) {
           return sum + Number(transaction.amount);
         }
+
         return sum;
       }, 0);
 
@@ -123,27 +126,24 @@ export const budgetOptimization = async (req, res, next) => {
       };
     });
 
-    const totalPengeluaran = transactionsInMonth.data.reduce(
-      (sum, transaction) => {
-        return sum + Number(transaction.amount);
-      },
+    const totalPengeluaran = transactions.reduce(
+      (sum, transaction) => sum + Number(transaction.amount),
       0,
     );
 
-    const categoryProportions = st.map((cat) => ({
+    const categoryProportions = categoryTotals.map((cat) => ({
       category: cat.category,
-      proportion: cat.total / totalPengeluaran || 0,
+      proportion: totalPengeluaran > 0 ? cat.total / totalPengeluaran : 0,
     }));
 
     const aiResponse = await axios.post(
       `${process.env.AI_URL}/api/v1/optimize-budget`,
       {
-        //eslint-disable-next-line camelcase
+        /* eslint-disable  */
         category_proportions: categoryProportions.map((cat) => cat.proportion),
-        //eslint-disable-next-line camelcase
-        monthly_income: userSetting.monthly_income,
-        //eslint-disable-next-line camelcase
-        weekly_budget: userSetting.weekly_budget,
+        monthly_income: month || userSetting.monthly_income,
+        weekly_budget: week || userSetting.weekly_budget,
+        /* eslint-enable  */
       },
       {
         headers: {
@@ -159,7 +159,6 @@ export const budgetOptimization = async (req, res, next) => {
     return next(error);
   }
 };
-
 export const postSegmentation = async (req, res, next) => {
   const userId = req.user.id;
 
@@ -255,10 +254,7 @@ export const predictRisk = async (req, res, next) => {
       },
     );
 
-    return response(res, 200, 'Prediksi risiko berhasil', {
-      // payloadForAI,
-      aiResponse: aiResponse.data,
-    });
+    return response(res, 200, 'Prediksi risiko berhasil', aiResponse.data);
   } catch (error) {
     console.error(error);
 

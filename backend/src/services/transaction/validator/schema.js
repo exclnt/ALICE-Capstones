@@ -14,6 +14,8 @@ const updateTransactionSchema = Joi.object({
   category: Joi.string().required(),
   title: Joi.string().allow('').optional(),
   type: Joi.string().valid('income', 'expense').optional(),
+  // eslint-disable-next-line
+  is_impulsive: Joi.bool().optional().default(false),
 });
 
 const getTransactionsSchema = Joi.object({

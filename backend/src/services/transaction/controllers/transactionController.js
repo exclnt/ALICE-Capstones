@@ -8,42 +8,38 @@ import TransactionRepositories from '../repositories/TransactionRepositories.js'
 export const createTransaction = async (req, res, next) => {
   const userId = req.user.id;
   const { amount, category, date, title, type } = req.validated;
+  try {
+    if (!userId) {
+      return next(
+        new AuthentificationError('Kredensial yang Anda berikan salah'),
+      );
+    }
 
-  if (!userId) {
-    return next(
-      new AuthentificationError('Kredensial yang Anda berikan salah'),
-    );
+    const transaction = await TransactionRepositories.addTransaction({
+      userId,
+      amount,
+      category,
+      date,
+      title,
+      type,
+    });
+
+    if (!transaction) {
+      return next(new InvariantError('Gagal menambahkan transaksi'));
+    }
+
+    return response(res, 201, 'Transaksi berhasil ditambahkan', {
+      transactionId: transaction.id,
+    });
+  } catch (error) {
+    return next(new InvariantError(`Error: ${error.message}`));
   }
-
-  const transaction = await TransactionRepositories.addTransaction({
-    userId,
-    amount,
-    category,
-    date,
-    title,
-    type,
-  });
-
-  if (!transaction) {
-    return next(new InvariantError('Gagal menambahkan transaksi'));
-  }
-
-  return response(res, 201, 'Transaksi berhasil ditambahkan', {
-    transactionId: transaction.id,
-  });
 };
 
 export const getTransactions = async (req, res, next) => {
   const userId = req.user.id;
-  const {
-    startDate,
-    endDate,
-    category,
-    title,
-    page = 1,
-    limit = 10,
-    type,
-  } = req.validated;
+  const { startDate, endDate, category, title, page, limit, type } =
+    req.validated;
 
   if (!userId) {
     return next(

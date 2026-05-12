@@ -5,25 +5,16 @@ import crypto from 'crypto';
 
 dotenv.config();
 
-// =========================
-// CONFIG
-// =========================
-
 const TOTAL_TRANSACTIONS = 1000;
 
 const START_DATE = '2025-01-01';
 const END_DATE = '2025-12-31';
 
-// USER TEST
 const TEST_USER = {
   username: 'testuser',
   email: 'test@example.com',
   password: 'password123',
 };
-
-// =========================
-// DATABASE
-// =========================
 
 const pool = new Pool({
   user: process.env.PGUSER || 'postgres',
@@ -32,10 +23,6 @@ const pool = new Pool({
   password: process.env.PGPASSWORD || 'password',
   port: process.env.PGPORT || 5432,
 });
-
-// =========================
-// HELPERS
-// =========================
 
 const getRandomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -47,10 +34,6 @@ const getRandomDate = (start, end) => {
     start.getTime() + Math.random() * (end.getTime() - start.getTime()),
   );
 };
-
-// =========================
-// TITLES
-// =========================
 
 const expenseTitles = [
   'Makan Bakso',
@@ -89,10 +72,6 @@ const incomeTitles = [
   'Investasi Cair',
 ];
 
-// =========================
-// RANGE NOMINAL
-// =========================
-
 const expenseRanges = [
   [5000, 25000],
   [25000, 75000],
@@ -107,10 +86,6 @@ const incomeRanges = [
   [1000000, 5000000],
   [5000000, 15000000],
 ];
-
-// =========================
-// CREATE USER
-// =========================
 
 async function createTestUser() {
   console.log('\n==============================');
@@ -175,10 +150,6 @@ async function createTestUser() {
   return result.rows[0];
 }
 
-// =========================
-// GET CATEGORIES
-// =========================
-
 async function getCategories() {
   const result = await pool.query(`
     SELECT id
@@ -187,10 +158,6 @@ async function getCategories() {
 
   return result.rows.map((row) => row.id);
 }
-
-// =========================
-// CREATE SETTINGS
-// =========================
 
 async function createSettings(userId) {
   console.log('\n==============================');
@@ -238,10 +205,6 @@ async function createSettings(userId) {
   console.log('Settings berhasil dibuat');
 }
 
-// =========================
-// SEED TRANSACTIONS
-// =========================
-
 async function seedTransactions(userId) {
   console.log('\n==============================');
   console.log('START RANDOM TRANSACTIONS');
@@ -267,46 +230,38 @@ async function seedTransactions(userId) {
   for (let i = 0; i < TOTAL_TRANSACTIONS; i++) {
     const id = crypto.randomUUID();
 
-    // expense 80%
     const isExpense = Math.random() < 0.8;
 
     const type = isExpense ? 'expense' : 'income';
 
-    // statistik
     if (isExpense) {
       totalExpense++;
     } else {
       totalIncome++;
     }
 
-    // title
     const title = isExpense
       ? getRandomItem(expenseTitles)
       : getRandomItem(incomeTitles);
 
-    // category
     const categoryId = getRandomItem(categories);
 
-    // amount
     const selectedRange = isExpense
       ? getRandomItem(expenseRanges)
       : getRandomItem(incomeRanges);
 
     const amount = getRandomInt(selectedRange[0], selectedRange[1]);
 
-    // impulsive
     const isImpulsive = isExpense ? Math.random() < 0.4 : false;
 
     if (isImpulsive) {
       totalImpulsive++;
     }
 
-    // random date
     const trxDate = getRandomDate(startDate, endDate);
 
     const transactionDate = trxDate.toISOString();
 
-    // values
     values.push(
       id,
       userId,
@@ -318,7 +273,6 @@ async function seedTransactions(userId) {
       transactionDate,
     );
 
-    // placeholder
     valuePlaceholders.push(`
       (
         $${paramIndex},
@@ -334,13 +288,11 @@ async function seedTransactions(userId) {
 
     paramIndex += 8;
 
-    // progress
     if ((i + 1) % 100 === 0) {
       console.log(`${i + 1} transaksi dibuat...`);
     }
   }
 
-  // query
   const query = `
     INSERT INTO transactions (
       id,
@@ -373,17 +325,12 @@ async function seedTransactions(userId) {
   console.log('==============================\n');
 }
 
-// =========================
-// MAIN
-// =========================
-
 async function main() {
   try {
     console.log('\n==============================');
     console.log('START FULL SEED');
     console.log('==============================\n');
 
-    // create user
     const user = await createTestUser();
 
     console.log('\nUSER INFO');
@@ -392,10 +339,8 @@ async function main() {
     console.log('Username :', user.username);
     console.log('Password :', TEST_USER.password);
 
-    // create settings
     await createSettings(user.id);
 
-    // create transactions
     await seedTransactions(user.id);
 
     console.log('\n==============================');
@@ -413,9 +358,5 @@ async function main() {
     console.log('\nDatabase connection closed\n');
   }
 }
-
-// =========================
-// RUN
-// =========================
 
 main();

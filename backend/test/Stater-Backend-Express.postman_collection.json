@@ -445,8 +445,8 @@
 									"",
 									"    pm.expect(responseJson.status).to.equal('success');",
 									"    pm.expect(responseJson.data).to.be.an('object');",
-									"    pm.expect(responseJson.data.setting.monthly_income).to.be.a('string');",
-									"    pm.expect(responseJson.data.setting.weekly_budget).to.be.a('string');    ",
+									"    pm.expect(responseJson.data.setting.monthly_income).to.be.a('number');",
+									"    pm.expect(responseJson.data.setting.weekly_budget).to.be.a('number');    ",
 									"});"
 								],
 								"type": "text/javascript",
@@ -664,7 +664,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-09\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\",\n  \"is_impulsive\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -834,7 +834,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Transaction",
+					"name": "Get Transaction no query",
 					"event": [
 						{
 							"listen": "test",
@@ -893,31 +893,13 @@
 							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}:{{PORT}}/transactions?startDate=2026-05-01&endDate=2026-05-31&category=Food&type=expense",
+							"raw": "{{HOST}}:{{PORT}}/transactions",
 							"host": [
 								"{{HOST}}"
 							],
 							"port": "{{PORT}}",
 							"path": [
 								"transactions"
-							],
-							"query": [
-								{
-									"key": "startDate",
-									"value": "2026-05-01"
-								},
-								{
-									"key": "endDate",
-									"value": "2026-05-31"
-								},
-								{
-									"key": "category",
-									"value": "Food"
-								},
-								{
-									"key": "type",
-									"value": "expense"
-								}
 							]
 						}
 					},
@@ -989,6 +971,309 @@
 									"value": null,
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "A.L.I.C.E",
+			"item": [
+				{
+					"name": "Predict Balance (Model A)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.predictions).to.be.an('array');",
+									"    pm.expect(responseJson.data.warnings).to.be.an('array');",
+									"    // pm.expect(responseJson.data.transactionId).",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/analytics/balance-forecast",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"analytics",
+								"balance-forecast"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Balance optimeized (Model B)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.allocations).to.be.an('array');",
+									"    pm.expect(responseJson.data.monthly_savings_potential).to.be.an('number');",
+									"    pm.expect(responseJson.data.status).to.be.an('string');",
+									"",
+									"    // pm.expect(responseJson.data.transactionId).",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"week\":30000,\n    \"month\":10000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/analytics/budget-optimization",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"analytics",
+								"budget-optimization"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Syncs  Segment (Model C-1 Autoencoder)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.latent_features).to.be.an('array');",
+									"    pm.expect(responseJson.data.segment_label).to.be.an('string');",
+									"    pm.expect(responseJson.data.status).to.be.an('string');",
+									"    ",
+									"    // pm.expect(responseJson.data.transactionId).",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/users/me/segmentation",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"users",
+								"me",
+								"segmentation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Predict Risk (Model C-2 DNN Classifier)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.risk_probability).to.be.an('number');",
+									"    pm.expect(responseJson.data.is_risky).to.be.an('boolean');",
+									"    pm.expect(responseJson.data.risk_level).to.be.an('string');",
+									"    pm.expect(responseJson.data.nudge_message).to.be.an('string');",
+									"    pm.expect(responseJson.data.status).to.be.an('string');",
+									"    // pm.expect(responseJson.data.transactionId).",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"day_of_week\": 1,\n    \"day_of_month\": 5,\n    \"hour_of_day\": 8,\n    \"category\": \"Bills\",\n    \"amount\": 757000,\n    \"weekly_budget\": 150000,\n    \"segment\":2\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions/analyze-risk",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions",
+								"analyze-risk"
 							]
 						}
 					},
