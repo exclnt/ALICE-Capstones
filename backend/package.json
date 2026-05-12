@@ -15,6 +15,7 @@
     "lint:fix": "eslint ./src/ --fix",
     "format": "prettier --write ./src/",
     "format:check": "prettier --check ./src/",
+    "generate:env": "node ./scripts/generateEnv.js",
     "test:api": "newman run ./test/Stater-Backend-Express.postman_collection.json --environment ./test/Stater-Backend-express-Env.postman_environment.json",
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^10.2.1",
     "eslint-config-dicodingacademy": "^0.9.5",
     "eslint-config-prettier": "^10.1.8",

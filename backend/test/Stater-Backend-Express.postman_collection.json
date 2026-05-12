@@ -616,6 +616,69 @@
 			"name": "Transaction",
 			"item": [
 				{
+					"name": "Login User again",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"}); ",
+									"",
+									"pm.test('response body should an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.accessToken).to.be.a('string');",
+									"    pm.expect(responseJson.data.refreshToken).to.be.a('string');",
+									"    ",
+									"    pm.environment.set('accessToken', responseJson.data.accessToken);",
+									"    pm.environment.set('refreshToken', responseJson.data.refreshToken);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/authentications",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"authentications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add Transaction",
 					"event": [
 						{
@@ -900,6 +963,510 @@
 							"port": "{{PORT}}",
 							"path": [
 								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction date query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?startDate=2025-05-01&endDate=2025-10-31",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-05-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction title query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?title=Healing Cafe",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Healing Cafe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction category query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?category=Shopping",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Shopping"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction type query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?type=income",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "income"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction pagination query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?&limit=12&page=2",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "limit",
+									"value": "12"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction all query",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions?startDate=2025-05-01&endDate=2025-10-31&category=Shopping&page=1&title=Bayar Netflix&type=expense&limit=12",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-05-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-10-31"
+								},
+								{
+									"key": "category",
+									"value": "Shopping"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "title",
+									"value": "Bayar Netflix"
+								},
+								{
+									"key": "type",
+									"value": "expense"
+								},
+								{
+									"key": "limit",
+									"value": "12"
+								}
 							]
 						}
 					},

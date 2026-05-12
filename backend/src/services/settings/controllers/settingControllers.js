@@ -77,6 +77,14 @@ export const getSetting = async (req, res, next) => {
   }
 
   return response(res, 200, 'Pengaturan berhasil diambil', {
-    setting: setting,
+    setting: {
+      // eslint-disable-next-line camelcase
+      monthly_income: Number(setting.monthly_income),
+      // eslint-disable-next-line camelcase
+      weekly_budget: Number(setting.weekly_budget),
+      // eslint-disable-next-line camelcase
+      updated_at: setting.updated_at,
+      segment: setting.segment,
+    },
   });
 };

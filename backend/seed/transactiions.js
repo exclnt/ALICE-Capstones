@@ -11,9 +11,9 @@ const START_DATE = '2025-01-01';
 const END_DATE = '2025-12-31';
 
 const TEST_USER = {
-  username: 'testuser',
-  email: 'test@example.com',
-  password: 'password123',
+  username: process.env.username || 'testuser',
+  email: process.env.email || 'test@example.com',
+  password: process.env.password || 'password123',
 };
 
 const pool = new Pool({
