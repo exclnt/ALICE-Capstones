@@ -1,15 +1,22 @@
 import axios from 'axios';
 
-import { AuthentificationError } from '../../../exceptions/index.js';
+import {
+  AuthentificationError,
+  InvariantError,
+} from '../../../exceptions/index.js';
 import response from '../../../utils/response.js';
 import TransactionRepositories from '../../transaction/repositories/TransactionRepositories.js';
 import SettingRepositories from '../../settings/repositories/SettingRepositories.js';
 import CategoriesRepositories from '../../categories/repositories/CategoriesRepositories.js';
+import getRangedDate from '../../../utils/getRangedDate.js';
 
 export const predictBalance = async (req, res, next) => {
   try {
     const userId = req.user?.id;
-    const { startDate, endDate } = req.query;
+
+    const { startDate, endDate } = req.validated;
+
+    const dstartDate = getRangedDate(29, endDate).startDate;
 
     if (!userId) {
       return next(
@@ -17,31 +24,51 @@ export const predictBalance = async (req, res, next) => {
       );
     }
 
-    const dailySpending = await TransactionRepositories.getDailySpending(
-      userId,
-      { startDate, endDate },
-    );
+    const [dailySpending, dailyNet, balance] = await Promise.all([
+      TransactionRepositories.getDailySpending(userId, {
+        startDate: startDate || dstartDate,
+        endDate,
+      }),
 
-    const dailyNet = await TransactionRepositories.getDailyNet(userId, {
-      startDate,
-      endDate,
-    });
+      TransactionRepositories.getDailyNet(userId, {
+        startDate: startDate || dstartDate,
+        endDate,
+      }),
 
-    const balance = await TransactionRepositories.getBalance(userId, {
-      startDate,
-      endDate,
-    });
+      TransactionRepositories.getBalance(userId, {
+        startDate: startDate || dstartDate,
+        endDate,
+      }),
+    ]);
+
+    const spendingLength = dailySpending.length;
+
+    const netLength = dailyNet.length;
+
+    const balanceLength = balance.length;
+
+    if (spendingLength !== netLength || spendingLength !== balanceLength) {
+      return next(
+        new InvariantError(
+          `Jumlah data tidak sama 
+          (spending=${spendingLength}, 
+          net=${netLength}, 
+          balance=${balanceLength})`,
+        ),
+      );
+    }
 
     const payload = {
-      //eslint-disable-next-line camelcase
-      daily_spending: dailySpending.map((item) => Number(item.total_expense)),
-      //eslint-disable-next-line camelcase
-      daily_net: dailyNet.map((item) => Number(item.net)),
+      // eslint-disable-next-line camelcase
+      daily_spending: dailySpending.map((item) =>
+        Number(item.total_expense || 0),
+      ),
 
-      balance: balance.map((item) => Number(item.balance)),
+      // eslint-disable-next-line camelcase
+      daily_net: dailyNet.map((item) => Number(item.net || 0)),
+
+      balance: balance.map((item) => Number(item.balance || 0)),
     };
-
-    console.log(payload);
 
     const aiResponse = await axios.post(
       `${process.env.AI_URL}/api/v1/predict-balance`,
@@ -57,25 +84,24 @@ export const predictBalance = async (req, res, next) => {
 
     return response(res, 200, 'Prediksi saldo berhasil', {
       predictions: result.predictions,
+
       warnings: result.warnings,
     });
   } catch (error) {
-    console.error(error);
-
-    return next(error);
+    return next(new InvariantError(`Error Code: ${error}`));
   }
 };
 
 export const budgetOptimization = async (req, res, next) => {
   const userId = req.user.id;
-  const { startDate, endDate } = req.query;
+  const { endDate } = req.validated;
 
-  console.log(userId, startDate, endDate);
+  const dstartDate = getRangedDate(29, endDate).startDate;
 
   try {
     const transactionsInMonth =
       await TransactionRepositories.getTransactionsByUserId(userId, {
-        startDate,
+        dstartDate,
         endDate,
       });
 

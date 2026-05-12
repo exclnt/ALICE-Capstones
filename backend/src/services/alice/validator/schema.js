@@ -1,12 +1,16 @@
 import Joi from 'joi';
 
 export const predictBalancePayload = Joi.object({
+  endDate: Joi.date()
+    .iso()
+    .optional()
+    .default(() => {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), 1)
+        .toISOString()
+        .split('T')[0];
+    }),
   startDate: Joi.date().iso().optional(),
-  endDate: Joi.date().iso().optional(),
-  category: Joi.string().optional(),
-  title: Joi.string().optional(),
-  page: Joi.number().integer().min(1).optional(),
-  limit: Joi.number().integer().min(1).max(100).optional(),
 });
 
 export const predictRiskPayload = Joi.object({
@@ -19,4 +23,17 @@ export const predictRiskPayload = Joi.object({
   weekly_budget: Joi.number().positive().required(),
   segment: Joi.number().positive().required(),
   /* eslint-enable camelcase */
+});
+
+export const budgetOptimizationPayload = Joi.object({
+  endDate: Joi.date()
+    .iso()
+    .optional()
+    .default(() => {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), 1)
+        .toISOString()
+        .split('T')[0];
+    }),
+  startDate: Joi.date().iso().optional(),
 });

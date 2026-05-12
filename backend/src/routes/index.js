@@ -6,7 +6,7 @@ import googleAuth from '../services/googleAuth/routes/index.js';
 import settings from '../services/settings/routes/index.js';
 import categories from '../services/categories/routes/index.js';
 import transaction from '../services/transaction/routes/index.js';
-import analytics from '../services/analytics/routes/index.js';
+import analytics from '../services/alice/routes/index.js';
 
 router.use('/', users);
 router.use('/', authentification);
