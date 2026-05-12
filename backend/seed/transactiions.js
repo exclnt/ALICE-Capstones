@@ -2,17 +2,14 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import readline from 'readline/promises';
+import { stdin as input, stdout as output } from 'process';
 
 dotenv.config();
 
-const TOTAL_TRANSACTIONS = 1000;
-
-const START_DATE = '2025-01-01';
-const END_DATE = '2025-12-31';
-
-const TEST_USER = {
-  username: process.env.username || 'testuser',
+const DEFAULT_CONFIG = {
   email: process.env.email || 'test@example.com',
+  username: process.env.username || 'testuser',
   password: process.env.password || 'password123',
 };
 
@@ -24,338 +21,270 @@ const pool = new Pool({
   port: process.env.PGPORT || 5432,
 });
 
-const getRandomInt = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
+const clearScreen = () => console.clear();
 
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+async function confirm(rl, msg) {
+  while (true) {
+    const ans = (await rl.question(`${msg} (y/n): `)).toLowerCase();
+    if (ans === 'y') return true;
+    if (ans === 'n') return false;
+    console.log('[!] hanya y / n');
+  }
+}
 
-const getRandomDate = (start, end) => {
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime()),
-  );
-};
+async function askNumber(rl, msg, defaultVal) {
+  while (true) {
+    const ans = await rl.question(`${msg} (default ${defaultVal}): `);
 
-const expenseTitles = [
-  'Makan Bakso',
-  'Ngopi',
-  'Top Up Game',
-  'Belanja Shopee',
-  'Naik Gojek',
-  'Isi Bensin',
-  'Bayar Netflix',
-  'Beli Baju',
-  'Jajan Online',
-  'Checkout Tokopedia',
-  'Beli Keyboard',
-  'Beli Mouse',
-  'Makan Sushi',
-  'Healing Cafe',
-  'Ngopi Estetik',
-  'Laundry',
-  'Bayar Listrik',
-  'Bayar Air',
-  'Beli Kuota',
-  'Beli Skincare',
-];
+    if (ans.trim() === '') return defaultVal;
 
-const incomeTitles = [
-  'Gaji Freelance',
-  'Bonus Proyek',
-  'THR',
-  'Cashback',
-  'Refund',
-  'Bonus Kantor',
-  'Transfer Orang Tua',
-  'Bayaran Client',
-  'Komisi Affiliate',
-  'Profit Crypto',
-  'Investasi Cair',
-];
+    const num = Number(ans);
+    if (!isNaN(num) && num > 0) return num;
 
-const expenseRanges = [
-  [5000, 25000],
-  [25000, 75000],
-  [75000, 200000],
-  [200000, 500000],
-  [500000, 2000000],
-];
+    console.log('[!] harus angka valid');
+  }
+}
 
-const incomeRanges = [
-  [50000, 300000],
-  [300000, 1000000],
-  [1000000, 5000000],
-  [5000000, 15000000],
-];
+async function askDate(rl, msg, defaultVal) {
+  while (true) {
+    const ans = await rl.question(
+      `${msg} (YYYY-MM-DD | default ${defaultVal}): `,
+    );
+
+    if (ans.trim() === '') return new Date(defaultVal);
+
+    const date = new Date(ans);
+    if (!isNaN(date.getTime())) return date;
+
+    console.log('[!] format tanggal salah');
+  }
+}
 
 async function createTestUser() {
-  console.log('\n==============================');
-  console.log('CREATE TEST USER');
-  console.log('==============================\n');
+  const existing = await pool.query(`SELECT * FROM users WHERE email = $1`, [
+    DEFAULT_CONFIG.email,
+  ]);
 
-  const existingUser = await pool.query(
-    `
-      SELECT *
-      FROM users
-      WHERE email = $1
-    `,
-    [TEST_USER.email],
-  );
+  if (existing.rows.length > 0) return existing.rows[0];
 
-  // kalau user sudah ada
-  if (existingUser.rows.length > 0) {
-    console.log('User sudah ada');
-
-    return existingUser.rows[0];
-  }
-
-  const hashedPassword = await bcrypt.hash(TEST_USER.password, 10);
-
-  const userId = crypto.randomUUID();
+  const hashed = await bcrypt.hash(DEFAULT_CONFIG.password, 10);
+  const id = crypto.randomUUID();
 
   const result = await pool.query(
     `
       INSERT INTO users (
-        id,
-        username,
-        avatar,
-        email,
-        password,
-        role,
-        impulsive_ratio
+        id, username, avatar, email, password, role, impulsive_ratio
       )
-      VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6,
-        $7
-      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7)
       RETURNING *
     `,
     [
-      userId,
-      TEST_USER.username,
+      id,
+      DEFAULT_CONFIG.username,
       null,
-      TEST_USER.email,
-      hashedPassword,
+      DEFAULT_CONFIG.email,
+      hashed,
       'user',
       0.3,
     ],
   );
 
-  console.log('User berhasil dibuat');
-
   return result.rows[0];
 }
 
-async function getCategories() {
-  const result = await pool.query(`
-    SELECT id
-    FROM categories
-  `);
-
-  return result.rows.map((row) => row.id);
-}
-
 async function createSettings(userId) {
-  console.log('\n==============================');
-  console.log('CREATE SETTINGS');
-  console.log('==============================\n');
+  const exist = await pool.query(`SELECT * FROM settings WHERE user_id = $1`, [
+    userId,
+  ]);
 
-  const existing = await pool.query(
-    `
-      SELECT *
-      FROM settings
-      WHERE user_id = $1
-    `,
-    [userId],
-  );
-
-  // kalau setting sudah ada
-  if (existing.rows.length > 0) {
-    console.log('Settings sudah ada');
-
-    return;
-  }
+  if (exist.rows.length > 0) return;
 
   await pool.query(
     `
       INSERT INTO settings (
-        id,
-        user_id,
-        monthly_income,
-        weekly_budget,
-        segment,
-        segment_label
+        id,user_id,monthly_income,weekly_budget,segment,segment_label
       )
-      VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6
-      )
+      VALUES ($1,$2,$3,$4,$5,$6)
     `,
     [crypto.randomUUID(), userId, 12000000, 2500000, 2, 'Moderate Spender'],
   );
-
-  console.log('Settings berhasil dibuat');
 }
 
-async function seedTransactions(userId) {
-  console.log('\n==============================');
-  console.log('START RANDOM TRANSACTIONS');
-  console.log('==============================\n');
-
-  const categories = await getCategories();
-
-  console.log('Loaded categories:');
-  console.log(categories);
+async function seedTransactions(userId, total, startDate, endDate) {
+  const categories = await pool.query(`SELECT id FROM categories`);
+  const categoryIds = categories.rows.map((r) => r.id);
 
   const values = [];
-  const valuePlaceholders = [];
+  const placeholders = [];
+  let p = 1;
 
-  let paramIndex = 1;
+  let expense = 0;
+  let income = 0;
+  let impulsive = 0;
 
-  let totalExpense = 0;
-  let totalIncome = 0;
-  let totalImpulsive = 0;
+  let expenseAmount = 0;
+  let incomeAmount = 0;
 
-  const startDate = new Date(START_DATE);
-  const endDate = new Date(END_DATE);
-
-  for (let i = 0; i < TOTAL_TRANSACTIONS; i++) {
-    const id = crypto.randomUUID();
-
+  for (let i = 0; i < total; i++) {
     const isExpense = Math.random() < 0.8;
-
-    const type = isExpense ? 'expense' : 'income';
+    const amount = Math.floor(Math.random() * 1000000);
+    const isImp = isExpense ? Math.random() < 0.4 : false;
 
     if (isExpense) {
-      totalExpense++;
+      expense++;
+      expenseAmount += amount;
     } else {
-      totalIncome++;
+      income++;
+      incomeAmount += amount;
     }
 
-    const title = isExpense
-      ? getRandomItem(expenseTitles)
-      : getRandomItem(incomeTitles);
-
-    const categoryId = getRandomItem(categories);
-
-    const selectedRange = isExpense
-      ? getRandomItem(expenseRanges)
-      : getRandomItem(incomeRanges);
-
-    const amount = getRandomInt(selectedRange[0], selectedRange[1]);
-
-    const isImpulsive = isExpense ? Math.random() < 0.4 : false;
-
-    if (isImpulsive) {
-      totalImpulsive++;
-    }
-
-    const trxDate = getRandomDate(startDate, endDate);
-
-    const transactionDate = trxDate.toISOString();
+    if (isImp) impulsive++;
 
     values.push(
-      id,
+      crypto.randomUUID(),
       userId,
-      categoryId,
-      title,
-      type,
+      categoryIds[Math.floor(Math.random() * categoryIds.length)],
+      'transaction',
+      isExpense ? 'expense' : 'income',
       amount,
-      isImpulsive,
-      transactionDate,
+      isImp,
+      new Date(
+        startDate.getTime() + Math.random() * (endDate - startDate),
+      ).toISOString(),
     );
 
-    valuePlaceholders.push(`
-      (
-        $${paramIndex},
-        $${paramIndex + 1},
-        $${paramIndex + 2},
-        $${paramIndex + 3},
-        $${paramIndex + 4},
-        $${paramIndex + 5},
-        $${paramIndex + 6},
-        $${paramIndex + 7}
-      )
-    `);
+    placeholders.push(
+      `($${p},$${p + 1},$${p + 2},$${p + 3},$${p + 4},$${p + 5},$${p + 6},$${p + 7})`,
+    );
 
-    paramIndex += 8;
-
-    if ((i + 1) % 100 === 0) {
-      console.log(`${i + 1} transaksi dibuat...`);
-    }
+    p += 8;
   }
 
-  const query = `
-    INSERT INTO transactions (
-      id,
-      user_id,
-      category_id,
-      title,
-      type,
-      amount,
-      is_impulsive,
-      transaction_date
-    )
-    VALUES
-    ${valuePlaceholders.join(',')}
-  `;
+  await pool.query(
+    `
+      INSERT INTO transactions (
+        id,user_id,category_id,title,type,amount,is_impulsive,transaction_date
+      )
+      VALUES ${placeholders.join(',')}
+    `,
+    values,
+  );
 
-  await pool.query(query, values);
-
-  console.log('\n==============================');
-  console.log('TRANSACTION SUCCESS 🌱');
+  clearScreen();
+  console.log('[+] SEED STATISTICS');
   console.log('==============================');
+  console.log(`Total        : ${total}`);
+  console.log(`Expense      : ${expense}`);
+  console.log(`Income       : ${income}`);
+  console.log(`Impulsive    : ${impulsive}`);
 
-  console.log(`Total transaksi : ${TOTAL_TRANSACTIONS}`);
+  console.log('\n[$] NOMINAL');
+  console.log(`Expense      : Rp ${expenseAmount.toLocaleString('id-ID')}`);
+  console.log(`Income       : Rp ${incomeAmount.toLocaleString('id-ID')}`);
 
-  console.log(`Expense          : ${totalExpense}`);
-
-  console.log(`Income           : ${totalIncome}`);
-
-  console.log(`Impulsive        : ${totalImpulsive}`);
+  console.log('\n[=] AVG');
+  console.log(
+    `Avg Expense  : Rp ${Math.floor(expenseAmount / expense).toLocaleString('id-ID')}`,
+  );
+  console.log(
+    `Avg Income   : Rp ${Math.floor(incomeAmount / income).toLocaleString('id-ID')}`,
+  );
 
   console.log('==============================\n');
+}
+
+async function deleteSeed(email) {
+  const user = await pool.query(`SELECT id FROM users WHERE email = $1`, [
+    email,
+  ]);
+
+  if (!user.rows.length) {
+    console.log('User tidak ditemukan');
+    return;
+  }
+
+  const userId = user.rows[0].id;
+
+  await pool.query(`DELETE FROM transactions WHERE user_id = $1`, [userId]);
+  await pool.query(`DELETE FROM settings WHERE user_id = $1`, [userId]);
+  await pool.query(`DELETE FROM users WHERE id = $1`, [userId]);
+
+  console.log('✔ Seed dihapus');
 }
 
 async function main() {
+  const rl = readline.createInterface({ input, output });
+
+  let running = true;
+
   try {
-    console.log('\n==============================');
-    console.log('START FULL SEED');
-    console.log('==============================\n');
+    while (running) {
+      clearScreen();
 
-    const user = await createTestUser();
+      console.log('===== SEED CONTROL PANEL =====\n');
 
-    console.log('\nUSER INFO');
-    console.log('ID       :', user.id);
-    console.log('Email    :', user.email);
-    console.log('Username :', user.username);
-    console.log('Password :', TEST_USER.password);
+      console.log('[#] CONFIG:');
+      console.log(`Email    : ${DEFAULT_CONFIG.email}`);
+      console.log(`Username : ${DEFAULT_CONFIG.username}`);
+      console.log(`Password : ${DEFAULT_CONFIG.password}`);
+      console.log('\n==============================');
+      console.log('1. Add Seed');
+      console.log('2. Delete Seed');
+      console.log('3. Exit');
+      console.log('==============================\n');
 
-    await createSettings(user.id);
+      const choice = await rl.question('Pilih menu: ');
 
-    await seedTransactions(user.id);
+      if (!['1', '2', '3'].includes(choice)) {
+        console.log('\n❌ Menu tidak valid');
+        await rl.question('Enter...');
+        continue;
+      }
 
-    console.log('\n==============================');
-    console.log('ALL DONE ✅');
-    console.log('==============================\n');
-  } catch (err) {
-    console.log('\n==============================');
-    console.log('SEED FAILED ❌');
-    console.log('==============================\n');
+      if (choice === '3') {
+        clearScreen();
+        console.log('Quit');
+        running = false;
+        break;
+      }
 
-    console.log(err);
+      if (choice === '1') {
+        const ok = await confirm(rl, 'Generate seed data?');
+
+        if (!ok) continue;
+
+        const total = await askNumber(rl, 'Jumlah transaksi', 1000);
+
+        const startDate = await askDate(rl, 'Start date', '2025-01-01');
+        const endDate = await askDate(rl, 'End date', '2025-12-31');
+
+        const user = await createTestUser();
+        await createSettings(user.id);
+
+        await seedTransactions(user.id, total, startDate, endDate);
+
+        await rl.question('Enter untuk kembali...');
+        continue;
+      }
+
+      if (choice === '2') {
+        const ok = await confirm(rl, 'Hapus semua seed data?');
+
+        if (!ok) continue;
+
+        clearScreen();
+        console.log('[o] deleting...\n');
+
+        await deleteSeed(DEFAULT_CONFIG.email);
+
+        await rl.question('[?] Enter untuk kembali...');
+        continue;
+      }
+    }
   } finally {
+    rl.close();
     await pool.end();
-
-    console.log('\nDatabase connection closed\n');
+    console.log('\nConnection closed');
   }
 }
 

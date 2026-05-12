@@ -11,7 +11,7 @@ const client = new pg.Client({
 async function freshMigration() {
   await client.connect();
 
-  console.log('🧹 Dropping all tables...\n');
+  console.log('[o] Dropping all tables...\n');
 
   const result = await client.query(`
     SELECT tablename
@@ -26,22 +26,22 @@ async function freshMigration() {
       DROP TABLE IF EXISTS "${table}" CASCADE
     `);
 
-    console.log(`❌ Dropped table: ${table}`);
+    console.log(`[!] Dropped table: ${table}`);
   }
 
-  console.log('\n✅ Semua tabel berhasil dihapus!\n');
+  console.log('\n[v] Semua tabel berhasil dihapus!\n');
 
   await client.end();
 
-  console.log('🚀 Running migrations...\n');
+  console.log('[o] Running migrations...\n');
 
   execSync('npx node-pg-migrate up', {
     stdio: 'inherit',
   });
 
-  console.log('\n🎉 Fresh migration selesai!');
+  console.log('\n[v] Fresh migration selesai!');
 }
 
 freshMigration().catch((err) => {
-  console.error('❌ Error:', err);
+  console.error('[!] Error:', err);
 });
