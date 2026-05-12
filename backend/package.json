@@ -18,7 +18,8 @@
     "test:api": "newman run ./test/Stater-Backend-Express.postman_collection.json --environment ./test/Stater-Backend-express-Env.postman_environment.json",
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    "migrate:fresh": "node ./scripts/migrateFresh.js"
+    "migrate:fresh": "node ./scripts/migrateFresh.js",
+    "seed-tool": "node ./tools/seed-tool.js"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
