@@ -15,8 +15,8 @@ export default function NavBar() {
   const activeId = getActiveId();
 
   return (
-    <nav className="flex w-full fixed left-0 bottom-0 ring-1 ring-accent-accent pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
-      <ul className="flex flex-row justify-evenly w-full md:flex-col md:h-full">
+    <nav className="flex w-full fixed z-10 left-0 bottom-0 ring-1 ring-accent-accent pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
+      <ul className="flex flex-row justify-evenly w-full md:flex-col md:h-full ">
         <li>
           <Link to={'/'}>
             <LinkContainer
@@ -49,7 +49,7 @@ export default function NavBar() {
           <Link to={'/'}>
             <Icon
               icon="material-symbols:add-circle-outline-rounded"
-              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main md:hidden "
+              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main md:hidden active:scale-110"
             />
           </Link>
         </li>
@@ -71,7 +71,7 @@ export default function NavBar() {
           <Link to={'/'}>
             <Icon
               icon="mingcute:add-fill"
-              className="bg-primary p-1 rounded-md text-4xl text-bg-main hidden md:flex "
+              className="bg-primary p-1 rounded-md text-4xl text-bg-main hidden md:flex active:scale-125  hover:scale-110"
             />
           </Link>
         </li>
@@ -100,7 +100,7 @@ interface LinkContainerProps {
 function LinkContainer({ icon, label, isActive }: LinkContainerProps) {
   return (
     <div
-      className={`flex  flex-col justify-center items-center cursor-pointer transition-all ${
+      className={`flex hover:scale-105 flex-col justify-center items-center cursor-pointer active:scale-90 active:text-text-main ${
         isActive ? 'text-primary' : 'text-text-muted'
       }`}
     >

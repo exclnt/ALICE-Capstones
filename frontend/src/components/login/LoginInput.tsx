@@ -10,7 +10,7 @@ export default function LoginInput() {
   const [password, onPasswordChange] = useInput('');
 
   return (
-    <form className="w-94 h-101 pr-6 pl-6 pt-2 rounded-2xl bg-bg-main flex flex-col items-center">
+    <form className=" w-full pr-6 pl-6 pt-3 pb-3 rounded-2xl bg-bg-main flex flex-col items-center">
       <TextInput label="Nama" value={name} onChange={onNameChange} />
       <PasswordInput label="Password" value={password} onChange={onPasswordChange} />
 

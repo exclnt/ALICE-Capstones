@@ -7,7 +7,7 @@
 @layer base {
   :root {
     --theme-bg-main: #f4f9f8;
-    --theme-bg-content: #e3f0ec;
+    --theme-bg-content: #d8dfdd;
     --theme-primary: #176b5c;
     --theme-secondary: #0d473c;
     --theme-accent: #d4a363;
@@ -39,11 +39,33 @@
   --color-text-muted: var(--theme-text-muted);
 }
 
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-content);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+}
+
 body {
   background-color: var(--color-bg-main);
 }
 
-
+body,
+nav,
+main {
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke,
+    --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
+}
 
 .special-page-body {
   background-image: url('../../public/assets/img/background-mobile.png');

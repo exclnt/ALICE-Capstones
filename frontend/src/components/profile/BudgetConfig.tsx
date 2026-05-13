@@ -19,7 +19,7 @@ export default function BudgetConfig() {
           type="submit"
           className="bg-primary font-bold text-bg-main rounded-xl p-2 mt-10 w-full"
         >
-          SIMPAN KONFIGURASI
+          Simpan Konfigurasi
         </button>
       </form>
     </ConfigContainer>

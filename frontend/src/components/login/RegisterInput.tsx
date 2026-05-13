@@ -12,7 +12,7 @@ export default function RegisterInput() {
   return (
     <>
       <form
-        className=" w-94 h-137 pr-6 pl-6 pt-2 rounded-2xl bg-bg-main flex flex-col items-center"
+        className="pr-6 pl-6 pt-3 pb-3 rounded-2xl bg-bg-main flex flex-col items-center w-full"
         onSubmit={() => {
           alert(`${name}+${email}+${password}+${confirmPassword}`);
         }}
