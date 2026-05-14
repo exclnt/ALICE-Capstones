@@ -19,7 +19,7 @@ export function ThemeButton({ toggleActive, label, icon, isActive }: ThemeButton
       aria-label={label}
       className={`relative flex-1 p-1 rounded-xl font-bold overflow-hidden transition-colors duration-300 ${
         isSelected
-          ? 'bg-bg-main dark:text-white text-black'
+          ? 'bg-bg-main text-primary'
           : 'text-text-muted hover:bg-gray-100 dark:hover:bg-gray-800/50 cursor-pointer'
       }`}
     >

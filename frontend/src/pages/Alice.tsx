@@ -1,7 +1,9 @@
+import AliceHeader from '../components/alice/AliceHeader';
+
 export default function Alice() {
   return (
-    <main>
-      <h1>Hello</h1>
-    </main>
+    <div>
+      <AliceHeader />
+    </div>
   );
 }

@@ -19,7 +19,7 @@ export default function NavBar({ toggleAddModal }: NavBarProp) {
   const activeId = getActiveId();
 
   return (
-    <nav className="flex w-full fixed z-80 left-0 bottom-0 ring-1 ring-accent-accent pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
+    <nav className="flex w-full fixed z-80 left-0 bottom-0 ring-1 ring-primary pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
       <ul className="flex flex-row justify-evenly w-full md:flex-col md:h-full ">
         <li>
           <Link to={'/'}>
