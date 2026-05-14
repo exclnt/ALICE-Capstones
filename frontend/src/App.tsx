@@ -19,6 +19,11 @@ export default function App() {
   const toggleAddModal = () => {
     setAddModalVisible((prevState) => !prevState);
   };
+
+  const closeModal = () => {
+    setAddModalVisible(false);
+  };
+
   return (
     <>
       {/* <div className="w-screen h-screen">
@@ -31,7 +36,7 @@ export default function App() {
 
       <div className="h-screen w-screen p-5">
         <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
-          <AddModal isVisible={addModalVisible} toggleVisible={toggleAddModal} />
+          <AddModal isVisible={addModalVisible} closeModal={closeModal} />
           <NavBar toggleAddModal={toggleAddModal} />
           <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl">
             <div className="md:p-5 pb-22">

@@ -49,11 +49,11 @@ export default function NavBar({ toggleAddModal }: NavBarProp) {
             />
           </Link>
         </li>
-        <li>
+        <li className="md:hidden">
           <button onClick={toggleAddModal}>
             <Icon
               icon="material-symbols:add-circle-outline-rounded"
-              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main md:hidden active:scale-110 active:text-bg-content transition-all rotate-0  duration-300"
+              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main active:scale-110 active:text-bg-content transition-all rotate-0  duration-300"
             />
           </button>
         </li>
