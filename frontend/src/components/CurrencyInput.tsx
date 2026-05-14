@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import InputShell from '../InputShell';
-import { CurrencyFormatter } from '../utils/CurrencyFormatter';
+import InputShell from './InputShell.tsx';
+import { CurrencyFormatter } from './utils/CurrencyFormatter.ts';
 
 interface CurrencyInputProps {
   label: string;

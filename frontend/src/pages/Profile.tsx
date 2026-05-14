@@ -1,7 +1,7 @@
 import BudgetConfig from '../components/profile/BudgetConfig';
 import ThemeConfig from '../components/profile/ThemeConfig';
 import ProfileCard from '../components/profile/ProfileCard';
-import EditModal from '../components/profile/EditModal';
+import EditModal from '../components/profile/ProfileEditModal';
 import { useState } from 'react';
 
 export default function Profile() {

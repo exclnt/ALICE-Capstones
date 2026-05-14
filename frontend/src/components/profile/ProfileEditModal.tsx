@@ -8,11 +8,11 @@ interface EditModalProp {
   isEditing: boolean;
 }
 
-export default function EditModal({ currentName, toggleEditing, isEditing }: EditModalProp) {
+export default function ProfileEditModal({ currentName, toggleEditing, isEditing }: EditModalProp) {
   const [name, onNameChange] = useInput(currentName);
   return (
     <section
-      className={`fixed inset-0 z-20  flex items-center justify-center ${isEditing ? 'visible opacity-100' : 'invisible opacity-0'} `}
+      className={`fixed inset-0 z-100  flex items-center justify-center ${isEditing ? 'visible opacity-100' : 'invisible opacity-0'} `}
     >
       <div className="absolute inset-0  backdrop-blur-sm" onClick={toggleEditing}></div>
       <div
