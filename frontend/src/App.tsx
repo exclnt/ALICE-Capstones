@@ -7,24 +7,37 @@ import Home from './pages/Home.tsx';
 import Alice from './pages/Alice.tsx';
 import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
+import Loading from './components/Loading.tsx';
+import React from 'react';
+import { LoadingProvider } from './context/LoadingProvider.tsx';
+import { useLoading } from './context/LoadingContext.tsx';
 
 export default function App() {
+  const { loading } = useLoading();
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-
-      {/* <div className="flex md:flex-row h-screen md:h-[calc(100vh-40px)] w-screen md:w-[calc(100vw-40px)] md:rounded-2xl md:bg-[rgba(144,144,144,0.3)] dark:md:bg-[rgba(50,49,49,0.65)] md:gap-5 md:p-5 md:ml-5 md:mt-5">
-        <NavBar />
+      {/* <div className="w-screen h-screen">
+        {loading ? <Loading /> : ''}
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/analitik" element={<Analytics />} />
-          <Route path="/alice" element={<Alice />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div> */}
+      <div className="h-screen w-screen p-5">
+        <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
+          <NavBar />
+          <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl">
+            <div className="md:p-5 pb-22">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/analitik" element={<Analytics />} />
+                <Route path="/alice" element={<Alice />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
+            </div>
+          </main>
+        </div>
+      </div>
     </>
   );
 }
