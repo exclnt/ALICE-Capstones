@@ -1,6 +1,6 @@
 import CurrencyInput from '../CurrencyInput.tsx';
 import ConfigContainer from './ConfigContainer';
-import useInput from '../hooks/useInput.tsx';
+import useInput from '../hooks/useInput.ts';
 
 export default function BudgetConfig() {
   const [weekBudget, setWeekBudget] = useInput('');
