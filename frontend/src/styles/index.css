@@ -68,7 +68,7 @@ main {
 }
 
 .special-page-body {
-  background-image: url('../../public/assets/img/background-mobile.png');
+  background-image: url('assets/img/background-mobile.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -81,13 +81,13 @@ input[type='password']::-ms-clear {
 
 @media (width >= 48rem) {
   body {
-    background-image: url('../../public/assets/img/background.png');
+    background-image: url('assets/img/background.png');
     background-repeat: no-repeat;
     background-size: cover;
   }
 
   .special-page-body {
-    background-image: url('../../public/assets/img/background.png');
+    background-image: url('assets/img/background.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
