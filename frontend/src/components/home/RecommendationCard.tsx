@@ -14,7 +14,9 @@ export default function RecommendationCard() {
       <div className="flex flex-col items-start gap-2 mt-3 mb-3">
         <h2 className="font-bold text-blue-600 text-base">Rekomendasi A.L.I.C.E</h2>
         <p className="text-blue-600 text-base">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt, nisi cupiditate
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. At, dolores laboriosam totam
+          ipsum adipisci dolor soluta a molestiae. Dolorum tempora beatae et ratione odio
+          consequatur quibusdam maxime vel fuga deserunt.
         </p>
         <Link
           to={'/alice'}
