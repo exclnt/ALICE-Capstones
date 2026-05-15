@@ -14,7 +14,7 @@ export default function ProfileEditModal({ currentName, toggleEditing, isEditing
   return (
     <AnimatePresence>
       {isEditing && (
-        <section className={`fixed inset-0 z-100  flex items-center justify-center`}>
+        <section className={`fixed inset-0 z-30  flex items-center justify-center`}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
