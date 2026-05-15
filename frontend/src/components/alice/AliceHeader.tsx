@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 
 export default function AliceHeader() {
   return (
-    <header className="fixed md:static top-0 md:rounded-xl left-0 right-0 p-3 flex flex-row items-center justify-between ring-1 ring-primary">
+    <header className="fixed md:static bg-bg-main top-0 md:rounded-xl left-0 right-0 p-3 flex flex-row items-center justify-between ring-1 ring-primary">
       <div>
         <h1 className="text-xl font-bold text-text-main">A.L.I.C.E</h1>
         <div className="flex justify-between">

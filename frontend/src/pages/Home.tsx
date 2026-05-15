@@ -16,7 +16,7 @@ export default function Home() {
           <RecommendationCard />
           <SavedBudgetCard />
         </div>
-        <div className="right flex flex-col h-76 mb-5 md:mb-0 md:h-76 lg:h-auto">
+        <div className="right flex flex-col h-76  md:mb-0 md:h-76 lg:h-auto">
           <SpendingActivityCard />
         </div>
       </div>

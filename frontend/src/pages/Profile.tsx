@@ -11,7 +11,7 @@ export default function Profile() {
   };
   const name = 'Eko Ramadani';
   return (
-    <div className="flex flex-col w-full gap-7 flex-1 mb-5 md:pb-0">
+    <div className="flex flex-col w-full gap-7 flex-1  md:pb-0">
       <EditModal currentName={name} toggleEditing={toggleEditing} isEditing={isEditing} />
       <ProfileCard name={name} toggleEditing={toggleEditing} />
       <section className="config text-text-main flex flex-col lg:flex-row md:justify-between gap-7">
