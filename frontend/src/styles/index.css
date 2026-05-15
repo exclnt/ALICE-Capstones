@@ -78,7 +78,8 @@ input[type='password']::-ms-clear {
 }
 
 .recharts-wrapper,
-.recharts-surface {
+.recharts-surface,
+.recharts-surface *:focus {
   outline: none !important;
 }
 
