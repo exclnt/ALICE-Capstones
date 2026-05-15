@@ -11,7 +11,7 @@ interface CurrencyInputProps {
 export default function CurrencyInput({ label, value, onValueChange }: CurrencyInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent) => {
     const cleanValue = e.target.value.replace(/\D/g, '');
     onValueChange(cleanValue);
   };
