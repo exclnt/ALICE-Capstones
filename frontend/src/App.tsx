@@ -11,7 +11,7 @@ import Loading from './components/Loading.tsx';
 import React from 'react';
 import { LoadingProvider } from './context/LoadingProvider.tsx';
 import { useLoading } from './context/LoadingContext.tsx';
-import AddModal from './components/SpendingAddModal.tsx';
+import AddModal from './components/spending/SpendingAddModal.tsx';
 
 export default function App() {
   const { loading } = useLoading();
