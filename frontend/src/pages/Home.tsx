@@ -5,8 +5,8 @@ import SavedBudgetCard from '../components/home/SavedBudgetCard';
 import SpendingActivityCard from '../components/home/SpendingActivityCard';
 
 export default function Home() {
-  const currentBudget = 1000000;
-  const weekBudget = 1500000;
+  const currentBudget = 500000;
+  const weekBudget = 1000000;
   return (
     <div className="flex flex-col md:h-full gap-5">
       <HeaderCard />
