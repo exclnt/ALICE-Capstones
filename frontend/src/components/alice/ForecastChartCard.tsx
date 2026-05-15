@@ -11,7 +11,7 @@ export default function ForecastChartCard({ data }: ForecastChartCardProp) {
         <div>
           <div className="flex items-center gap-1">
             <Icon className="text-xl text-blue-600" icon={'material-symbols:show-chart-rounded'} />
-            <h1 className="font-bold">Prediksi Anggaran</h1>
+            <h1 className="font-bold">Prediksi Balance</h1>
           </div>
           <h3 className="text-xs text-text-muted">Prediksi 10 hari ke depan</h3>
         </div>

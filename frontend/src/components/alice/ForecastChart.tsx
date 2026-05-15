@@ -1,12 +1,5 @@
-import {
-  Legend,
-  Line,
-  LineChart,
-  ReferenceLine,
-  Tooltip,
-  XAxis,
-  ResponsiveContainer,
-} from 'recharts';
+import { Legend, Line, LineChart, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
+import CustomTooltip from './CustomTooltip';
 
 interface ForecastChartProp {
   data: Array<object>;
@@ -36,45 +29,12 @@ export default function ForecastChart({ data }: ForecastChartProp) {
           }}
         />
 
-        <Tooltip
-          cursor={{ stroke: 'orange' }}
-          contentStyle={{
-            color: 'var(--color-text-main)',
-            backgroundColor: 'var(--color-bg-main)',
-            borderColor: '#0081C4',
-            borderRadius: 5,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-          }}
-        />
+        <Tooltip cursor={{ stroke: 'orange' }} content={<CustomTooltip />} />
         <Legend style={{ outline: 'none' }} />
 
-        <ReferenceLine
-          style={{ outline: 'none' }}
-          y={0}
-          label={{
-            value: 'Rp0 Defisit',
-            position: 'insideLeft',
-            fill: 'red',
-            fontSize: 12,
-            dy: 10,
-          }}
-          stroke="red"
-        />
-
         <Line
           style={{ outline: 'none' }}
-          name="Actual"
-          type="linear"
-          dataKey="actual"
-          stroke="#0081C4"
-          strokeWidth={3}
-          dot={false}
-          connectNulls={false}
-        />
-
-        <Line
-          style={{ outline: 'none' }}
-          name="Forecast"
+          name="Prediksi"
           type="linear"
           dataKey="forecast"
           stroke="orange"
