@@ -17,12 +17,12 @@ export default function Alice() {
   ];
 
   return (
-    <div>
+    <section className="p-5">
       <AliceHeader />
       <div className="flex mt-20 md:mt-5 flex-col gap-5">
         <ForecastChartCard data={forecastData} />
         <OptimizeBudgetCard />
       </div>
-    </div>
+    </section>
   );
 }

@@ -34,12 +34,12 @@ export default function App() {
         </Routes>
       </div> */}
 
-      <div className="h-screen w-screen p-5">
-        <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
+      <div className="h-screen w-screen">
+        <div className="flex h-full w-full  flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
           <AddModal isVisible={addModalVisible} closeModal={closeModal} />
           <NavBar toggleAddModal={toggleAddModal} />
-          <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl pb-10 md:pb-0">
-            <div className="md:p-5 pb-22">
+          <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-0">
+            <div className="md:p-0 pb-15 md:absolute inset-0 ">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/analitik" element={<Analytics />} />
