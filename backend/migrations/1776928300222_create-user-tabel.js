@@ -35,6 +35,12 @@ export const up = (pgm) => {
       default: 'user',
     },
     // eslint-disable-next-line camelcase
+    impulsive_ratio: {
+      type: 'FLOAT',
+      notNull: true,
+      default: 0,
+    },
+    // eslint-disable-next-line camelcase
     created_at: {
       type: 'timestamp',
       notNull: true,

@@ -8,21 +8,24 @@
   "main": "./src/server.js",
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start:prod": "node ./src/server.js",
     "start:dev": "nodemon",
     "lint": "eslint ./src/",
     "lint:fix": "eslint ./src/ --fix",
     "format": "prettier --write ./src/",
     "format:check": "prettier --check ./src/",
+    "generate:env": "node ./scripts/generateEnv.js",
     "test:api": "newman run ./test/Stater-Backend-Express.postman_collection.json --environment ./test/Stater-Backend-express-Env.postman_environment.json",
     "migrate": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    "migrate:reset": "node-pg-migrate reset",
-    "migrate:fresh": "node-pg-migrate reset && node-pg-migrate up"
+    "migrate:fresh": "node ./scripts/migrateFresh.js",
+    "seed-tool": "node ./tools/seed-tool.js",
+    "server:generate-seed": "node ./scripts/addSeed.js",
+    "server:reset-seed": "node ./scripts/resetSeed.js"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
+    "axios": "^1.16.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -42,6 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^10.2.1",
     "eslint-config-dicodingacademy": "^0.9.5",
     "eslint-config-prettier": "^10.1.8",
