@@ -1,6 +1,5 @@
 import { Legend, Line, LineChart, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
-import CustomTooltip from './CustomTooltip';
-
+import CustomTooltip from '../CustomTooltip.tsx';
 interface ForecastChartProp {
   data: Array<object>;
 }

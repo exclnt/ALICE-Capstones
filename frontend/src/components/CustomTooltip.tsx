@@ -1,4 +1,5 @@
-import { CurrencyFormatter } from '../utils/CurrencyFormatter';
+import { CurrencyFormatter } from './utils/CurrencyFormatter';
+import getDayName from './utils/GetDayName';
 
 interface PayloadItem {
   color?: string;
@@ -13,6 +14,11 @@ interface CustomTooltipProp {
 }
 
 export default function CustomTooltip({ active, payload, label }: CustomTooltipProp) {
+  const isValidFormat = (str: string): boolean => {
+    const regex = /^\d{2}-\d{2}-\d{4}$/;
+
+    return regex.test(str);
+  };
   if (active && payload && payload.length) {
     return (
       <div
@@ -26,11 +32,9 @@ export default function CustomTooltip({ active, payload, label }: CustomTooltipP
           boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
         }}
       >
-        {label ? (
-          <p className="label" style={{ fontWeight: 'bold', margin: 0 }}>{`${label}`}</p>
-        ) : (
-          ''
-        )}
+        <p className="label" style={{ fontWeight: 'bold', margin: 0 }}>
+          {label ? (isValidFormat(label) ? getDayName(label, 'long') : label) : ''}
+        </p>
         <hr style={{ borderColor: 'var(--color-primary)', margin: '5px 0' }} />
 
         {payload.map((item) => (

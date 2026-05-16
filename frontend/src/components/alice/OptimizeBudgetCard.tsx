@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { PieChart, Pie, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import CustomTooltip from './CustomTooltip';
+import CustomTooltip from '../CustomTooltip.tsx';
 
 const COLORS = ['#166a5b', '#208f7b', '#2fb59c', '#59c6b0', '#8bdecb', '#c2f0e6'];
 
