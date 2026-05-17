@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 
 import PasswordInput from './PasswordInput';
-import useInput from '../hooks/useInput';
+import useInput from '../hooks/useInput.ts';
 import TextInput from '../TextInput';
 
 export default function LoginInput() {

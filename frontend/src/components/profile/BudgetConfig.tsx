@@ -1,10 +1,10 @@
-import React from 'react';
-import CurrencyInput from './CurrencyInput';
+import CurrencyInput from '../CurrencyInput.tsx';
 import ConfigContainer from './ConfigContainer';
+import useInput from '../hooks/useInput.ts';
 
 export default function BudgetConfig() {
-  const [weekBudget, setWeekBudget] = React.useState<string>('');
-  const [monthBudget, setMonthBudget] = React.useState<string>('');
+  const [weekBudget, setWeekBudget] = useInput('');
+  const [monthBudget, setMonthBudget] = useInput('');
 
   return (
     <ConfigContainer label="KONFIGRUASI ANGGARAN" icon="ph:gear-six-light">

@@ -4,26 +4,24 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-@layer base {
-  :root {
-    --theme-bg-main: #f4f9f8;
-    --theme-bg-content: #d8dfdd;
-    --theme-primary: #176b5c;
-    --theme-secondary: #0d473c;
-    --theme-accent: #d4a363;
-    --theme-text-main: #0b2923;
-    --theme-text-muted: #68857f;
-  }
+:root {
+  --theme-bg-main: #f4f9f8;
+  --theme-bg-content: #d8dfdd;
+  --theme-primary: #176b5c;
+  --theme-secondary: #0d473c;
+  --theme-accent: #d4a363;
+  --theme-text-main: #0b2923;
+  --theme-text-muted: #68857f;
+}
 
-  [data-theme='dark'] {
-    --theme-bg-main: #0a1715;
-    --theme-bg-content: #122b26;
-    --theme-primary: #2fb59c;
-    --theme-secondary: #176b5c;
-    --theme-accent: #f2c78d;
-    --theme-text-main: #edf5f3;
-    --theme-text-muted: #8ba6a0;
-  }
+[data-theme='dark'] {
+  --theme-bg-main: #0a1715;
+  --theme-bg-content: #122b26;
+  --theme-primary: #2fb59c;
+  --theme-secondary: #176b5c;
+  --theme-accent: #f2c78d;
+  --theme-text-main: #edf5f3;
+  --theme-text-muted: #8ba6a0;
 }
 
 @theme {
@@ -68,7 +66,7 @@ main {
 }
 
 .special-page-body {
-  background-image: url('../../public/assets/img/background-mobile.png');
+  background-image: url('assets/img/background-mobile.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -79,15 +77,21 @@ input[type='password']::-ms-clear {
   display: none;
 }
 
+.recharts-wrapper,
+.recharts-surface,
+.recharts-surface *:focus {
+  outline: none !important;
+}
+
 @media (width >= 48rem) {
   body {
-    background-image: url('../../public/assets/img/background.png');
+    background-image: url('assets/img/background.png');
     background-repeat: no-repeat;
     background-size: cover;
   }
 
   .special-page-body {
-    background-image: url('../../public/assets/img/background.png');
+    background-image: url('assets/img/background.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

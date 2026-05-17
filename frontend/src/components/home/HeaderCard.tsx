@@ -1,3 +1,5 @@
+import Greeting from './Greeting';
+
 export default function HeaderCard() {
   return (
     <header
@@ -9,7 +11,7 @@ export default function HeaderCard() {
       <div className="absolute inset-0 bg-linear-to-r from-green-950/70 to-transparent rounded-xl z-10"></div>
 
       <div className="z-20 relative">
-        <p className="text-text-muted text-sm">Selamat Pagi</p>
+        <p className="text-text-muted text-sm">{Greeting()}</p>
         <h1 className="text-white text-xl font-bold">Eko Ramadani</h1>
       </div>
 

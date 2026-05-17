@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
-import useInput from '../hooks/useInput';
+import useInput from '../hooks/useInput.ts';
 import TextInput from '../TextInput';
 import PasswordInput from './PasswordInput';
 

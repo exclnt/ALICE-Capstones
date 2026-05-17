@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { CurrencyFormatter } from '../utils/CurrencyFormatter';
+import PercentageBar from '../PercentageBar';
 
 interface AlertCardProp {
   currentBudget: number;
@@ -20,7 +21,7 @@ export default function AlertCard({ currentBudget, weekBudget }: AlertCardProp) 
           </h2>
           <h2 className="font-bold text-red-500">{budgetPercent.toFixed(0)}%</h2>
         </div>
-        <ProgressBar progress={budgetPercent} />
+        <PercentageBar percentage={budgetPercent} label="progress bar" styleBar="bg-red-500" />
 
         <div className="flex flex-row items-center gap-3 bg-red-500/10 py-2 px-3 rounded-xl border border-red-500/20">
           <Icon
@@ -35,24 +36,3 @@ export default function AlertCard({ currentBudget, weekBudget }: AlertCardProp) 
     </section>
   );
 }
-
-interface ProgressBarProps {
-  progress: number;
-}
-
-const ProgressBar = ({ progress }: ProgressBarProps) => {
-  return (
-    <div
-      className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden"
-      role="progressbar"
-      aria-valuenow={progress}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    >
-      <div
-        className="bg-red-500 h-full rounded-full transition-all duration-500 ease-out"
-        style={{ width: `${progress}%` }}
-      ></div>
-    </div>
-  );
-};
