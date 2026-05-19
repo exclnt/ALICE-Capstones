@@ -522,10 +522,99 @@ class TransactionRepositories {
 
     const result = await this._pool.query(query, [userId]);
 
-    // Jika user belum punya data settings atau belum ada transaksi, tangani error-nya
     if (result.rows.length === 0) return 0;
 
     return parseFloat(result.rows[0].overbudget_freq);
+  }
+
+  /**
+   * Total pengeluaran user berdasarkan range tanggal
+   */
+  async getExpense({ userId, startDate, endDate }) {
+    const query = {
+      text: `
+      SELECT
+        COALESCE(SUM(amount), 0) AS total_expense
+      FROM transactions
+      WHERE user_id = $1
+      AND type = 'expense'
+      AND transaction_date >= $2
+      AND transaction_date < $3::date + INTERVAL '1 day';
+    `,
+      values: [userId, startDate, endDate],
+    };
+
+    const result = await this._pool.query(query);
+
+    return Number(result.rows[0].total_expense);
+  }
+
+  /**
+   * Total pemasukan user berdasarkan range tanggal
+   */
+  async getIncome({ userId, startDate, endDate }) {
+    const query = {
+      text: `
+        SELECT
+          COALESCE(SUM(amount), 0) AS total_income
+        FROM transactions
+        WHERE user_id = $1
+        AND type = 'income'
+        AND transaction_date
+            BETWEEN $2 AND $3;
+      `,
+      values: [userId, startDate, endDate],
+    };
+
+    const result = await this._pool.query(query);
+
+    return Number(result.rows[0].total_income);
+  }
+
+  /**
+   * Statistik dashboard user
+   */
+  async getStats({ userId, startDate, endDate }) {
+    const query = {
+      text: `
+        SELECT
+          COALESCE(SUM(
+            CASE
+              WHEN type = 'income'
+              THEN amount
+            END
+          ), 0) AS total_income,
+
+          COALESCE(SUM(
+            CASE
+              WHEN type = 'expense'
+              THEN amount
+            END
+          ), 0) AS total_expense,
+
+          COALESCE(SUM(
+            CASE
+              WHEN type = 'income'
+              THEN amount
+              ELSE -amount
+            END
+          ), 0) AS balance
+
+        FROM transactions
+        WHERE user_id = $1
+        AND transaction_date
+            BETWEEN $2 AND $3;
+      `,
+      values: [userId, startDate, endDate],
+    };
+
+    const result = await this._pool.query(query);
+
+    return {
+      totalIncome: Number(result.rows[0].total_income),
+      totalExpense: Number(result.rows[0].total_expense),
+      balance: Number(result.rows[0].balance),
+    };
   }
 }
 

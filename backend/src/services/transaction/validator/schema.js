@@ -28,8 +28,14 @@ const getTransactionsSchema = Joi.object({
   type: Joi.string().valid('income', 'expense').optional(),
 });
 
+const getExpenseSchema = Joi.object({
+  startDate: Joi.date().optional(),
+  endDate: Joi.date().optional(),
+});
+
 export {
   createTransactionSchema,
   updateTransactionSchema,
   getTransactionsSchema,
+  getExpenseSchema,
 };

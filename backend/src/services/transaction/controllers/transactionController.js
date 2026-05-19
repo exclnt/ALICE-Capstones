@@ -132,3 +132,36 @@ export const getTransactionById = async (req, res, next) => {
     transaction: transaction,
   });
 };
+
+export const getExpense = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const { startDate, endDate } = req.validated;
+    console.log('faf');
+
+    if (!userId) {
+      return next(
+        new AuthentificationError('Kredensial yang Anda berikan salah'),
+      );
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+      return next(
+        new InvariantError('startDate tidak boleh lebih besar dari endDate'),
+      );
+    }
+
+    const totalExpense = await TransactionRepositories.getExpense({
+      userId,
+      startDate,
+      endDate,
+    });
+
+    return response(res, 200, 'Total pengeluaran berhasil diambil', {
+      totalExpense,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

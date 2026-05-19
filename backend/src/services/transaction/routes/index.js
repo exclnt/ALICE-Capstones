@@ -2,6 +2,7 @@ import { Router } from 'express';
 import validate from '../../../middlewares/validate.js';
 import {
   createTransactionSchema,
+  getExpenseSchema,
   getTransactionsSchema,
   updateTransactionSchema,
 } from '../validator/schema.js';
@@ -11,11 +12,82 @@ import {
   deleteTransaction,
   updateTransaction,
   getTransactionById,
+  getExpense,
 } from '../controllers/transactionController.js';
 import authetificate from '../../../middlewares/auth.js';
 import validateQuery from '../../../middlewares/validateQuery.js';
 
 const router = Router();
+
+/**
+ * @swagger
+ * /transactions/expense:
+ *   get:
+ *     summary: Get expense transactions
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for filtering expense transactions
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for filtering expense transactions
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Category for filtering expense transactions
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of transactions per page
+ *     responses:
+ *       200:
+ *         description: Expense transactions retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Data expense berhasil diambil
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     transactions:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         description: Expense transaction item
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  '/transactions/expense',
+  authetificate,
+  validateQuery(getExpenseSchema),
+  getExpense,
+);
 
 /**
  * @swagger

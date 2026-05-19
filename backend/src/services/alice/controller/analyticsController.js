@@ -192,8 +192,13 @@ export const postSegmentation = async (req, res, next) => {
     );
 
     const segment = aiResponse.data.segment_label;
+    const segmentCount = aiResponse.data.segment_number;
 
-    await SettingRepositories.updateSegmentByUserId(userId, 0, segment);
+    await SettingRepositories.updateSegmentByUserId(
+      userId,
+      segmentCount,
+      segment,
+    );
 
     return response(res, 200, 'Segmentation berhasil', aiResponse.data);
   } catch (error) {
