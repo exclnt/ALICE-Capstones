@@ -1,13 +1,26 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 
-export default function NavBar() {
-  const [activeId, setActiveId] = useState('home');
+interface NavBarProp {
+  toggleAddModal: () => void;
+}
+
+export default function NavBar({ toggleAddModal }: NavBarProp) {
+  const location = useLocation();
+
+  const getActiveId = () => {
+    if (location.pathname === '/') return 'home';
+    if (location.pathname === '/analitik') return 'analitik';
+    if (location.pathname === '/alice') return 'alice';
+    if (location.pathname === '/profile') return 'profile';
+    return 'home';
+  };
+
+  const activeId = getActiveId();
 
   return (
-    <nav className="flex w-full fixed bottom-0 ring-1 ring-accent-accent pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
-      <ul className="flex flex-row justify-evenly w-full md:flex-col md:h-full">
+    <nav className="flex w-full fixed z-30 left-0 bottom-0 ring-1 ring-primary pt-3 pb-3 md:static md:max-w-20  md:h-full bg-bg-main md:ring-0 md:rounded-xl md:pt-5">
+      <ul className="flex flex-row justify-evenly w-full md:flex-col md:h-full ">
         <li>
           <Link to={'/'}>
             <LinkContainer
@@ -19,7 +32,6 @@ export default function NavBar() {
               }
               label="Beranda"
               isActive={activeId === 'home'}
-              onClick={() => setActiveId('home')}
             />
           </Link>
         </li>
@@ -34,17 +46,16 @@ export default function NavBar() {
               }
               label="Analitik"
               isActive={activeId === 'analitik'}
-              onClick={() => setActiveId('analitik')}
             />
           </Link>
         </li>
-        <li>
-          <Link to={'/'}>
+        <li className="md:hidden">
+          <button onClick={toggleAddModal}>
             <Icon
               icon="material-symbols:add-circle-outline-rounded"
-              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main md:hidden "
+              className="relative -top-10 bg-primary text-5xl p-2 w-15 h-15 rounded-4xl text-bg-main active:scale-110 active:text-bg-content transition-all rotate-0  duration-300"
             />
-          </Link>
+          </button>
         </li>
         <li>
           <Link to={'/alice'}>
@@ -57,17 +68,16 @@ export default function NavBar() {
               }
               label="A.L.I.C.E"
               isActive={activeId === 'alice'}
-              onClick={() => setActiveId('alice')}
             />
           </Link>
         </li>
         <li className="flex justify-center items-center cursor-pointer">
-          <Link to={'/'}>
+          <button onClick={toggleAddModal}>
             <Icon
               icon="mingcute:add-fill"
-              className="bg-primary p-1 rounded-md text-4xl text-bg-main hidden md:flex "
+              className="bg-primary p-1 rounded-md text-4xl text-bg-main hidden md:flex active:scale-125  hover:scale-110"
             />
-          </Link>
+          </button>
         </li>
         <li className="md:mt-auto">
           <Link to={'/profile'}>
@@ -76,7 +86,6 @@ export default function NavBar() {
               icon="material-symbols:person-2-rounded"
               label="Profile"
               isActive={activeId === 'profile'}
-              onClick={() => setActiveId('profile')}
             />
           </Link>
         </li>
@@ -90,16 +99,14 @@ interface LinkContainerProps {
   icon: string;
   label?: string;
   isActive: boolean;
-  onClick: () => void;
 }
 
-function LinkContainer({ icon, label, isActive, onClick }: LinkContainerProps) {
+function LinkContainer({ icon, label, isActive }: LinkContainerProps) {
   return (
     <div
-      className={`flex  flex-col justify-center items-center cursor-pointer transition-all ${
+      className={`flex hover:scale-105 flex-col justify-center items-center cursor-pointer active:scale-90 active:text-text-main ${
         isActive ? 'text-primary' : 'text-text-muted'
       }`}
-      onClick={onClick}
     >
       <Icon icon={icon} className="text-3xl md:text-4xl md:mb-3" />
       <p className="text-base md:hidden ">{label}</p>
