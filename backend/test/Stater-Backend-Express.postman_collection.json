@@ -929,9 +929,6 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -951,10 +948,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
-						},
 						"url": {
 							"raw": "{{HOST}}:{{PORT}}/transactions",
 							"host": [
@@ -1403,9 +1396,6 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1425,12 +1415,8 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"amount\": 150000,\n  \"date\": \"2026-05-08\",\n  \"category\": \"category-1\",\n  \"title\": \"Makan siang\",\n  \"type\": \"expense\"\n}"
-						},
 						"url": {
-							"raw": "{{HOST}}:{{PORT}}/transactions?startDate=2025-05-01&endDate=2025-10-31&category=Shopping&page=1&title=Bayar Netflix&type=expense&limit=12",
+							"raw": "{{HOST}}:{{PORT}}/transactions?startDate=2025-05-01&endDate=2025-10-31&category=Shopping&page=1&title=transaction&type=expense&limit=12",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1457,7 +1443,7 @@
 								},
 								{
 									"key": "title",
-									"value": "Bayar Netflix"
+									"value": "transaction"
 								},
 								{
 									"key": "type",
@@ -1466,6 +1452,83 @@
 								{
 									"key": "limit",
 									"value": "12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Expense",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {",
+									"    pm.expect(pm.response).to.have.status(200);",
+									"});",
+									"",
+									"pm.test('response Content-Type header should have application/json value', () => {",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');",
+									"});",
+									"",
+									"pm.test('response body should be an object', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.be.an('object');",
+									"});",
+									"",
+									"pm.test('response body should have correct property and value', () => {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.status).to.equal('success');",
+									"    pm.expect(responseJson.data).to.be.an('object');",
+									"    // pm.expect(responseJson.data.transaction).to.be.a('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}:{{PORT}}/transactions/expense?startDate=2025-05-01&endDate=2025-06-01",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"transactions",
+								"expense"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-05-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-06-01"
 								}
 							]
 						}
