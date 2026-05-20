@@ -8,6 +8,7 @@ interface TextInputProps {
   onChange: (val: string) => void;
   placeholder?: string;
   className?: string;
+  isRequired?: boolean;
 }
 
 export default function TextInput({
@@ -17,12 +18,14 @@ export default function TextInput({
   onChange,
   placeholder,
   className,
+  isRequired,
 }: TextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <InputShell label={label} isFocused={isFocused} hasValue={value.length > 0}>
       <input
+        required={isRequired}
         type={type}
         value={value}
         placeholder={placeholder}

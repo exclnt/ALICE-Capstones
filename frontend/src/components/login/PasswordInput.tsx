@@ -6,15 +6,17 @@ interface PasswordInputProps {
   label: string;
   value: string;
   onChange: (val: string) => void;
+  isRequired?: boolean;
 }
 
-export default function PasswordInput({ label, value, onChange }: PasswordInputProps) {
+export default function PasswordInput({ label, value, onChange, isRequired }: PasswordInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [visible, setVisible] = useState(false);
 
   return (
     <InputShell label={label} isFocused={isFocused} hasValue={value.length > 0}>
       <input
+        required={isRequired}
         type={visible ? 'text' : 'password'}
         value={value}
         onChange={(e) => onChange(e.target.value)}

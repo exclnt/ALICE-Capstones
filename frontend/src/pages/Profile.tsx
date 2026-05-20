@@ -3,11 +3,33 @@ import ThemeConfig from '../components/profile/ThemeConfig';
 import ProfileCard from '../components/profile/ProfileCard';
 import EditModal from '../components/profile/ProfileEditModal';
 import { useState } from 'react';
+import { LogoutUser } from '../api/auth';
+import { useStatus } from '../context/StatusContext';
+import { useNavigate } from 'react-router-dom';
+import CatchErrorAPI from '../components/utils/CatchErrorAPI';
 
-export default function Profile() {
+interface ProfileProp {
+  setAuthedUser: (accessToken: null) => void;
+}
+
+export default function Profile({ setAuthedUser }: ProfileProp) {
   const [isEditing, setIsEditing] = useState(false);
+  const navigate = useNavigate();
+  const { showLoading, showSuccess, showError } = useStatus();
   const toggleEditing = () => {
     setIsEditing((prevState) => !prevState);
+  };
+
+  const handleLogout = async () => {
+    showLoading();
+    try {
+      const result = await LogoutUser();
+      showSuccess(result.data.message);
+      setAuthedUser(null);
+      navigate('/');
+    } catch (error) {
+      CatchErrorAPI({ error, showError });
+    }
   };
   const name = 'Eko Ramadani';
   return (
@@ -19,7 +41,12 @@ export default function Profile() {
         <ThemeConfig />
       </section>
       <div className="actions w-full flex">
-        <button className="bg-red-500 text-white w-full rounded-xl p-3 font-bold">Keluar</button>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white w-full rounded-xl p-3 font-bold"
+        >
+          Keluar
+        </button>
       </div>
     </div>
   );

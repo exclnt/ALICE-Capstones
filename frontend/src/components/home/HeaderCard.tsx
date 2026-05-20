@@ -12,7 +12,7 @@ export default function HeaderCard() {
 
       <div className="z-20 relative">
         <p className="text-text-muted text-sm">{Greeting()}</p>
-        <h1 className="text-white text-xl font-bold">Eko Ramadani</h1>
+        <h1 className="text-white text-xl font-bold">{'test'}</h1>
       </div>
 
       <div className="z-20 relative">

@@ -1,29 +1,72 @@
 import { Icon } from '@iconify/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useInput from '../hooks/useInput.ts';
 import TextInput from '../TextInput';
 import PasswordInput from './PasswordInput';
+import { useStatus } from '../../context/StatusContext.tsx';
+import type React from 'react';
+import { RegisterUser } from '../../api/auth.ts';
+import type { UserRegistrationData } from '../../api/auth.ts';
+import CatchErrorAPI from '../utils/CatchErrorAPI.ts';
 
 export default function RegisterInput() {
+  const { showLoading, showSuccess, showError } = useStatus();
+  const navigate = useNavigate();
   const [name, onNameChange] = useInput('');
   const [email, onEmailChange] = useInput('');
   const [password, onPasswordChange] = useInput('');
   const [confirmPassword, onConfirmPasswordChange] = useInput('');
+
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      showError('Confirm Password Tidak Sama');
+      return;
+    }
+
+    const formdata: UserRegistrationData = {
+      username: name,
+      email,
+      password,
+    };
+
+    showLoading();
+
+    try {
+      const result = await RegisterUser(formdata);
+      showSuccess(result.data.message);
+      navigate('/');
+    } catch (error: unknown) {
+      CatchErrorAPI({ error, showError });
+    }
+  };
+
   return (
     <>
       <form
         className="pr-6 pl-6 pt-3 pb-3 rounded-2xl bg-bg-main flex flex-col items-center w-full"
-        onSubmit={() => {
-          alert(`${name}+${email}+${password}+${confirmPassword}`);
-        }}
+        onSubmit={handleSubmit}
       >
-        <TextInput label="Nama" value={name} onChange={onNameChange} />
-        <TextInput label="Email" value={email} onChange={onEmailChange} type="email" />
-        <PasswordInput label="Password" value={password} onChange={onPasswordChange} />
+        <TextInput label="Nama" value={name} onChange={onNameChange} isRequired={true} />
+        <TextInput
+          label="Email"
+          value={email}
+          onChange={onEmailChange}
+          type="email"
+          isRequired={true}
+        />
+        <PasswordInput
+          label="Password"
+          value={password}
+          onChange={onPasswordChange}
+          isRequired={true}
+        />
         <PasswordInput
           label="Confirm Password"
           value={confirmPassword}
           onChange={onConfirmPasswordChange}
+          isRequired={true}
         />
 
         <button

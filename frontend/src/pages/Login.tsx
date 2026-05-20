@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import LoginInput from '../components/login/LoginInput';
 
-export default function Login() {
+interface LoginProp {
+  setAuthedUser: (accessToken: string) => void;
+}
+
+export default function Login({ setAuthedUser }: LoginProp) {
   useEffect(() => {
     document.body.classList.add('special-page-body');
 
@@ -16,7 +20,7 @@ export default function Login() {
       </div>
       <div className="flex items-start w-full px-7 justify-start flex-col md:max-w-110">
         <h2 className="text-white text-3xl font-bold ml-6 mb-2">MASUK</h2>
-        <LoginInput />
+        <LoginInput setAuthedUser={setAuthedUser} />
       </div>
     </main>
   );
