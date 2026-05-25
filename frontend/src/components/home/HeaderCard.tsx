@@ -1,6 +1,6 @@
 import Greeting from './Greeting';
-import { useUserProfile } from '../../hooks/UserProfileHooks';
-import { useUserSettings } from '../../hooks/UserSettingsHook';
+import { useUserProfile } from '../../hooks/useUserProfileHooks';
+import { useUserSettings } from '../../hooks/useUserSettingsHook';
 import { CurrencyFormatter } from '../utils/CurrencyFormatter';
 import { useStatusHandler } from '../../hooks/useStatusHandler';
 

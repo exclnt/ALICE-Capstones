@@ -13,7 +13,7 @@ import RiskConfirmation from './RiskConfirmation.tsx';
 import { useCategories } from '../../hooks/useCategoriesHook.ts';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 import { useAddTransaction } from '../../hooks/useTransactionHook.ts';
-import { useUserSettings } from '../../hooks/UserSettingsHook.ts';
+import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
 import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
 
 interface AddModalProp {
@@ -84,7 +84,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
       type: 'expense',
       date: new Date().toISOString(),
     };
-    console.log(data);
+    console.log(Number(amount));
     mutate({
       amount: Number(amount),
       category: option,
@@ -97,14 +97,14 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
 
   const handleSumbit = (e: React.SubmitEvent) => {
     e.preventDefault();
-    predictMutate({
-      day_of_week: new Date().getDay(),
-      day_of_month: new Date().getDate(),
-      hour_of_day: new Date().getHours(),
-      amount: Number(amount),
-      category: option,
-      weekly_budget: Number(userSettings?.setting.weekly_budget),
-    });
+    // predictMutate({
+    //   day_of_week: new Date().getDay(),
+    //   day_of_month: new Date().getDate(),
+    //   hour_of_day: new Date().getHours(),
+    //   amount: Number(amount),
+    //   category: option,
+    //   weekly_budget: Number(userSettings?.setting.weekly_budget),
+    // });
     const randomBool = Math.random() < 0.5;
     if (randomBool) {
       setIsRisky(true);

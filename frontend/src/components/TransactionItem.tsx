@@ -1,14 +1,6 @@
 import { Icon } from '@iconify/react';
 import { CurrencyFormatter } from './utils/CurrencyFormatter';
-
-type TransactionCategory =
-  | 'Bills'
-  | 'Entertainment'
-  | 'Food'
-  | 'Hobby'
-  | 'Investment'
-  | 'Shopping'
-  | 'Transport';
+import type { TransactionCategory } from '../validator/TransactionSchema';
 
 interface TransactionItemProp {
   category: TransactionCategory;

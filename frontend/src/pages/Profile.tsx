@@ -7,7 +7,7 @@ import { LogoutUser } from '../api/auth';
 import { useStatus } from '../context/StatusContext';
 import { useNavigate } from 'react-router-dom';
 import CatchErrorAPI from '../components/utils/CatchErrorAPI';
-import { useUserProfile } from '../hooks/UserProfileHooks';
+import { useUserProfile } from '../hooks/useUserProfileHooks';
 
 import { useStatusHandler } from '../hooks/useStatusHandler';
 

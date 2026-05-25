@@ -2,10 +2,12 @@
 import CurrencyInput from '../CurrencyInput.tsx';
 import ConfigContainer from './ConfigContainer';
 import useInput from '../../hooks/useInput.ts';
-import { useUpdateUserSettings, useUserSettings } from '../../hooks/UserSettingsHook.ts';
+import { useUpdateUserSettings, useUserSettings } from '../../hooks/useUserSettingsHook.ts';
 import { useEffect } from 'react';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
+import { useStatus } from '../../context/StatusContext.tsx';
 export default function BudgetConfig() {
+  const { showError } = useStatus();
   const {
     data: settingsData,
     isPending: isSettingsPending,
@@ -49,7 +51,10 @@ export default function BudgetConfig() {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (Number(weekBudget) > Number(monthBudget)) {
+      showError('Anggaran mingguan tidak boleh melebihi anggaran bulanan');
+      return;
+    }
     mutate({
       monthly_income: Number(monthBudget),
       weekly_budget: Number(weekBudget),
