@@ -1,13 +1,21 @@
 import {
-  ThisWeekTotalExpenseSchema,
   PostTransactionSchema,
-  type ThisWeekTotalExpense,
   type PostTransaction,
   TransactionItemSchema,
   type TransactionItemType,
+  type TotalExpenseType,
+  TotalExpenseSchema,
 } from '../validator/TransactionSchema';
 import apiClient, { type ApiResponse } from './apiClient';
-import { format, startOfWeek, endOfWeek, endOfDay, startOfDay } from 'date-fns';
+import {
+  format,
+  startOfWeek,
+  endOfWeek,
+  endOfDay,
+  startOfDay,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
 
 export const postTransaction = async (payload: PostTransaction) => {
   const parsedPayload = PostTransactionSchema.parse(payload);
@@ -22,6 +30,7 @@ export const postTransaction = async (payload: PostTransaction) => {
     status: response.data.status,
     message: response.data.message,
     statusCode: response.status,
+    transactionId: response.data.data.transactionId,
   };
 };
 
@@ -34,7 +43,7 @@ const getWeekRange = (date = new Date()) => {
 
 export const getThisWeekTotalExpense = async () => {
   const { startDate, endDate } = getWeekRange();
-  const response = await apiClient.get<ApiResponse<ThisWeekTotalExpense>>('/transactions/expense', {
+  const response = await apiClient.get<ApiResponse<TotalExpenseType>>('/transactions/expense', {
     params: {
       startDate,
       endDate,
@@ -44,7 +53,31 @@ export const getThisWeekTotalExpense = async () => {
   return {
     status: response.data.status,
     message: response.data.message,
-    totalExpense: ThisWeekTotalExpenseSchema.parse(response.data.data).totalExpense,
+    totalExpense: TotalExpenseSchema.parse(response.data.data).totalExpense,
+    statusCode: response.status,
+  };
+};
+
+const getMonthRange = (date = new Date()) => {
+  return {
+    startDate: format(startOfMonth(date), 'yyyy-MM-dd'),
+    endDate: format(endOfMonth(date), 'yyyy-MM-dd'),
+  };
+};
+
+export const getThisMonthTotalExpense = async () => {
+  const { startDate, endDate } = getMonthRange();
+  const response = await apiClient.get<ApiResponse<TotalExpenseType>>('/transactions/expense', {
+    params: {
+      startDate,
+      endDate,
+    },
+  });
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    totalExpense: TotalExpenseSchema.parse(response.data.data).totalExpense,
     statusCode: response.status,
   };
 };
@@ -73,6 +106,58 @@ export const getThisDayTransactions = async () => {
     transactions: response.data.data.transaction.map((transaction) =>
       TransactionItemSchema.parse(transaction)
     ),
+    statusCode: response.status,
+  };
+};
+
+export const getThisMonthTransactions = async () => {
+  const { startDate, endDate } = getMonthRange();
+  const response = await apiClient.get<ApiResponse<{ transaction: TransactionItemType[] }>>(
+    '/transactions',
+    {
+      params: {
+        startDate,
+        endDate,
+      },
+    }
+  );
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    transactions: response.data.data.transaction.map((transaction) =>
+      TransactionItemSchema.parse(transaction)
+    ),
+    statusCode: response.status,
+  };
+};
+
+export const getTransactionsById = async (id: null | string) => {
+  const response = await apiClient.get<ApiResponse<{ transaction: TransactionItemType }>>(
+    `/transactions/${id}`
+  );
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    transaction: TransactionItemSchema.parse(response.data.data.transaction),
+    statusCode: response.status,
+  };
+};
+
+export const putTransactionsById = async (id: null | string, payload: PostTransaction) => {
+  const parsedPayload = PostTransactionSchema.parse(payload);
+  console.log(parsedPayload);
+
+  const response = await apiClient.put<ApiResponse<{ transactionId: string }>>(
+    `/transactions/${id}`,
+    parsedPayload
+  );
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    transactionId: response.data.data.transactionId,
     statusCode: response.status,
   };
 };

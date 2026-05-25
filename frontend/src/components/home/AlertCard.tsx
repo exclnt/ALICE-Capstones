@@ -4,6 +4,8 @@ import PercentageBar from '../PercentageBar';
 import { useUserSettings } from '../../hooks/useUserSettingsHook';
 import { useThisWeekTotalExpense } from '../../hooks/useTransactionHook';
 import { useStatusHandler } from '../../hooks/useStatusHandler';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 export default function AlertCard() {
   const {
@@ -28,10 +30,17 @@ export default function AlertCard() {
     isSuccess: weekIsSuccess && userSettingsIsSuccess,
   });
 
-  const weekBudget = userSettings?.setting.weekly_budget || 0;
-  const currentBudget = weekData?.totalExpense || 0;
+  const queryClient = useQueryClient();
 
-  const budgetPercent = weekBudget > 0 ? (currentBudget / weekBudget) * 100 : 0;
+  const weekBudget = userSettings?.setting.weekly_budget ?? 0;
+  const currentExpense = weekData?.totalExpense ?? 0;
+  const unusedBudget = Math.max(weekBudget - currentExpense, 0);
+
+  useEffect(() => {
+    queryClient.setQueryData(['unusedBudget'], unusedBudget);
+  }, [unusedBudget, queryClient]);
+
+  const budgetPercent = weekBudget > 0 ? (currentExpense / weekBudget) * 100 : 0;
   const barColor =
     budgetPercent >= 90
       ? 'bg-red-500'
@@ -55,7 +64,7 @@ export default function AlertCard() {
         <h2 className="font-bold text-text-main text-sm">Anggaran Mingguan</h2>
         <div className="flex flex-row justify-between text-xs">
           <h2 className="text-text-muted">
-            {CurrencyFormatter(currentBudget.toString())} /{' '}
+            {CurrencyFormatter(currentExpense.toString())} /{' '}
             {CurrencyFormatter(weekBudget.toString())}
           </h2>
           <h2 className={`font-bold ${textColor}`}>{budgetPercent.toFixed(0)}%</h2>

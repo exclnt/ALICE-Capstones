@@ -77,14 +77,6 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
   };
 
   const confirmSubmit = () => {
-    const data = {
-      amount: Number(amount),
-      category: option,
-      title,
-      type: 'expense',
-      date: new Date().toISOString(),
-    };
-    console.log(Number(amount));
     mutate({
       amount: Number(amount),
       category: option,

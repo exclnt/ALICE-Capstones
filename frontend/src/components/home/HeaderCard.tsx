@@ -3,6 +3,9 @@ import { useUserProfile } from '../../hooks/useUserProfileHooks';
 import { useUserSettings } from '../../hooks/useUserSettingsHook';
 import { CurrencyFormatter } from '../utils/CurrencyFormatter';
 import { useStatusHandler } from '../../hooks/useStatusHandler';
+import { useQuery } from '@tanstack/react-query';
+import { useThisMonthTotalExpense } from '../../hooks/useTransactionHook';
+import { Icon } from '@iconify/react';
 
 export default function HeaderCard() {
   const {
@@ -20,12 +23,28 @@ export default function HeaderCard() {
     isSuccess: settingsIsSuccess,
   } = useUserSettings();
 
+  const {
+    data: monthData,
+    isPending: monthPending,
+    isError: monthIsError,
+    error: monthError,
+    isSuccess: monthIsSuccess,
+  } = useThisMonthTotalExpense();
+
   useStatusHandler({
-    pending: profilePending || settingsPending,
-    isError: profileIsError || settingsIsError,
-    error: profileError || settingsError,
-    isSuccess: profileIsSuccess || settingsIsSuccess,
+    pending: profilePending || settingsPending || monthPending,
+    isError: profileIsError || settingsIsError || monthIsError,
+    error: profileError || settingsError || monthError,
+    isSuccess: profileIsSuccess && settingsIsSuccess && monthIsSuccess,
   });
+
+  const { data: lastAmount } = useQuery({
+    queryKey: ['lastAmount'],
+    initialData: null,
+  });
+
+  const currentBudget =
+    (settingsData?.setting.monthly_income ?? 0) - (monthData?.totalExpense ?? 0);
 
   return (
     <header
@@ -45,9 +64,12 @@ export default function HeaderCard() {
         <p className="text-text-muted text-sm">Anggaran Bulanan</p>
         <div className="flex flex-row items-baseline justify-between">
           <h1 className="text-white text-2xl font-bold">
-            {CurrencyFormatter(String(settingsData?.setting.monthly_income))}
+            {CurrencyFormatter(String(currentBudget))}
           </h1>
-          <span className="text-red-400 text-base font-medium">Rp 2.000.000</span>
+          <div className="text-red-400 text-base font-medium flex flex-row items-center gap-1">
+            <p> {lastAmount && CurrencyFormatter(String(lastAmount))}</p>
+            <Icon icon={'eva:diagonal-arrow-right-up-outline'} />
+          </div>
         </div>
       </div>
     </header>

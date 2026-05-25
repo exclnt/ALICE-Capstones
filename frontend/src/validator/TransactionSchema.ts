@@ -11,11 +11,12 @@ export const PostTransactionSchema = z.object({
 
 export type PostTransaction = z.infer<typeof PostTransactionSchema>;
 
-export const ThisWeekTotalExpenseSchema = z.object({
+export const TotalExpenseSchema = z.object({
   totalExpense: z.number().min(0),
 });
 
-export type ThisWeekTotalExpense = z.infer<typeof ThisWeekTotalExpenseSchema>;
+export type TotalExpenseType = z.infer<typeof TotalExpenseSchema>;
+
 export const TransactionItemSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -36,4 +37,3 @@ export const TransactionItemSchema = z.object({
 export type TransactionItemType = z.infer<typeof TransactionItemSchema>;
 
 export type TransactionCategory = TransactionItemType['category'];
-

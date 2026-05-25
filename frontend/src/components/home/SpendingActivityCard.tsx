@@ -15,13 +15,15 @@ export default function SpendingActivityCard() {
   return (
     <section className="spending-activity-card bg-bg-main p-5 rounded-2xl w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md h-full min-h-0">
       <div className="flex justify-between w-full">
-        <h2 className="font-medium text-text-main">Aktivitas Pengeluaran</h2>
+        <h2 className="font-medium text-text-main">
+          Aktivitas Pengeluaran <br /> Harian
+        </h2>
         <Link to={'/analitik'} className="text-primary font-bold">
           Lihat Semua
         </Link>
       </div>
       <div className="lg:relative overflow-y-auto  flex-1 overflow-hidden">
-        <div className="lg:absolute pr-2 lg:inset-0 flex-col flex gap-4 w-full">
+        <div className="lg:absolute p-1 lg:inset-0 flex-col flex gap-4 w-full">
           {data?.transactions.map((transaction) => (
             <TransactionItem
               key={transaction.id}
