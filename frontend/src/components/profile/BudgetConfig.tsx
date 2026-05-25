@@ -4,12 +4,8 @@ import ConfigContainer from './ConfigContainer';
 import useInput from '../../hooks/useInput.ts';
 import { useUpdateUserSettings, useUserSettings } from '../../hooks/UserSettingsHook.ts';
 import { useEffect } from 'react';
-import { useStatus } from '../../context/StatusContext.tsx';
-import { extractError } from '../utils/ExtractApiError.ts';
-
+import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 export default function BudgetConfig() {
-  const { showLoading, showError, showSuccess, hideStatus } = useStatus();
-
   const {
     data: settingsData,
     isPending: isSettingsPending,
@@ -34,43 +30,22 @@ export default function BudgetConfig() {
     if (!settingsData) return;
 
     setWeekBudget(String(settingsData.setting.weekly_budget));
-
     setMonthBudget(String(settingsData.setting.monthly_income));
   }, [settingsData, setMonthBudget, setWeekBudget]);
 
-  useEffect(() => {
-    if (isSettingsPending || isUpdating) {
-      showLoading();
-    }
-  }, [isSettingsPending, isUpdating, showLoading]);
+  useStatusHandler({
+    pending: isSettingsPending || isUpdating,
 
-  useEffect(() => {
-    if (isSettingsError) {
-      const extracted = extractError(settingsError);
+    isError: isSettingsError || isUpdateError,
+    error: settingsError || updateError,
 
-      showError(extracted.message, extracted.statusCode);
-    }
-  }, [isSettingsError, settingsError, showError]);
+    isSuccess: isSettingsSuccess,
+  });
 
-  useEffect(() => {
-    if (isSettingsSuccess) {
-      hideStatus();
-    }
-  }, [isSettingsSuccess, hideStatus]);
-
-  useEffect(() => {
-    if (isUpdateError) {
-      const extracted = extractError(updateError);
-
-      showError(extracted.message, extracted.statusCode);
-    }
-  }, [isUpdateError, updateError, showError]);
-
-  useEffect(() => {
-    if (isUpdateSuccess && updateData) {
-      showSuccess(updateData.message);
-    }
-  }, [isUpdateSuccess, updateData, showSuccess]);
+  useStatusHandler({
+    isSuccess: isUpdateSuccess,
+    successMessage: updateData?.message,
+  });
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -2,13 +2,14 @@ import BudgetConfig from '../components/profile/BudgetConfig';
 import ThemeConfig from '../components/profile/ThemeConfig';
 import ProfileCard from '../components/profile/ProfileCard';
 import EditModal from '../components/profile/ProfileEditModal';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { LogoutUser } from '../api/auth';
 import { useStatus } from '../context/StatusContext';
 import { useNavigate } from 'react-router-dom';
 import CatchErrorAPI from '../components/utils/CatchErrorAPI';
 import { useUserProfile } from '../hooks/UserProfileHooks';
-import { extractError } from '../components/utils/ExtractApiError';
+
+import { useStatusHandler } from '../hooks/useStatusHandler';
 
 interface ProfileProp {
   setAuthedUser: (accessToken: null) => void;
@@ -46,19 +47,11 @@ export default function Profile({ setAuthedUser }: ProfileProp) {
 
   const { data, isPending, isError, error } = useUserProfile();
 
-  useEffect(() => {
-    if (isPending) {
-      showLoading();
-    }
-  }, [isPending, showLoading]);
-
-  useEffect(() => {
-    if (isError) {
-      const extracted = extractError(error);
-
-      showError(extracted.message, extracted.statusCode);
-    }
-  }, [isError, error, showError]);
+  useStatusHandler({
+    pending: isPending,
+    error,
+    isError,
+  });
 
   if (!data) return null;
 

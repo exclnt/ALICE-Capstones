@@ -6,7 +6,7 @@ interface SelectionInputProp {
   value: string;
   onChange: (val: string) => void;
   className?: string;
-  options: Array<string>;
+  options: Array<{ id: string; name: string }>;
 }
 
 export default function SelectionInput({
@@ -26,10 +26,10 @@ export default function SelectionInput({
         onBlur={() => setIsFocused(false)}
         className={`w-full bg-transparent px-4 pt-2 pb-2 text-text-main rounded-xl outline-none ${className}`}
       >
-        {options.map((value: string) => {
+        {options.map((option) => {
           return (
-            <option key={value} value={value}>
-              {value}
+            <option key={option.id} value={option.id} className="bg-bg-main text-text-main">
+              {option.name}
             </option>
           );
         })}

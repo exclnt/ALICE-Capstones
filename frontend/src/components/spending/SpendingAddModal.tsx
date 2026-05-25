@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { useLocation } from 'react-router-dom';
 import CurrencyInput from '../CurrencyInput.tsx';
 import useInput from '../../hooks/useInput.ts';
@@ -5,9 +6,15 @@ import SelectionInput from '../SelectionInput.tsx';
 import TextInput from '../TextInput.tsx';
 
 import { motion, AnimatePresence } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import RiskConfirmation from './RiskConfirmation.tsx';
+
+import { useCategories } from '../../hooks/useCategoriesHook.ts';
+import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
+import { useAddTransaction } from '../../hooks/useTransactionHook.ts';
+import { useUserSettings } from '../../hooks/UserSettingsHook.ts';
+import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
 
 interface AddModalProp {
   closeModal: () => void;
@@ -15,13 +22,54 @@ interface AddModalProp {
 }
 
 export default function AddModal({ closeModal, isVisible }: AddModalProp) {
+  const { data, isPending, isError, error, isSuccess } = useCategories();
   const [amount, setAmount] = useInput('');
   const [title, setTitle] = useInput('');
-  const options = ['Makanan', 'Minuman', 'Orang'];
-  const [option, setOption] = useInput(options[0]);
+  const options = useMemo(() => {
+    return (
+      data?.categories?.map((category, index) => ({
+        id: `category-${index + 1}`,
+        name: category,
+      })) || []
+    );
+  }, [data]);
+  const [option, setOption] = useInput();
+
+  useEffect(() => {
+    if (options.length > 0 && !option) {
+      setOption(options[0].id);
+    }
+  }, [options, option, setOption]);
 
   const location = useLocation();
   const isDesktop = useMediaQuery('(min-width:768px)');
+
+  useStatusHandler({
+    pending: isPending,
+    error,
+    isError,
+    isSuccess,
+  });
+
+  const {
+    mutate,
+    isPending: transactionIsPending,
+    isError: transactionIsError,
+    isSuccess: transactionIsSuccess,
+    error: transactionError,
+    data: transactionData,
+  } = useAddTransaction();
+
+  const { data: userSettings } = useUserSettings();
+
+  const {
+    mutate: predictMutate,
+    isPending: predictIsPending,
+    isError: predictIsError,
+    isSuccess: predictIsSuccess,
+    error: predictError,
+    data: predictData,
+  } = usePredictTransaction();
 
   const [isRisky, setIsRisky] = useState(false);
   const toggleRiskyModal = () => {
@@ -29,12 +77,34 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
   };
 
   const confirmSubmit = () => {
-    alert(`${title} + ${option} + ${option}`);
+    const data = {
+      amount: Number(amount),
+      category: option,
+      title,
+      type: 'expense',
+      date: new Date().toISOString(),
+    };
+    console.log(data);
+    mutate({
+      amount: Number(amount),
+      category: option,
+      title,
+      type: 'expense',
+      date: new Date().toISOString(),
+    });
     closeModal();
   };
 
   const handleSumbit = (e: React.SubmitEvent) => {
     e.preventDefault();
+    predictMutate({
+      day_of_week: new Date().getDay(),
+      day_of_month: new Date().getDate(),
+      hour_of_day: new Date().getHours(),
+      amount: Number(amount),
+      category: option,
+      weekly_budget: Number(userSettings?.setting.weekly_budget),
+    });
     const randomBool = Math.random() < 0.5;
     if (randomBool) {
       setIsRisky(true);
@@ -42,6 +112,14 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
       confirmSubmit();
     }
   };
+
+  useStatusHandler({
+    pending: transactionIsPending,
+    error: transactionError,
+    isError: transactionIsError,
+    isSuccess: transactionIsSuccess,
+    successMessage: transactionData?.message,
+  });
 
   useEffect(() => {
     closeModal();
@@ -71,7 +149,12 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
                 <h2 className="font-bold text-red-400">Pengeluaran</h2>
               </div>
               <form className="w-full p-5" onSubmit={handleSumbit}>
-                <CurrencyInput label="Jumlah (Rp)" onValueChange={setAmount} value={amount} />
+                <CurrencyInput
+                  label="Jumlah (Rp)"
+                  onValueChange={setAmount}
+                  value={amount}
+                  max={10000000000}
+                />
                 <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
                 <SelectionInput
                   value={option}

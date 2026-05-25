@@ -1,40 +1,31 @@
 import Greeting from './Greeting';
 import { useUserProfile } from '../../hooks/UserProfileHooks';
-import { useStatus } from '../../context/StatusContext';
-import { extractError } from '../utils/ExtractApiError';
-import { useEffect } from 'react';
 import { useUserSettings } from '../../hooks/UserSettingsHook';
 import { CurrencyFormatter } from '../utils/CurrencyFormatter';
+import { useStatusHandler } from '../../hooks/useStatusHandler';
 
 export default function HeaderCard() {
   const {
     data: profileData,
     error: profileError,
     isPending: profilePending,
-    isError: profileIserror,
+    isError: profileIsError,
+    isSuccess: profileIsSuccess,
   } = useUserProfile();
   const {
     data: settingsData,
     error: settingsError,
     isPending: settingsPending,
     isError: settingsIsError,
+    isSuccess: settingsIsSuccess,
   } = useUserSettings();
 
-  const { showLoading, showError } = useStatus();
-
-  useEffect(() => {
-    if (profilePending || settingsPending) {
-      showLoading();
-    }
-  }, [profilePending, showLoading, settingsPending]);
-
-  useEffect(() => {
-    if (profileError || settingsError) {
-      const extracted = extractError(profileError || settingsError);
-
-      showError(extracted.message, extracted.statusCode);
-    }
-  }, [profileIserror, settingsIsError, showError, profileError, settingsError]);
+  useStatusHandler({
+    pending: profilePending || settingsPending,
+    isError: profileIsError || settingsIsError,
+    error: profileError || settingsError,
+    isSuccess: profileIsSuccess || settingsIsSuccess,
+  });
 
   return (
     <header
