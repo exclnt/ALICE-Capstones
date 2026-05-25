@@ -2,11 +2,12 @@ import { Icon } from '@iconify/react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import PasswordInput from './PasswordInput';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import TextInput from '../TextInput';
-import { LoginUser, type UserLoginData } from '../../api/auth.ts';
+import { LoginUser } from '../../api/auth.ts';
 import { useStatus } from '../../context/StatusContext.tsx';
 import CatchErrorAPI from '../utils/CatchErrorAPI.ts';
+import type { UserLoginData } from '../../validator/UserLoginSchema.ts';
 
 interface LoginInputProp {
   setAuthedUser: (accessToken: string) => void;
@@ -30,8 +31,8 @@ export default function LoginInput({ setAuthedUser }: LoginInputProp) {
 
     try {
       const result = await LoginUser(formData);
-      showSuccess(result.data.message);
-      setAuthedUser(result.data.data.accessToken);
+      showSuccess(result.message);
+      setAuthedUser(result.accessToken);
       navigate('/');
     } catch (error: unknown) {
       CatchErrorAPI({ error, showError });

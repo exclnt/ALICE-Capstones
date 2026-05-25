@@ -12,6 +12,12 @@ interface PromiseQueueItem {
   reject: (reason?: unknown) => void;
 }
 
+export interface ApiResponse<T> {
+  status: 'success' | 'fail' | 'error';
+  message: string;
+  data: T;
+}
+
 const apiClient = axios.create({
   baseURL: BASE_URL,
   timeout: 5000,
@@ -56,18 +62,16 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise<string | null>((resolve, reject) => {
+        const token = await new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            if (token) {
-              originalRequest.headers.set('Authorization', `Bearer ${token}`);
-            }
-            return apiClient(originalRequest);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+        });
+
+        if (token) {
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.set('Authorization', `Bearer ${token}`);
+        }
+
+        return apiClient(originalRequest);
       }
 
       originalRequest._retry = true;
@@ -80,13 +84,17 @@ apiClient.interceptors.response.use(
           throw new Error('No refresh token available');
         }
 
-        const response = await axios.put<{ accessToken: string }>(`${BASE_URL}/authentications`, {
-          refreshToken: refreshToken,
-        });
+        const response = await axios.put<{ data: { accessToken: string } }>(
+          `${BASE_URL}/authentications`,
+          {
+            refreshToken: refreshToken,
+          }
+        );
 
-        const newAccessToken = response.data.accessToken;
+        const newAccessToken = response.data.data.accessToken;
 
         localStorage.setItem('accessToken', newAccessToken);
+        originalRequest.headers = originalRequest.headers ?? {};
         originalRequest.headers.set('Authorization', `Bearer ${newAccessToken}`);
 
         processQueue(null, newAccessToken);

@@ -1,6 +1,6 @@
 import TextInput from '../TextInput';
 import ConfigContainer from './ConfigContainer';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface EditModalProp {

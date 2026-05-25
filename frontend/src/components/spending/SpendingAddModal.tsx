@@ -1,12 +1,12 @@
 import { useLocation } from 'react-router-dom';
 import CurrencyInput from '../CurrencyInput.tsx';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import SelectionInput from '../SelectionInput.tsx';
 import TextInput from '../TextInput.tsx';
 
 import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { useMediaQuery } from '../hooks/useMediaQuery.ts';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import RiskConfirmation from './RiskConfirmation.tsx';
 
 interface AddModalProp {

@@ -1,12 +1,12 @@
 import { Icon } from '@iconify/react';
 import { Link, useNavigate } from 'react-router-dom';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import TextInput from '../TextInput';
 import PasswordInput from './PasswordInput';
 import { useStatus } from '../../context/StatusContext.tsx';
 import type React from 'react';
 import { RegisterUser } from '../../api/auth.ts';
-import type { UserRegistrationData } from '../../api/auth.ts';
+import type { UserRegisterData } from '../../validator/UserRegisterSchema.ts';
 import CatchErrorAPI from '../utils/CatchErrorAPI.ts';
 
 export default function RegisterInput() {
@@ -25,7 +25,7 @@ export default function RegisterInput() {
       return;
     }
 
-    const formdata: UserRegistrationData = {
+    const formdata: UserRegisterData = {
       username: name,
       email,
       password,
@@ -35,7 +35,7 @@ export default function RegisterInput() {
 
     try {
       const result = await RegisterUser(formdata);
-      showSuccess(result.data.message);
+      showSuccess(result.message);
       navigate('/');
     } catch (error: unknown) {
       CatchErrorAPI({ error, showError });

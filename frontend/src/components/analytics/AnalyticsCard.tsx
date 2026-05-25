@@ -13,7 +13,7 @@ type TransactionCategory =
 interface Transaction {
   id: string;
   title: string;
-  date: string; // ISO String
+  date: string;
   amount: string;
   category: TransactionCategory;
 }

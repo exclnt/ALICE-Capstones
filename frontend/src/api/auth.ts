@@ -1,35 +1,54 @@
 import apiClient from './apiClient';
+import type { ApiResponse } from './apiClient';
+import {
+  LoginResponseSchema,
+  type LoginResponse,
+  type UserLoginData,
+} from '../validator/UserLoginSchema';
+import type { UserRegisterData } from '../validator/UserRegisterSchema';
 
-export interface UserRegistrationData {
-  username: string;
-  email: string;
-  password: string;
-}
+export const RegisterUser = async (userData: UserRegisterData) => {
+  const response = await apiClient.post<ApiResponse<null>>('/users', userData);
 
-export interface UserLoginData {
-  email: string;
-  password: string;
-}
-
-export const RegisterUser = async (userData: UserRegistrationData) => {
-  const response = await apiClient.post('/users', userData);
-  return response;
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+  };
 };
 
 export const LoginUser = async (userData: UserLoginData) => {
-  const response = await apiClient.post('/authentications', userData);
-  localStorage.setItem('accessToken', response.data.data.accessToken);
-  localStorage.setItem('refreshToken', response.data.data.refreshToken);
-  return response;
+  const response = await apiClient.post<ApiResponse<LoginResponse>>('/authentications', userData);
+
+  const parsed = LoginResponseSchema.parse(response.data.data);
+
+  localStorage.setItem('accessToken', parsed.accessToken);
+  localStorage.setItem('refreshToken', parsed.refreshToken);
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    accessToken: parsed.accessToken,
+    refreshToken: parsed.refreshToken,
+  };
 };
 
 export const LogoutUser = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
-  console.log(refreshToken);
-  const response = await apiClient.delete('/authentications', {
-    data: { refreshToken: refreshToken },
-  });
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  return response;
+
+  try {
+    const response = await apiClient.delete<ApiResponse<null>>('/authentications', {
+      data: { refreshToken },
+    });
+
+    return {
+      status: response.data.status,
+      message: response.data.message,
+      statusCode: response.status,
+    };
+  } finally {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }
 };

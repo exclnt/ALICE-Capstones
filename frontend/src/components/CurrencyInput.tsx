@@ -6,13 +6,28 @@ interface CurrencyInputProps {
   label: string;
   onValueChange: (amount: string) => void;
   value: string;
+  max?: number;
 }
 
-export default function CurrencyInput({ label, value, onValueChange }: CurrencyInputProps) {
+export default function CurrencyInput({ label, value, onValueChange, max }: CurrencyInputProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const maxLength = max ? String(max).length : undefined;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleanValue = e.target.value.replace(/\D/g, '');
+
+    if (!cleanValue) {
+      onValueChange('');
+      return;
+    }
+
+    const numericValue = Number(cleanValue);
+
+    if (max !== undefined && numericValue > max) {
+      onValueChange(String(max));
+      return;
+    }
+
     onValueChange(cleanValue);
   };
 
@@ -24,6 +39,7 @@ export default function CurrencyInput({ label, value, onValueChange }: CurrencyI
         type="text"
         inputMode="numeric"
         value={displayValue}
+        maxLength={maxLength}
         onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
