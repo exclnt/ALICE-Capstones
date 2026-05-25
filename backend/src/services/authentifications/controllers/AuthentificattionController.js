@@ -4,6 +4,7 @@ import {
 } from '../../../exceptions/index.js';
 import tokenManager from '../../../security/tokenManager.js';
 import response from '../../../utils/response.js';
+import { getAvatarPublicUrl } from '../../avatar/services/storage-services.js';
 import UserRepositories from '../../users/repositories/UserRepositories.js';
 import AuthentificationRepositories from '../repositories/AuthentificationRepositories.js';
 
@@ -71,7 +72,20 @@ export const logout = async (req, res, next) => {
 export const getUserLogged = async (req, res) => {
   const userId = req.user.id;
 
+  let avatarUrl = null;
+
   const user = await UserRepositories.getUserLogged(userId);
 
-  return response(res, 200, 'mendapat user data logged', user);
+  if (!user) {
+    return response(res, 404, 'user tidak ditemukan');
+  }
+
+  if (user.avatar) {
+    avatarUrl = getAvatarPublicUrl(user.avatar);
+  }
+
+  return response(res, 200, 'mendapat user data logged', {
+    ...user,
+    avatar: avatarUrl,
+  });
 };

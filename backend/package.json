@@ -24,6 +24,7 @@
     "server:reset-seed": "node ./scripts/resetSeed.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
     "@types/express": "^5.0.6",
     "axios": "^1.16.0",
     "bcrypt": "^6.0.0",
@@ -37,6 +38,7 @@
     "joi": "^18.1.2",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
+    "multer": "^2.1.1",
     "nanoid": "^5.1.9",
     "node-pg-migrate": "^8.0.4",
     "pg": "^8.20.0",

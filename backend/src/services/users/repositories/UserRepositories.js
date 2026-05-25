@@ -69,7 +69,7 @@ class UserRepositories {
 
   async getUserLogged(id) {
     const query = {
-      text: 'SELECT id, username,created_at,avatar, email FROM users WHERE id = $1',
+      text: 'SELECT id, username,avatar, email, impulsive_ratio, created_at, updated_at FROM users WHERE id = $1',
       values: [id],
     };
 
