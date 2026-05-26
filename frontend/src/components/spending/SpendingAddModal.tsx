@@ -13,8 +13,8 @@ import RiskConfirmation from './RiskConfirmation.tsx';
 import { useCategories } from '../../hooks/useCategoriesHook.ts';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 import { useAddTransaction } from '../../hooks/useTransactionHook.ts';
-import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
-import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
+// import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
+// import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
 
 interface AddModalProp {
   closeModal: () => void;
@@ -60,16 +60,16 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
     data: transactionData,
   } = useAddTransaction();
 
-  const { data: userSettings } = useUserSettings();
+  // const { data: userSettings } = useUserSettings();
 
-  const {
-    mutate: predictMutate,
-    isPending: predictIsPending,
-    isError: predictIsError,
-    isSuccess: predictIsSuccess,
-    error: predictError,
-    data: predictData,
-  } = usePredictTransaction();
+  // const {
+  //   mutate: predictMutate,
+  //   isPending: predictIsPending,
+  //   isError: predictIsError,
+  //   isSuccess: predictIsSuccess,
+  //   error: predictError,
+  //   data: predictData,
+  // } = usePredictTransaction();
 
   const [isRisky, setIsRisky] = useState(false);
   const toggleRiskyModal = () => {
