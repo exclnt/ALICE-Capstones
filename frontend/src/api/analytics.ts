@@ -3,7 +3,6 @@ import {
   AnalyzeRiskSchema,
   SegmentationSchema,
   type AnalyzeRisk,
-  type Segmentation,
 } from '../validator/AnalyzeRiskSchema';
 import apiClient, { type ApiResponse } from './apiClient';
 

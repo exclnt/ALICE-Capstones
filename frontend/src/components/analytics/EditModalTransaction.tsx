@@ -1,15 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import ConfigContainer from '../profile/ConfigContainer';
 import TextInput from '../TextInput';
 import useInput from '../../hooks/useInput.ts';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 import { useTransactionsById } from '../../hooks/useTransactionHook.ts';
 import CurrencyInput from '../CurrencyInput.tsx';
 import SelectionInput from '../SelectionInput.tsx';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Categories } from '../../validator/CategoriesSchema.ts';
 import { usePutTransactionsById } from '../../hooks/useTransactionHook.ts';
 import { useStatus } from '../../context/StatusContext.tsx';
+import { useDeleteTransactionsById } from '../../hooks/useTransactionHook.ts';
 
 interface EditModalTransactionProp {
   id: string | null;
@@ -26,6 +26,7 @@ export default function EditModalTransaction({
 }: EditModalTransactionProp) {
   const { showLoading, showError, showSuccess } = useStatus();
   const { data, isPending, isError, error, isSuccess } = useTransactionsById(id);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [amount, setAmount] = useInput('');
   const [title, setTitle] = useInput('');
@@ -60,13 +61,8 @@ export default function EditModalTransaction({
     isSuccess: isEditing ? isSuccess : false,
   });
 
-  const {
-    mutate,
-    isPending: transactionIsPending,
-    isError: transactionIsError,
-    isSuccess: transactionIsSuccess,
-    error: transactionError,
-  } = usePutTransactionsById();
+  const { mutate } = usePutTransactionsById();
+  const { mutate: deleteMutate } = useDeleteTransactionsById();
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,7 +83,7 @@ export default function EditModalTransaction({
       {
         onSuccess: () => {
           showSuccess('Transaksi berhasil diperbarui!');
-          closeModal();
+          handleClose();
         },
         onError: (error) => {
           showError(
@@ -96,6 +92,25 @@ export default function EditModalTransaction({
         },
       }
     );
+  };
+
+  const handleConfirmDelete = () => {
+    deleteMutate(id, {
+      onSuccess: () => {
+        showSuccess('Transaksi berhasil dihapus!');
+        handleClose();
+      },
+      onError: (error) => {
+        showError(
+          error instanceof Error ? error.message : 'Terjadi kesalahan saat menghapus transaksi.'
+        );
+      },
+    });
+  };
+
+  const handleClose = () => {
+    setIsDeleting(false);
+    closeModal();
   };
 
   return (
@@ -107,39 +122,79 @@ export default function EditModalTransaction({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 backdrop-blur-sm bg-black/10"
-            onClick={closeModal}
+            onClick={handleClose}
           />
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`bg-bg-main rounded-xl w-80 md:w-120 relative`}
-          >
-            <ConfigContainer label="Konfigurasi Akun" icon="ph:gear-six-light">
-              <form className="w-full p-5" onSubmit={handleSubmit}>
-                <CurrencyInput
-                  label="Jumlah (Rp)"
-                  onValueChange={setAmount}
-                  value={amount}
-                  max={10000000000}
-                />
-                <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
-                <SelectionInput
-                  value={option}
-                  label="Kategori"
-                  onChange={setOption}
-                  options={options}
-                />
+
+          <AnimatePresence mode="wait">
+            {!isDeleting ? (
+              <motion.div
+                key="edit-form"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-primary`}
+              >
+                <form className="w-full p-5" onSubmit={handleSubmit}>
+                  <CurrencyInput
+                    label="Jumlah (Rp)"
+                    onValueChange={setAmount}
+                    value={amount}
+                    max={10000000000}
+                  />
+                  <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
+                  <SelectionInput
+                    value={option}
+                    label="Kategori"
+                    onChange={setOption}
+                    options={options}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleting(true)}
+                    className="bg-red-500 font-medium text-bg-main rounded-xl p-2 mt-15 w-full cursor-pointer hover:bg-red-600 transition-colors"
+                  >
+                    Hapus Transaksi
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-primary font-medium text-bg-main rounded-xl p-2 mt-5 mb-5 w-full cursor-pointer hover:opacity-90 transition-opacity"
+                  >
+                    Simpan Perubahan
+                  </button>
+                </form>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="delete-confirm"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-red-500 p-6 flex flex-col items-center text-center`}
+              >
+                <h3 className="text-xl font-bold mb-2">Hapus Transaksi?</h3>
+                <p className="mb-6 text-sm opacity-80">
+                  Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat
+                  dibatalkan.
+                </p>
                 <button
-                  type="submit"
-                  className="bg-primary font-medium text-bg-main rounded-xl p-2 mt-15 mb-10 w-full"
+                  type="button"
+                  onClick={handleConfirmDelete}
+                  className="bg-red-500 font-medium text-bg-main rounded-xl p-2 w-full mb-3 cursor-pointer hover:bg-red-600 transition-colors"
                 >
-                  Simpan Perubahan
+                  Ya, Hapus
                 </button>
-              </form>
-            </ConfigContainer>
-          </motion.div>
+                <button
+                  type="button"
+                  onClick={() => setIsDeleting(false)}
+                  className="bg-gray-200 text-black font-medium rounded-xl p-2 w-full cursor-pointer hover:bg-gray-300 transition-colors"
+                >
+                  Batal
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       )}
     </AnimatePresence>

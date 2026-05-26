@@ -7,6 +7,8 @@ import { useMemo } from 'react';
 export default function SavedBudgetCard() {
   const { data: unusedBudget } = useQuery({
     queryKey: ['unusedBudget'],
+    queryFn: () => null,
+    staleTime: Infinity,
     initialData: 0,
   });
   const today = useMemo(() => new Date(), []);

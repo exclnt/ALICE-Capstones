@@ -161,3 +161,13 @@ export const putTransactionsById = async (id: null | string, payload: PostTransa
     statusCode: response.status,
   };
 };
+
+export const deleteTransactionsById = async (id: null | string) => {
+  const response = await apiClient.delete<ApiResponse<unknown>>(`/transactions/${id}`);
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+  };
+};

@@ -18,8 +18,8 @@ export default function AnalyticsChart({ data = [] }: { data: TransactionItemTyp
     }));
 
   return (
-    <div className="w-full h-70 lg:h-full min-h-0">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-70 lg:h-full min-h-60">
+      <ResponsiveContainer width="100%" height="100%" minHeight={240}>
         <BarChart data={chartData}>
           <XAxis
             dataKey="date"

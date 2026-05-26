@@ -19,9 +19,12 @@ export default function Alice() {
   return (
     <section className="p-5">
       <AliceHeader />
-      <div className="flex mt-20 md:mt-5 flex-col gap-5">
-        <ForecastChartCard data={forecastData} />
-        <OptimizeBudgetCard />
+      <div className="mt-20 md:mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="flex flex-col gap-5">
+          <ForecastChartCard data={forecastData} />
+          <OptimizeBudgetCard />
+        </div>
+        <div>chatbot placeholder</div>
       </div>
     </section>
   );

@@ -7,6 +7,7 @@ import {
   postTransaction,
   getTransactionsById,
   putTransactionsById,
+  deleteTransactionsById,
 } from '../api/transactions';
 import type { PostTransaction } from '../validator/TransactionSchema';
 
@@ -17,10 +18,6 @@ export function useAddTransaction() {
     onSuccess: (_, variables) => {
       queryClient.setQueryData(['lastAmount'], variables.amount);
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions', 'today'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions', 'month'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions', 'week-total'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions', 'month-total'] });
     },
   });
 }
@@ -64,7 +61,6 @@ export function usePutTransactionsById() {
 
   return useMutation({
     mutationFn: ({ id, payload }: { id: string | null; payload: PostTransaction }) => {
-      console.log(id, payload);
       return putTransactionsById(id, payload);
     },
 
@@ -77,3 +73,18 @@ export function usePutTransactionsById() {
     },
   });
 }
+
+export function useDeleteTransactionsById() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string | null) => {
+      return deleteTransactionsById(id);
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    },
+  });
+}
+

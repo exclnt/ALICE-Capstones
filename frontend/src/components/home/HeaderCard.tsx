@@ -40,6 +40,8 @@ export default function HeaderCard() {
 
   const { data: lastAmount } = useQuery({
     queryKey: ['lastAmount'],
+    queryFn: () => null,
+    staleTime: Infinity,
     initialData: null,
   });
 

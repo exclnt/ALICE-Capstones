@@ -8,6 +8,7 @@ import { useCategories } from '../../hooks/useCategoriesHook';
 import { useStatusHandler } from '../../hooks/useStatusHandler';
 import { useState } from 'react';
 import EditModalTransaction from './EditModalTransaction';
+import { CategorySelectionModal } from './CategorySelectionModal';
 
 const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -21,6 +22,14 @@ const formatDate = (isoDate: string, options: Intl.DateTimeFormatOptions) => {
 
 export default function AnalyticsCard({ data = [] }: { data: TransactionItemType[] }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const toggleSelecting = () => setIsSelecting((prev) => !prev);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const filteredCategoriesData =
+    selectedCategories.length > 0
+      ? data.filter((item) => selectedCategories.includes(item.category))
+      : data;
 
   const [editId, setEditId] = useState('null');
 
@@ -62,12 +71,14 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
     );
   };
 
-  const filteredData = data.filter((tx) => {
+  const filteredData = filteredCategoriesData.filter((tx) => {
     const lowerQuery = currentQuery.toLowerCase();
 
     const matchTitle = tx.title.toLowerCase().includes(lowerQuery);
+
     const formattedDate = formatDate(tx.transaction_date, DATE_OPTIONS).toLowerCase();
     const matchDate = formattedDate.includes(lowerQuery);
+
     const matchPrice = String(tx.amount).includes(lowerQuery);
 
     return matchTitle || matchDate || matchPrice;
@@ -80,6 +91,12 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
 
   return (
     <div className="text-text-main font-mplus forecast-card w-full h-full p-5 -mt-5 flex flex-col gap-3 b">
+      <CategorySelectionModal
+        isSelecting={isSelecting}
+        toggleSelecting={toggleSelecting}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
+      />
       <EditModalTransaction
         id={editId}
         closeModal={closeModal}
@@ -87,7 +104,6 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
         categoriesData={categoriesData}
       />
 
-      {/* Search and Filter UI */}
       <div className="flex pt-5 gap-3 mb-2">
         <div className="relative flex-1 flex items-center">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -101,12 +117,14 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
             className="w-full pl-10 pr-4 py-2 bg-gray-200 dark:bg-gray-800 border-none rounded-xl text-sm text-text-muted focus:text-text-main focus:ring-2 focus:ring-primary outline-none"
           />
         </div>
-        <button className="p-2 bg-gray-200 dark:bg-gray-800 rounded-xl transition-colors">
-          <Icon icon="lucide:filter" className="text-gray-500 w-6 h-6" />
+        <button
+          className="p-2 bg-gray-200 hover:text-primary text-gray-500 dark:bg-gray-800 rounded-xl transition-colors hover:ring-1 hover:ring-primary hover:bg-gray-300 dark:hover:bg-gray-700"
+          onClick={toggleSelecting}
+        >
+          <Icon icon="lucide:filter" className=" w-6 h-6" />
         </button>
       </div>
 
-      {/* Transactions List */}
       <div className="space-y-8 overflow-y-scroll p-2">
         {filteredData.length === 0 ? (
           <div className="text-center text-sm text-gray-500 py-10">Tidak ada data transaksi.</div>
@@ -122,7 +140,7 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
                   <div
                     key={tx.id}
                     onClick={() => toggleEditing(tx.id)}
-                    className="cursor-pointer hover:opacity-80 transition-opacity" // Added cursor pointer for better UX
+                    className="cursor-pointer hover:opacity-80 transition-opacity"
                   >
                     <TransactionItem
                       category={tx.category}
