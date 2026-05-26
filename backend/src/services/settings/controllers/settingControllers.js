@@ -86,17 +86,25 @@ export const getSetting = async (req, res, next) => {
   const setting = await SettingRepositories.getSettingByUserId(userId);
 
   if (!setting) {
+    const newSetting = await SettingRepositories.createSetting(userId, {
+      // eslint-disable-next-line camelcase
+      monthly_income: 0,
+      // eslint-disable-next-line camelcase
+      weekly_budget: 0,
+    });
     return response(res, 200, 'Pengaturan tidak ditemukan', {
       setting: {
         // eslint-disable-next-line camelcase
-        monthly_income: 0,
+        monthly_income: Number(newSetting.monthly_income),
         // eslint-disable-next-line camelcase
-        weekly_budget: 0,
-        segment: 0,
+        weekly_budget: Number(newSetting.weekly_budget),
+        segment: newSetting.segment,
         // eslint-disable-next-line
-        segment_label: 'Konsisten Hemat',
+        segment_label: newSetting.segment_label,
         // eslint-disable-next-line
-        updated_at: new Date().toISOString(),
+        updated_at: newSetting.updated_at,
+        // eslint-disable-next-line camelcase
+        created_at: newSetting.created_at,
       },
     });
   }
