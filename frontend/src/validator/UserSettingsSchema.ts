@@ -5,6 +5,7 @@ export const UserSettingsSchema = z
   .object({
     monthly_income: z.coerce.number().int().min(0),
     weekly_budget: z.coerce.number().int().min(0),
+    segment: z.number().optional(),
   })
   .refine((data) => data.weekly_budget <= data.monthly_income, {
     message: 'Weekly budget cannot exceed monthly income',

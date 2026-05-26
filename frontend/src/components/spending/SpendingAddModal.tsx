@@ -13,8 +13,10 @@ import RiskConfirmation from './RiskConfirmation.tsx';
 import { useCategories } from '../../hooks/useCategoriesHook.ts';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 import { useAddTransaction } from '../../hooks/useTransactionHook.ts';
-// import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
-// import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
+import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
+import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
+import { useStatus } from '../../context/StatusContext.tsx';
+import { extractError } from '../utils/ExtractApiError.ts';
 
 interface AddModalProp {
   closeModal: () => void;
@@ -23,6 +25,7 @@ interface AddModalProp {
 
 export default function AddModal({ closeModal, isVisible }: AddModalProp) {
   const { data, isPending, isError, error, isSuccess } = useCategories();
+  const { showLoading, showError, hideStatus } = useStatus();
   const [amount, setAmount] = useInput('');
   const [title, setTitle] = useInput('');
   const options = useMemo(() => {
@@ -33,13 +36,16 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
       })) || []
     );
   }, [data]);
-  const [option, setOption] = useInput();
+  const [selectedId, setSelectedId] = useInput();
+
+  const currentOptionId = selectedId || options[0]?.id;
+  const currentOptionName = options.find((opt) => opt.id === currentOptionId)?.name || '';
 
   useEffect(() => {
-    if (options.length > 0 && !option) {
-      setOption(options[0].id);
+    if (options.length > 0 && !selectedId) {
+      setSelectedId(options[0].id);
     }
-  }, [options, option, setOption]);
+  }, [options, selectedId, setSelectedId]);
 
   const location = useLocation();
   const isDesktop = useMediaQuery('(min-width:768px)');
@@ -60,16 +66,9 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
     data: transactionData,
   } = useAddTransaction();
 
-  // const { data: userSettings } = useUserSettings();
+  const { data: userSettings } = useUserSettings();
 
-  // const {
-  //   mutate: predictMutate,
-  //   isPending: predictIsPending,
-  //   isError: predictIsError,
-  //   isSuccess: predictIsSuccess,
-  //   error: predictError,
-  //   data: predictData,
-  // } = usePredictTransaction();
+  const { mutate: predictMutate, data: predictData } = usePredictTransaction();
 
   const [isRisky, setIsRisky] = useState(false);
   const toggleRiskyModal = () => {
@@ -79,7 +78,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
   const confirmSubmit = () => {
     mutate({
       amount: Number(amount),
-      category: option,
+      category: selectedId,
       title,
       type: 'expense',
       date: new Date().toISOString(),
@@ -87,22 +86,35 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
     closeModal();
   };
 
-  const handleSumbit = (e: React.SubmitEvent) => {
+  const handleSumbit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // predictMutate({
-    //   day_of_week: new Date().getDay(),
-    //   day_of_month: new Date().getDate(),
-    //   hour_of_day: new Date().getHours(),
-    //   amount: Number(amount),
-    //   category: option,
-    //   weekly_budget: Number(userSettings?.setting.weekly_budget),
-    // });
-    const randomBool = Math.random() < 0.5;
-    if (randomBool) {
-      setIsRisky(true);
-    } else {
-      confirmSubmit();
-    }
+    showLoading();
+
+    predictMutate(
+      {
+        day_of_week: new Date().getDay(),
+        day_of_month: new Date().getDate(),
+        hour_of_day: new Date().getHours(),
+        amount: Number(amount),
+        category: currentOptionName,
+        weekly_budget: Number(userSettings?.setting?.weekly_budget || 0),
+        segment: Number(userSettings?.setting?.segment || 0),
+      },
+      {
+        onSuccess: (data) => {
+          hideStatus();
+          if (data?.data?.is_risky) {
+            setIsRisky(true);
+          } else {
+            confirmSubmit();
+          }
+        },
+        onError: (error) => {
+          const extracted = extractError(error);
+          showError(extracted.message, extracted.statusCode);
+        },
+      }
+    );
   };
 
   useStatusHandler({
@@ -145,13 +157,13 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
                   label="Jumlah (Rp)"
                   onValueChange={setAmount}
                   value={amount}
-                  max={10000000000}
+                  max={1000000000}
                 />
                 <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
                 <SelectionInput
-                  value={option}
+                  value={selectedId}
                   label="Kategori"
-                  onChange={setOption}
+                  onChange={setSelectedId}
                   options={options}
                 />
                 <button
@@ -167,6 +179,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
             isRisky={isRisky}
             toggleRiskyModal={toggleRiskyModal}
             confirmSubmit={confirmSubmit}
+            predictData={predictData?.data}
           />
         </div>
       )}

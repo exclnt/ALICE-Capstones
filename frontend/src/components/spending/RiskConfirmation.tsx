@@ -1,15 +1,18 @@
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'motion/react';
+import type { AnalyzeRiskResponse } from '../../validator/AnalyzeRiskSchema';
 interface RiskConfirmationProp {
   isRisky: boolean;
   toggleRiskyModal: () => void;
   confirmSubmit: () => void;
+  predictData: AnalyzeRiskResponse | undefined;
 }
 
 export default function RiskConfirmation({
   isRisky,
   toggleRiskyModal,
   confirmSubmit,
+  predictData,
 }: RiskConfirmationProp) {
   return (
     <AnimatePresence>
@@ -41,8 +44,8 @@ export default function RiskConfirmation({
             <div className="p-5 flex flex-col gap-6">
               <div className="bg-bg-main p-4 rounded-2xl ring-1 ring-red-400/40 text-sm text-text-main md:text-base">
                 <p>
-                  ⚠️ Hati-hati! Transaksi Shopping sebesar Rp500,000 pada hari Sabtu jam 21:00
-                  terdeteksi berisiko (HIGH). Pertimbangkan untuk menunda pengeluaran ini.
+                  {predictData?.nudge_message ||
+                    'Transaksi ini memiliki risiko tinggi berdasarkan analisis kami. Apakah Anda yakin ingin melanjutkan transaksi ini?'}
                 </p>
               </div>
               <div className="flex flex-col gap-3">

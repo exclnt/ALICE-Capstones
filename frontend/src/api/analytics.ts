@@ -1,3 +1,4 @@
+import { getPredictBalanceResponseSchema } from '../validator/AliceSchema';
 import {
   AnalyzeRiskResponseSchema,
   AnalyzeRiskSchema,
@@ -6,13 +7,9 @@ import {
 } from '../validator/AnalyzeRiskSchema';
 import apiClient, { type ApiResponse } from './apiClient';
 
-interface AnalyzeRiskPayload {
-  aiResponse: unknown;
-}
-
 export const postAnalyzeRisk = async (payload: AnalyzeRisk) => {
   const parsedPayload = AnalyzeRiskSchema.parse(payload);
-  const response = await apiClient.post<ApiResponse<AnalyzeRiskPayload>>(
+  const response = await apiClient.post<ApiResponse<unknown>>(
     '/transactions/analyze-risk',
     parsedPayload
   );
@@ -21,7 +18,7 @@ export const postAnalyzeRisk = async (payload: AnalyzeRisk) => {
     status: response.data.status,
     message: response.data.message,
     statusCode: response.status,
-    aiResponse: AnalyzeRiskResponseSchema.parse(response.data.data.aiResponse),
+    data: AnalyzeRiskResponseSchema.parse(response.data.data),
   };
 };
 
@@ -33,5 +30,16 @@ export const getSegmentation = async () => {
     message: response.data.message,
     statusCode: response.status,
     data: SegmentationSchema.parse(response.data.data),
+  };
+};
+
+export const getPredictBalance = async () => {
+  const response = await apiClient.get<ApiResponse<unknown>>('/analytics/balance-forecast');
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    data: getPredictBalanceResponseSchema.parse(response.data.data),
   };
 };

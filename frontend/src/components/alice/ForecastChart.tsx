@@ -1,7 +1,11 @@
-import { Legend, Line, LineChart, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
+import { Legend, Line, LineChart, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import CustomTooltip from '../CustomTooltip.tsx';
+
 interface ForecastChartProp {
-  data: Array<object>;
+  data: Array<{
+    date: string;
+    forecast: number | string;
+  }>;
 }
 
 export default function ForecastChart({ data }: ForecastChartProp) {
@@ -27,6 +31,8 @@ export default function ForecastChart({ data }: ForecastChartProp) {
             });
           }}
         />
+
+        <YAxis hide domain={['dataMin', 'dataMax']} />
 
         <Tooltip cursor={{ stroke: 'orange' }} content={<CustomTooltip />} />
         <Legend style={{ outline: 'none' }} />

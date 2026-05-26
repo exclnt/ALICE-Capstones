@@ -8,15 +8,15 @@ export const AnalyzeRiskSchema = z.object({
   category: z.string(),
   amount: z.coerce.number().min(0),
   weekly_budget: z.coerce.number().min(0),
-  segment: z.number().int().min(0),
+  segment: z.number(),
 });
 
 export type AnalyzeRisk = z.infer<typeof AnalyzeRiskSchema>;
 
 export const AnalyzeRiskResponseSchema = z.object({
   is_risky: z.boolean(),
-  risk_level: z.enum(['low', 'medium', 'high']),
-  nudge_message: z.string(),
+  risk_level: z.string(),
+  nudge_message: z.string().nullable(),
 });
 
 export type AnalyzeRiskResponse = z.infer<typeof AnalyzeRiskResponseSchema>;

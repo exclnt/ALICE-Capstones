@@ -19,7 +19,6 @@ import {
 
 export const postTransaction = async (payload: PostTransaction) => {
   const parsedPayload = PostTransactionSchema.parse(payload);
-  console.log(parsedPayload.amount);
 
   const response = await apiClient.post<ApiResponse<{ transactionId: string }>>(
     '/transactions',
