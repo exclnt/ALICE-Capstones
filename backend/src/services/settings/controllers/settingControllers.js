@@ -36,7 +36,17 @@ export const updateSetting = async (req, res, next) => {
     }
 
     return response(res, 200, 'berhasil mengupdate pengaturan', {
-      setting: newSetting,
+      setting: {
+        // eslint-disable-next-line camelcase
+        monthly_income: Number(newSetting.monthly_income),
+        // eslint-disable-next-line camelcase
+        weekly_budget: Number(newSetting.weekly_budget),
+        // eslint-disable-next-line camelcase
+        updated_at: newSetting.updated_at,
+        segment: newSetting.segment,
+        // eslint-disable-next-line
+        segment_label: newSetting.segment_label,
+      },
     });
   }
 
@@ -50,7 +60,17 @@ export const updateSetting = async (req, res, next) => {
   }
 
   return response(res, 200, 'Pengaturan berhasil diperbarui', {
-    setting: updatedSetting,
+    setting: {
+      // eslint-disable-next-line camelcase
+      monthly_income: Number(updatedSetting.monthly_income),
+      // eslint-disable-next-line camelcase
+      weekly_budget: Number(updatedSetting.weekly_budget),
+      // eslint-disable-next-line camelcase
+      updated_at: updatedSetting.updated_at,
+      segment: updatedSetting.segment,
+      // eslint-disable-next-line
+      segment_label: updatedSetting.segment_label,
+    },
   });
 };
 
@@ -72,6 +92,11 @@ export const getSetting = async (req, res, next) => {
         monthly_income: 0,
         // eslint-disable-next-line camelcase
         weekly_budget: 0,
+        segment: 0,
+        // eslint-disable-next-line
+        segment_label: 'Konsisten Hemat',
+        // eslint-disable-next-line
+        updated_at: new Date().toISOString(),
       },
     });
   }
@@ -85,6 +110,8 @@ export const getSetting = async (req, res, next) => {
       // eslint-disable-next-line camelcase
       updated_at: setting.updated_at,
       segment: setting.segment,
+      // eslint-disable-next-line
+      segment_label: setting.segment_label,
     },
   });
 };
