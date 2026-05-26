@@ -21,7 +21,7 @@ export const predictRiskPayload = Joi.object({
   category: Joi.string().required(),
   amount: Joi.number().positive().required(),
   weekly_budget: Joi.number().positive().required(),
-  segment: Joi.number().positive().required(),
+  segment: Joi.number().required(),
   /* eslint-enable camelcase */
 });
 
