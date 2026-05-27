@@ -282,6 +282,15 @@ export const predictRisk = async (req, res, next) => {
   } = req.validated;
   /* eslint-enable camelcase */
   try {
+    // eslint-disable-next-line camelcase
+    if (weekly_budget <= 0) {
+      return response(
+        res,
+        400,
+        'Setting Weekly Budget dan Monthly Income Terlebih Dahulu.',
+      );
+    }
+
     const [impulsiveRatio, overbudgetFreq] = await Promise.all([
       TransactionRepositories.getImpulsiveRatio(userId),
       TransactionRepositories.getOverbudgetFreq(userId),
