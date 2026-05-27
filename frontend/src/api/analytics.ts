@@ -1,4 +1,9 @@
-import { getPredictBalanceResponseSchema } from '../validator/AliceSchema';
+import {
+  BudgetOptimizationPayloadSchema,
+  getBudgetOptimizationResponseSchema,
+  getPredictBalanceResponseSchema,
+  type BudgetOptimizationPayload,
+} from '../validator/AliceSchema';
 import {
   AnalyzeRiskResponseSchema,
   AnalyzeRiskSchema,
@@ -41,5 +46,20 @@ export const getPredictBalance = async () => {
     message: response.data.message,
     statusCode: response.status,
     data: getPredictBalanceResponseSchema.parse(response.data.data),
+  };
+};
+
+export const postBudgetOptimization = async (payload: BudgetOptimizationPayload) => {
+  const parsedPayload = BudgetOptimizationPayloadSchema.parse(payload);
+  const response = await apiClient.post<ApiResponse<unknown>>(
+    '/analytics/budget-optimization',
+    parsedPayload
+  );
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    data: getBudgetOptimizationResponseSchema.parse(response.data.data),
   };
 };

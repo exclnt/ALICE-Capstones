@@ -5,13 +5,8 @@ import { useSegmentation } from '../../hooks/useAnalyzeHook';
 export default function AliceHeader() {
   const { data: healthData } = useHealth();
 
-  const { data: segmentationData, isLoading, error } = useSegmentation();
+  const { data: segmentationData, isLoading } = useSegmentation();
 
-  console.log('Loading:', isLoading);
-  console.log('Error:', error);
-  console.log('Data:', segmentationData?.data?.segment_label);
-
-  console.log(segmentationData?.data?.segment_label);
   const statusColor = healthData?.status === 'healthy' ? 'text-green-600' : 'text-red-600';
   return (
     <header className="fixed md:static bg-bg-main top-0 md:rounded-xl left-0 right-0 p-3 flex flex-row items-center justify-between ring-1 ring-primary">

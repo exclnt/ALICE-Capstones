@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getPredictBalance, getSegmentation, postAnalyzeRisk } from '../api/analytics';
+import {
+  getPredictBalance,
+  getSegmentation,
+  postAnalyzeRisk,
+  postBudgetOptimization,
+} from '../api/analytics';
 
 export function usePredictTransaction() {
   return useMutation({
@@ -14,10 +19,15 @@ export function useSegmentation() {
   });
 }
 
-export function usePredictBalance(enabled: boolean = true) {
+export function usePredictBalance() {
   return useQuery({
     queryKey: ['predictBalance'],
     queryFn: getPredictBalance,
-    enabled: enabled,
+  });
+}
+
+export function useBudgetOptimization() {
+  return useMutation({
+    mutationFn: postBudgetOptimization,
   });
 }

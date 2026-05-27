@@ -4,21 +4,24 @@ import CustomTooltip from '../CustomTooltip.tsx';
 
 const COLORS = ['#166a5b', '#208f7b', '#2fb59c', '#59c6b0', '#8bdecb', '#c2f0e6'];
 
-export default function OptimizeBudgetCard() {
-  const data = [
-    { category: 'Bills', optimalPercentage: 0.166, optimalAmount: 249000 },
-    { category: 'Entertainment', optimalPercentage: 0.0, optimalAmount: 0 },
-    { category: 'Food', optimalPercentage: 0.171, optimalAmount: 256500 },
-    { category: 'Hobby', optimalPercentage: 0.0, optimalAmount: 0 },
-    { category: 'Investment', optimalPercentage: 0.461, optimalAmount: 691500 },
-    { category: 'Shopping', optimalPercentage: 0.0, optimalAmount: 0 },
-    { category: 'Transport', optimalPercentage: 0.202, optimalAmount: 303000 },
-  ];
+interface Allocation {
+  category: string;
+  current_pct: number;
+  optimal_pct: number;
+  optimal_amount: number;
+}
 
-  const chartData = data
-    .filter((item) => item.optimalAmount > 0)
+interface OptimizeBudgetCardProps {
+  allocations?: Allocation[];
+}
+
+export default function OptimizeBudgetCard({ allocations = [] }: OptimizeBudgetCardProps) {
+  const chartData = allocations
+    .filter((item) => item.optimal_amount > 0)
     .map((item, index) => ({
-      ...item,
+      category: item.category,
+      optimalAmount: item.optimal_amount,
+      optimalPercentage: item.optimal_pct / 100,
       fill: COLORS[index % COLORS.length],
     }));
 
@@ -33,23 +36,29 @@ export default function OptimizeBudgetCard() {
       </div>
 
       <div className="h-75 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              paddingAngle={2}
-              dataKey="optimalAmount"
-              nameKey="category"
-              label={(entry) => `${((entry.percent || 0) * 100).toFixed(1)}%`}
-            />
-            <Legend verticalAlign="bottom" height={36} />
-            <Tooltip content={<CustomTooltip />} />
-          </PieChart>
-        </ResponsiveContainer>
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="optimalAmount"
+                nameKey="category"
+                label={(entry) => `${((entry.percent || 0) * 100).toFixed(1)}%`}
+              />
+              <Legend verticalAlign="bottom" height={36} />
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex items-center justify-center h-full text-text-muted">
+            Tidak ada data alokasi
+          </div>
+        )}
       </div>
     </section>
   );
