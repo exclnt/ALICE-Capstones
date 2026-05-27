@@ -24,6 +24,33 @@ export const predictBalance = async (req, res, next) => {
       );
     }
 
+    const settingUser = await SettingRepositories.getSettingByUserId(userId);
+
+    // eslint-disable-next-line camelcase
+    const { weekly_budget, monthly_income, created_at } = settingUser;
+    // eslint-disable-next-line camelcase
+    if (weekly_budget <= 0 || monthly_income <= 0) {
+      return response(
+        res,
+        400,
+        'Setting Weekly Budget dan Monthly Income Terlebih Dahulu.',
+      );
+    }
+
+    const targetDate = new Date(created_at);
+    const now = new Date();
+
+    const diffTime = now - targetDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (!(diffDays >= 30)) {
+      return response(
+        res,
+        422,
+        `Model Belum Bisa melakukan Prediksi Berdasar Data Kamu, Tunggu ${Math.round(30 - diffDays)} Hari Dan Periksa Kembali`,
+      );
+    }
+
     const [dailySpending, dailyNet, balance] = await Promise.all([
       TransactionRepositories.getDailySpending(userId, {
         startDate: startDate || dstartDate,
@@ -100,6 +127,33 @@ export const budgetOptimization = async (req, res, next) => {
   const startDate = getRangedDate(29, endDate).startDate;
 
   try {
+    const settingUser = await SettingRepositories.getSettingByUserId(userId);
+
+    // eslint-disable-next-line camelcase
+    const { weekly_budget, monthly_income, created_at } = settingUser;
+    // eslint-disable-next-line camelcase
+    if (weekly_budget <= 0 || monthly_income <= 0) {
+      return response(
+        res,
+        400,
+        'Setting Weekly Budget dan Monthly Income Terlebih Dahulu.',
+      );
+    }
+
+    const targetDate = new Date(created_at);
+    const now = new Date();
+
+    const diffTime = now - targetDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (!(diffDays >= 30)) {
+      return response(
+        res,
+        422,
+        `Model Belum Bisa melakukan Prediksi Berdasar Data Kamu, Tunggu ${Math.round(30 - diffDays)} Hari Dan Periksa Kembali`,
+      );
+    }
+
     const [transactionsInMonth, categories, userSetting] = await Promise.all([
       TransactionRepositories.getTransactionsByUserId(userId, {
         startDate,

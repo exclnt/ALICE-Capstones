@@ -8,7 +8,7 @@ class SettingRepositories {
 
   async getSettingByUserId(userid) {
     const query = {
-      text: 'SELECT monthly_income, weekly_budget, updated_at, segment,segment_label FROM settings WHERE user_id = $1',
+      text: 'SELECT monthly_income, weekly_budget, created_at, updated_at, segment,segment_label FROM settings WHERE user_id = $1',
       values: [userid],
     };
 
@@ -20,7 +20,7 @@ class SettingRepositories {
     const updateAt = new Date().toISOString();
 
     const query = {
-      text: 'UPDATE settings SET monthly_income = $1, weekly_budget = $2, updated_at = $4 WHERE user_id = $3 RETURNING monthly_income, weekly_budget, segment, segment_label, updated_at',
+      text: 'UPDATE settings SET monthly_income = $1, weekly_budget = $2, updated_at = $4 WHERE user_id = $3 RETURNING monthly_income, weekly_budget, segment, segment_label, updated_at, created_at',
       values: [setting.monthly_income, setting.weekly_budget, userid, updateAt],
     };
 
@@ -33,7 +33,7 @@ class SettingRepositories {
     const createdAt = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO settings (id, user_id, monthly_income, weekly_budget, created_at, updated_at, segment_label) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING monthly_income, weekly_budget,segment, segment_label, updated_at',
+      text: 'INSERT INTO settings (id, user_id, monthly_income, weekly_budget, created_at, updated_at, segment_label) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING monthly_income, weekly_budget,segment, segment_label, updated_at, created_at',
       values: [
         id,
         userid,

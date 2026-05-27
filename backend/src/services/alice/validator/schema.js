@@ -6,7 +6,7 @@ export const predictBalancePayload = Joi.object({
     .optional()
     .default(() => {
       const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), 1)
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate())
         .toISOString()
         .split('T')[0];
     }),
@@ -31,9 +31,15 @@ export const budgetOptimizationPayload = Joi.object({
     .optional()
     .default(() => {
       const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), 1)
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate())
         .toISOString()
         .split('T')[0];
     }),
+  // endDate: Joi.date()
+  //   .iso()
+  //   .optional()
+  //   .default(() => {
+  //     return new Date().toISOString().split('T')[0];
+  //   }),
   startDate: Joi.date().iso().optional(),
 });

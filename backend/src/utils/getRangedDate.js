@@ -11,18 +11,27 @@ function getYesterday(date = new Date()) {
 }
 
 function getRangedDate(days = 30, endDate = null) {
-  // Jika endDate tidak diberikan, gunakan kemarin
+  // default: kemarin
   if (endDate === null) {
     endDate = getYesterday();
   } else {
     endDate = new Date(endDate);
   }
 
-  // startDate = days hari sebelum endDate
+  // clone date
   const startDate = new Date(endDate);
+
+  // kurangi hari
   startDate.setDate(startDate.getDate() - days);
 
-  const formatDate = (date) => date.toISOString().split('T')[0];
+  // formatter aman timezone lokal
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
 
   return {
     startDate: formatDate(startDate),
