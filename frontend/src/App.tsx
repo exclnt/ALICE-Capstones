@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 
 import NavBar from './components/NavBar.tsx';
-import Analytics from './pages/Analytics.tsx';
-import Profile from './pages/Profile.tsx';
-import Home from './pages/Home.tsx';
-import Alice from './pages/Alice.tsx';
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import NotFound from './pages/NotFound.tsx';
 import StatusIndicator from './components/StatusIndicator.tsx';
 import AddModal from './components/spending/SpendingAddModal.tsx';
+
+const Analytics = lazy(() => import('./pages/Analytics.tsx'));
+const Profile = lazy(() => import('./pages/Profile.tsx'));
+const Home = lazy(() => import('./pages/Home.tsx'));
+const Alice = lazy(() => import('./pages/Alice.tsx'));
+const Login = lazy(() => import('./pages/Login.tsx'));
+const Register = lazy(() => import('./pages/Register.tsx'));
+const NotFound = lazy(() => import('./pages/NotFound.tsx'));
 
 export default function App() {
   const [authedUser, setAuthedUser] = useState<string | null>(
@@ -29,12 +30,38 @@ export default function App() {
         <Route
           path="/login"
           element={
-            !authedUser ? <Login setAuthedUser={setAuthedUser} /> : <Navigate to="/" replace />
+            !authedUser ? (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                    Loading...
+                  </div>
+                }
+              >
+                <Login setAuthedUser={setAuthedUser} />
+              </Suspense>
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
         <Route
           path="/register"
-          element={!authedUser ? <Register /> : <Navigate to="/" replace />}
+          element={
+            !authedUser ? (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                    Loading...
+                  </div>
+                }
+              >
+                <Register />
+              </Suspense>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
         />
 
         <Route
@@ -46,7 +73,15 @@ export default function App() {
                   <NavBar toggleAddModal={toggleAddModal} />
                   <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-1 lg:pb-0 inset-0 ">
                     <div className="lg:p-0 pb-15 md:pb-0 lg:absolute lg:inset-0 ">
-                      <Outlet />
+                      <Suspense
+                        fallback={
+                          <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                            Loading...
+                          </div>
+                        }
+                      >
+                        <Outlet />
+                      </Suspense>
                     </div>
                   </main>
                 </div>
@@ -62,7 +97,20 @@ export default function App() {
           <Route path="/profile" element={<Profile setAuthedUser={setAuthedUser} />} />
         </Route>
 
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="*"
+          element={
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                  Loading...
+                </div>
+              }
+            >
+              <NotFound />
+            </Suspense>
+          }
+        />
       </Routes>
     </div>
   );
