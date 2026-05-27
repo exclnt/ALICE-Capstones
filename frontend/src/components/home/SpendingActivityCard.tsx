@@ -1,78 +1,38 @@
 import { Link } from 'react-router-dom';
 import TransactionItem from '../TransactionItem';
+import { useThisDayTransactions } from '../../hooks/useTransactionHook';
+import { useStatusHandler } from '../../hooks/useStatusHandler';
+import { format } from 'date-fns';
 
 export default function SpendingActivityCard() {
-  const date = '13 April 2026';
+  const { data, isPending, isError, error, isSuccess } = useThisDayTransactions();
+  useStatusHandler({
+    pending: isPending,
+    error: error,
+    isError: isError,
+    isSuccess: isSuccess,
+  });
   return (
-    <section className="spending-activity-card bg-bg-main p-5 rounded-2xl w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md h-full min-h-0">
+    <section className="spending-activity-card bg-bg-main p-4 rounded-2xl w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md h-full min-h-0">
       <div className="flex justify-between w-full">
-        <h2 className="font-medium text-text-main">Aktivitas Pengeluaran</h2>
+        <h2 className="font-medium text-text-main">
+          Aktivitas Pengeluaran <br /> Harian
+        </h2>
         <Link to={'/analitik'} className="text-primary font-bold">
           Lihat Semua
         </Link>
       </div>
       <div className="lg:relative overflow-y-auto  flex-1 overflow-hidden">
-        <div className="lg:absolute pr-2 lg:inset-0 flex-col flex gap-4 w-full">
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="180000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="180000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="15000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="1200"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="20000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="18000000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="18000000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="18000000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="18000000"
-          />
-          <TransactionItem
-            icon="material-symbols:attach-money-rounded"
-            name="Money Laundering"
-            date={date}
-            price="18000000"
-          />
+        <div className="lg:absolute p-1 lg:inset-0 flex-col flex gap-4 w-full">
+          {data?.transactions.map((transaction) => (
+            <TransactionItem
+              key={transaction.id}
+              category={transaction.category}
+              name={transaction.title}
+              date={format(new Date(transaction.transaction_date), 'dd MMMM yyyy')}
+              price={transaction.amount.toString()}
+            />
+          ))}
         </div>
       </div>
     </section>

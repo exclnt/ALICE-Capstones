@@ -1,55 +1,117 @@
-import NavBar from './components/NavBar.tsx';
-import { Route, Routes } from 'react-router-dom';
+import { useState, lazy, Suspense } from 'react';
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 
-import Analytics from './pages/Analytics.tsx';
-import Profile from './pages/Profile.tsx';
-import Home from './pages/Home.tsx';
-import Alice from './pages/Alice.tsx';
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import Loading from './components/Loading.tsx';
-import React from 'react';
-import { LoadingProvider } from './context/LoadingProvider.tsx';
-import { useLoading } from './context/LoadingContext.tsx';
+import NavBar from './components/NavBar.tsx';
+import StatusIndicator from './components/StatusIndicator.tsx';
 import AddModal from './components/spending/SpendingAddModal.tsx';
 
-export default function App() {
-  const { loading } = useLoading();
-  const [addModalVisible, setAddModalVisible] = React.useState(false);
-  const toggleAddModal = () => {
-    setAddModalVisible((prevState) => !prevState);
-  };
+const Analytics = lazy(() => import('./pages/Analytics.tsx'));
+const Profile = lazy(() => import('./pages/Profile.tsx'));
+const Home = lazy(() => import('./pages/Home.tsx'));
+const Alice = lazy(() => import('./pages/Alice.tsx'));
+const Login = lazy(() => import('./pages/Login.tsx'));
+const Register = lazy(() => import('./pages/Register.tsx'));
+const NotFound = lazy(() => import('./pages/NotFound.tsx'));
 
-  const closeModal = () => {
-    setAddModalVisible(false);
-  };
+export default function App() {
+  const [authedUser, setAuthedUser] = useState<string | null>(
+    () => localStorage.getItem('accessToken') || null
+  );
+
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const toggleAddModal = () => setAddModalVisible((prev) => !prev);
+  const closeModal = () => setAddModalVisible(false);
 
   return (
-    <>
-      {/* <div className="w-screen h-screen">
-        {loading ? <Loading /> : ''}
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </div> */}
+    <div className="w-full minh-h-[100dvh] md:h-screen md:w-screen">
+      <StatusIndicator />
 
-      <div className="h-screen w-screen">
-        <div className="flex h-full w-full  flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
-          <AddModal isVisible={addModalVisible} closeModal={closeModal} />
-          <NavBar toggleAddModal={toggleAddModal} />
-          <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-0">
-            <div className="md:p-0 pb-15 md:absolute inset-0 ">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/analitik" element={<Analytics />} />
-                <Route path="/alice" element={<Alice />} />
-                <Route path="/profile" element={<Profile />} />
-              </Routes>
-            </div>
-          </main>
-        </div>
-      </div>
-    </>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            !authedUser ? (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                    Loading...
+                  </div>
+                }
+              >
+                <Login setAuthedUser={setAuthedUser} />
+              </Suspense>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            !authedUser ? (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                    Loading...
+                  </div>
+                }
+              >
+                <Register />
+              </Suspense>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+
+        <Route
+          element={
+            authedUser ? (
+              <div className="flex md:h-full md:w-full md:p-5">
+                <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
+                  <AddModal isVisible={addModalVisible} closeModal={closeModal} />
+                  <NavBar toggleAddModal={toggleAddModal} />
+                  <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-1 lg:pb-0 inset-0 ">
+                    <div className="lg:p-0 pb-15 md:pb-0 lg:absolute lg:inset-0 ">
+                      <Suspense
+                        fallback={
+                          <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                            Loading...
+                          </div>
+                        }
+                      >
+                        <Outlet />
+                      </Suspense>
+                    </div>
+                  </main>
+                </div>
+              </div>
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        >
+          <Route path="/" element={<Home />} />
+          <Route path="/analitik" element={<Analytics />} />
+          <Route path="/alice" element={<Alice />} />
+          <Route path="/profile" element={<Profile setAuthedUser={setAuthedUser} />} />
+        </Route>
+
+        <Route
+          path="*"
+          element={
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-screen w-full bg-bg-main">
+                  Loading...
+                </div>
+              }
+            >
+              <NotFound />
+            </Suspense>
+          }
+        />
+      </Routes>
+    </div>
   );
 }

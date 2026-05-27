@@ -1,13 +1,22 @@
+/* eslint-disable camelcase */
 import { useLocation } from 'react-router-dom';
 import CurrencyInput from '../CurrencyInput.tsx';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import SelectionInput from '../SelectionInput.tsx';
 import TextInput from '../TextInput.tsx';
 
 import { motion, AnimatePresence } from 'motion/react';
-import { useEffect, useState } from 'react';
-import { useMediaQuery } from '../hooks/useMediaQuery.ts';
+import { useEffect, useMemo, useState } from 'react';
+import { useMediaQuery } from '../../hooks/useMediaQuery.ts';
 import RiskConfirmation from './RiskConfirmation.tsx';
+
+import { useCategories } from '../../hooks/useCategoriesHook.ts';
+import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
+import { useAddTransaction } from '../../hooks/useTransactionHook.ts';
+import { useUserSettings } from '../../hooks/useUserSettingsHook.ts';
+import { usePredictTransaction } from '../../hooks/useAnalyzeHook.ts';
+import { useStatus } from '../../context/StatusContext.tsx';
+import { extractError } from '../utils/ExtractApiError.ts';
 
 interface AddModalProp {
   closeModal: () => void;
@@ -15,13 +24,51 @@ interface AddModalProp {
 }
 
 export default function AddModal({ closeModal, isVisible }: AddModalProp) {
+  const { data, isPending, isError, error, isSuccess } = useCategories();
+  const { showLoading, showError, hideStatus } = useStatus();
   const [amount, setAmount] = useInput('');
   const [title, setTitle] = useInput('');
-  const options = ['Makanan', 'Minuman', 'Orang'];
-  const [option, setOption] = useInput(options[0]);
+  const options = useMemo(() => {
+    return (
+      data?.categories?.map((category, index) => ({
+        id: `category-${index + 1}`,
+        name: category,
+      })) || []
+    );
+  }, [data]);
+  const [selectedId, setSelectedId] = useInput();
+
+  const currentOptionId = selectedId || options[0]?.id;
+  const currentOptionName = options.find((opt) => opt.id === currentOptionId)?.name || '';
+
+  useEffect(() => {
+    if (options.length > 0 && !selectedId) {
+      setSelectedId(options[0].id);
+    }
+  }, [options, selectedId, setSelectedId]);
 
   const location = useLocation();
   const isDesktop = useMediaQuery('(min-width:768px)');
+
+  useStatusHandler({
+    pending: isPending,
+    error,
+    isError,
+    isSuccess,
+  });
+
+  const {
+    mutate,
+    isPending: transactionIsPending,
+    isError: transactionIsError,
+    isSuccess: transactionIsSuccess,
+    error: transactionError,
+    data: transactionData,
+  } = useAddTransaction();
+
+  const { data: userSettings } = useUserSettings();
+
+  const { mutate: predictMutate, data: predictData } = usePredictTransaction();
 
   const [isRisky, setIsRisky] = useState(false);
   const toggleRiskyModal = () => {
@@ -29,19 +76,54 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
   };
 
   const confirmSubmit = () => {
-    alert(`${title} + ${option} + ${option}`);
+    mutate({
+      amount: Number(amount),
+      category: selectedId,
+      title,
+      type: 'expense',
+      date: new Date().toISOString(),
+    });
     closeModal();
   };
 
-  const handleSumbit = (e: React.SubmitEvent) => {
+  const handleSumbit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const randomBool = Math.random() < 0.5;
-    if (randomBool) {
-      setIsRisky(true);
-    } else {
-      confirmSubmit();
-    }
+    showLoading();
+
+    predictMutate(
+      {
+        day_of_week: new Date().getDay(),
+        day_of_month: new Date().getDate(),
+        hour_of_day: new Date().getHours(),
+        amount: Number(amount),
+        category: currentOptionName,
+        weekly_budget: Number(userSettings?.setting?.weekly_budget || 0),
+        segment: Number(userSettings?.setting?.segment || 0),
+      },
+      {
+        onSuccess: (data) => {
+          hideStatus();
+          if (data?.data?.is_risky) {
+            setIsRisky(true);
+          } else {
+            confirmSubmit();
+          }
+        },
+        onError: (error) => {
+          const extracted = extractError(error);
+          showError(extracted.message, extracted.statusCode);
+        },
+      }
+    );
   };
+
+  useStatusHandler({
+    pending: transactionIsPending,
+    error: transactionError,
+    isError: transactionIsError,
+    isSuccess: transactionIsSuccess,
+    successMessage: transactionData?.message,
+  });
 
   useEffect(() => {
     closeModal();
@@ -71,12 +153,17 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
                 <h2 className="font-bold text-red-400">Pengeluaran</h2>
               </div>
               <form className="w-full p-5" onSubmit={handleSumbit}>
-                <CurrencyInput label="Jumlah (Rp)" onValueChange={setAmount} value={amount} />
+                <CurrencyInput
+                  label="Jumlah (Rp)"
+                  onValueChange={setAmount}
+                  value={amount}
+                  max={1000000000}
+                />
                 <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
                 <SelectionInput
-                  value={option}
+                  value={selectedId}
                   label="Kategori"
-                  onChange={setOption}
+                  onChange={setSelectedId}
                   options={options}
                 />
                 <button
@@ -92,6 +179,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
             isRisky={isRisky}
             toggleRiskyModal={toggleRiskyModal}
             confirmSubmit={confirmSubmit}
+            predictData={predictData?.data}
           />
         </div>
       )}

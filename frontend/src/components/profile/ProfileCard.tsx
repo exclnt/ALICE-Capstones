@@ -3,9 +3,10 @@ import { Icon } from '@iconify/react';
 interface ProfileCardProp {
   name: string;
   toggleEditing: () => void;
+  UID: string;
 }
 
-export default function ProfileCard({ name, toggleEditing }: ProfileCardProp) {
+export default function ProfileCard({ name, toggleEditing, UID }: ProfileCardProp) {
   return (
     <section className="user-card text-bg-main flex items-center justify-between w-full bg-primary p-4 py-5 rounded-2xl">
       <div className="flex items-center gap-2">
@@ -13,7 +14,7 @@ export default function ProfileCard({ name, toggleEditing }: ProfileCardProp) {
         <div>
           <h2 className="font-bold text-xl">{name}</h2>
           <p className="text-xs bg-secondary text-text-muted p-1 pl-3 pr-3 rounded-xl max-w-fit">
-            UID : 24124240
+            UID : {UID}
           </p>
         </div>
       </div>

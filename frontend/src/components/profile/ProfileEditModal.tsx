@@ -1,7 +1,9 @@
 import TextInput from '../TextInput';
 import ConfigContainer from './ConfigContainer';
-import useInput from '../hooks/useInput.ts';
+import useInput from '../../hooks/useInput.ts';
 import { motion, AnimatePresence } from 'motion/react';
+import { useUpdateUserProfile } from '../../hooks/useUserProfileHooks.ts';
+import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 
 interface EditModalProp {
   currentName: string;
@@ -11,6 +13,22 @@ interface EditModalProp {
 
 export default function ProfileEditModal({ currentName, toggleEditing, isEditing }: EditModalProp) {
   const [name, onNameChange] = useInput(currentName);
+  const { isPending, error, mutate, isSuccess, isError } = useUpdateUserProfile();
+
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate({ username: name });
+    toggleEditing();
+  };
+
+  useStatusHandler({
+    pending: isPending,
+    isError,
+    isSuccess,
+    successMessage: 'Profil berhasil diperbarui',
+    error,
+  });
+
   return (
     <AnimatePresence>
       {isEditing && (
@@ -30,10 +48,7 @@ export default function ProfileEditModal({ currentName, toggleEditing, isEditing
             className={`bg-bg-main rounded-xl w-80 md:w-120  relative`}
           >
             <ConfigContainer label="Konfigurasi Akun" icon="ph:gear-six-light">
-              <div className="flex items-center justify-center">
-                <img src="/assets/img/TET.gif" className="w-25 object-cover " />
-              </div>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <TextInput label="Nama" value={name} onChange={onNameChange} />
                 <div className="flex mt-5 justify-end gap-2">
                   <button
