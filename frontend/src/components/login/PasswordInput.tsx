@@ -7,9 +7,17 @@ interface PasswordInputProps {
   value: string;
   onChange: (val: string) => void;
   isRequired?: boolean;
+  // 1. Add the autoComplete prop here
+  autoComplete?: string;
 }
 
-export default function PasswordInput({ label, value, onChange, isRequired }: PasswordInputProps) {
+export default function PasswordInput({
+  label,
+  value,
+  onChange,
+  isRequired,
+  autoComplete = 'current-password',
+}: PasswordInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -22,6 +30,7 @@ export default function PasswordInput({ label, value, onChange, isRequired }: Pa
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        autoComplete={autoComplete}
         className="w-full bg-transparent px-4 pt-2 pb-2 text-text-main rounded-xl outline-none"
       />
       <Icon

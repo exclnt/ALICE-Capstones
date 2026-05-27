@@ -52,3 +52,41 @@ export const LogoutUser = async () => {
     localStorage.removeItem('refreshToken');
   }
 };
+
+export const LoginWithGoogle = async (token: string) => {
+  const response = await apiClient.post<ApiResponse<LoginResponse>>('/google-auth/login', {
+    token,
+  });
+
+  const parsed = LoginResponseSchema.parse(response.data.data);
+
+  localStorage.setItem('accessToken', parsed.accessToken);
+  localStorage.setItem('refreshToken', parsed.refreshToken);
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    accessToken: parsed.accessToken,
+    refreshToken: parsed.refreshToken,
+  };
+};
+
+export const RegisterWithGoogle = async (token: string) => {
+  const response = await apiClient.post<ApiResponse<LoginResponse>>('/google-auth/register', {
+    token,
+  });
+
+  const parsed = LoginResponseSchema.parse(response.data.data);
+
+  localStorage.setItem('accessToken', parsed.accessToken);
+  localStorage.setItem('refreshToken', parsed.refreshToken);
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    accessToken: parsed.accessToken,
+    refreshToken: parsed.refreshToken,
+  };
+};

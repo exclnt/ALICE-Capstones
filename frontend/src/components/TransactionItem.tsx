@@ -30,13 +30,13 @@ export default function TransactionItem({ category, name, date, price }: Transac
         </div>
 
         <div>
-          <h2 className="font-bold text-text-main leading-tight">{name}</h2>
+          <h2 className="font-bold text-text-main text-sm leading-tight">{name}</h2>
           <p className="text-xs text-text-muted group-hover:text-text-main transition-colors group-active:text-text-main">
             {date}
           </p>
         </div>
       </div>
-      <h1 className="font-bold text-lg text-text-main">{CurrencyFormatter(price)}</h1>
+      <h1 className="font-bold text text-text-main">{CurrencyFormatter(price)}</h1>
     </section>
   );
 }

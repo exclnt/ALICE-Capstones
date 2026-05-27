@@ -24,7 +24,7 @@ export default function Analytics() {
       </div>
 
       <div className="w-full h-105 flex flex-col lg:pt-16 lg:h-full  overflow-hidden -mt-1.5">
-        <div className="flex-1 w-full lg:h-full  bg-bg-main rounded-tl-2xl rounded-tr-2xl border-t-2 border-primary/50 pt overflow-hidden flex flex-col">
+        <div className="flex-1 w-full lg:h-full  bg-bg-main rounded-tl-2xl rounded-tr-2xl lg:rounded-tr-none border-t-2 border-primary/50 pt overflow-hidden flex flex-col">
           <AnalyticsCard data={data?.transactions || []} />
         </div>
       </div>

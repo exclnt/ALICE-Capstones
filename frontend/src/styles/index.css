@@ -83,6 +83,15 @@ input[type='password']::-ms-clear {
   outline: none !important;
 }
 
+.special-page-body {
+  background-image: url('/assets/img/background-mobile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
 @media (width >= 48rem) {
   body {
     background-image: url('/assets/img/background.png');
@@ -91,9 +100,7 @@ input[type='password']::-ms-clear {
   }
 
   .special-page-body {
+    background-color: #0b1a1a;
     background-image: url('/assets/img/background.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
   }
 }

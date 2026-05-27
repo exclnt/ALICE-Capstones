@@ -22,7 +22,7 @@ export default function App() {
   const closeModal = () => setAddModalVisible(false);
 
   return (
-    <div className="w-screen h-screen">
+    <div className="w-full minh-h-[100dvh] md:h-screen md:w-screen">
       <StatusIndicator />
 
       <Routes>
@@ -44,7 +44,7 @@ export default function App() {
                 <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
                   <AddModal isVisible={addModalVisible} closeModal={closeModal} />
                   <NavBar toggleAddModal={toggleAddModal} />
-                  <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-1 lg:pb-0">
+                  <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-1 lg:pb-0 inset-0 ">
                     <div className="lg:p-0 pb-15 md:pb-0 lg:absolute lg:inset-0 ">
                       <Outlet />
                     </div>
