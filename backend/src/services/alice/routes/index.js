@@ -81,7 +81,7 @@ router.get(
 /**
  * @swagger
  * /analytics/budget-optimization:
- *   get:
+ *   post:
  *     summary: Get budget optimization suggestions for the user
  *     tags: [Analytics]
  *     security:
@@ -140,7 +140,7 @@ router.get(
  *       401:
  *         description: Unauthorized request
  */
-router.get(
+router.post(
   '/analytics/budget-optimization',
   authetificate,
   validateQuery(budgetOptimizationPayload),
