@@ -4,7 +4,10 @@ export const UserProfileSchema = z.object({
   id: z.string(),
   username: z.string(),
   email: z.email(),
-  //   avatar: z.string(),
 });
 
 export type UserProfile = z.infer<typeof UserProfileSchema>;
+
+export const UserProfileUpdateSchema = z.object({
+  username: z.string(),
+});
