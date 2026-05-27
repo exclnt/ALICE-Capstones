@@ -6,6 +6,7 @@ import OptimizeBudgetCard from '../components/alice/OptimizeBudgetCard';
 import { extractError } from '../components/utils/ExtractApiError';
 import { Icon } from '@iconify/react';
 import { useUserSettings } from '../hooks/useUserSettingsHook';
+import ChatbotCard from '../components/alice/ChatbotCard';
 
 export default function Alice() {
   const { data: predictResponse, isPending, error } = usePredictBalance();
@@ -81,9 +82,7 @@ export default function Alice() {
             <OptimizeBudgetCard allocations={allocations} />
           )}
         </div>
-        <div className="bg-bg-main p-5 rounded-2xl ring-1 ring-primary shadow-md">
-          chatbot placeholder
-        </div>
+        <ChatbotCard />
       </div>
     </section>
   );
