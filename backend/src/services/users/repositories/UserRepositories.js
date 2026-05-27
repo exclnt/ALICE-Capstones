@@ -87,6 +87,26 @@ class UserRepositories {
 
     return result.rows;
   }
+
+  async updateUser(id, username) {
+    const updatedAt = new Date().toISOString();
+
+    const query = {
+      text: `
+      UPDATE users
+      SET
+        username = $1,
+        updated_at = $2
+      WHERE id = $3
+      RETURNING id, username,avatar, email, impulsive_ratio, created_at, updated_at
+    `,
+      values: [username, updatedAt, id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0];
+  }
 }
 
 export default new UserRepositories();

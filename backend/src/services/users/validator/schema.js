@@ -6,3 +6,7 @@ export const userPayloadSchema = Joi.object({
   password: Joi.string().min(6).max(100),
   role: Joi.string().valid('user', 'admin').default('user'),
 });
+
+export const updateUserPayload = Joi.object({
+  username: Joi.string().required(),
+});

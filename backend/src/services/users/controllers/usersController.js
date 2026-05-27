@@ -43,3 +43,14 @@ export const getUserByID = async (req, res, next) => {
 
   return response(res, 200, 'User berhasil ditampilkan', user);
 };
+
+export const updateUserLogged = async (req, res, next) => {
+  const userId = req.user.id;
+  const data = req.validated.username;
+
+  const dataUser = await UserRepositories.updateUser(userId, data);
+  if (!dataUser) {
+    return next(new NotFoundError('User tidak ditemukan'));
+  }
+  return response(res, 200, 'User berhasil diupdate', dataUser);
+};
