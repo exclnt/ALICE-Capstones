@@ -137,7 +137,7 @@ router.get('/users/:id', getUserByID);
 /**
  * @swagger
  * /user/update:
- *   post:
+ *   put:
  *     summary: Update logged in user
  *     description: Update profile data for the currently authenticated user.
  *     tags: [Users]
@@ -185,7 +185,7 @@ router.get('/users/:id', getUserByID);
  *       401:
  *         description: Unauthorized - invalid or missing token
  */
-router.post(
+router.put(
   '/user/update',
   authentificateTOken,
   validate(updateUserPayload),
