@@ -3,9 +3,11 @@ import {
   createUser,
   getUser,
   getUserByID,
+  updateUserLogged,
 } from '../controllers/usersController.js';
 import validate from '../../../middlewares/validate.js';
-import { userPayloadSchema } from '../validator/schema.js';
+import { updateUserPayload, userPayloadSchema } from '../validator/schema.js';
+import authentificateTOken from '../../../middlewares/auth.js';
 
 const router = Router();
 
@@ -132,4 +134,61 @@ router.post('/users', validate(userPayloadSchema), createUser);
  */
 router.get('/users/:id', getUserByID);
 
+/**
+ * @swagger
+ * /user/update:
+ *   post:
+ *     summary: Update logged in user
+ *     description: Update profile data for the currently authenticated user.
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "John Doe"
+ *
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 message:
+ *                   type: string
+ *                   example: "User updated successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "c0a9wILNXwnRD3QH"
+ *                     username:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     email:
+ *                       type: string
+ *                       example: "john@example.com"
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized - invalid or missing token
+ */
+router.post(
+  '/user/update',
+  authentificateTOken,
+  validate(updateUserPayload),
+  updateUserLogged,
+);
 export default router;
