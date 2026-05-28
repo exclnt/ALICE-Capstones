@@ -8,8 +8,8 @@ import { useStatus } from '../context/StatusContext';
 import { useNavigate } from 'react-router-dom';
 import CatchErrorAPI from '../components/utils/CatchErrorAPI';
 import { useUserProfile } from '../hooks/useUserProfileHooks';
-
 import { useStatusHandler } from '../hooks/useStatusHandler';
+import PageTitle from '../components/PageTitle';
 
 interface ProfileProp {
   setAuthedUser: (accessToken: null) => void;
@@ -59,6 +59,7 @@ export default function Profile({ setAuthedUser }: ProfileProp) {
 
   return (
     <div className="flex flex-col w-full gap-7 flex-1 md:pb-0 p-5">
+      <PageTitle title="Profil" />
       <EditModal currentName={user.username} toggleEditing={toggleEditing} isEditing={isEditing} />
 
       <ProfileCard UID={user.id} name={user.username} toggleEditing={toggleEditing} />

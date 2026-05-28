@@ -7,6 +7,7 @@ import { extractError } from '../components/utils/ExtractApiError';
 import { Icon } from '@iconify/react';
 import { useUserSettings } from '../hooks/useUserSettingsHook';
 import ChatbotCard from '../components/alice/ChatbotCard';
+import PageTitle from '../components/PageTitle';
 
 export default function Alice() {
   const { data: predictResponse, isPending, error } = usePredictBalance();
@@ -51,6 +52,7 @@ export default function Alice() {
 
   return (
     <section className="p-5">
+      <PageTitle title="Alice" />
       <AliceHeader />
       <div className="mt-20 md:mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div className="flex flex-col gap-5">

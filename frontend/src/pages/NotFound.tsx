@@ -1,6 +1,7 @@
 import { Icon } from '@iconify/react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import PageTitle from '../components/PageTitle';
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function NotFound() {
 
   return (
     <main className="absolute inset-0 bg-bg-main flex items-center justify-center flex-col">
+      <PageTitle title="404 Not Found" />
       <h1 className="font-mplus font-bold text-xl md:text-4xl mb-5">
         -- Halaman Tidak Ditemukan --
       </h1>
