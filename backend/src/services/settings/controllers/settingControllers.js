@@ -8,7 +8,7 @@ import response from '../../../utils/response.js';
 export const updateSetting = async (req, res, next) => {
   const userId = req.user.id;
   // eslint-disable-next-line camelcase
-  const { monthly_income, weekly_budget } = req.validated;
+  const { monthly_income, weekly_budget, financial_goal, financial_problem } = req.validated;
   console.log('Validated data:', req.validated);
 
   const upSetting = {
@@ -16,6 +16,10 @@ export const updateSetting = async (req, res, next) => {
     monthly_income,
     // eslint-disable-next-line camelcase
     weekly_budget,
+    // eslint-disable-next-line camelcase
+    financial_goal,
+    // eslint-disable-next-line camelcase
+    financial_problem,
   };
   if (!userId) {
     return next(
@@ -42,6 +46,10 @@ export const updateSetting = async (req, res, next) => {
         // eslint-disable-next-line camelcase
         weekly_budget: Number(newSetting.weekly_budget),
         // eslint-disable-next-line camelcase
+        financial_goal: newSetting.financial_goal,
+        // eslint-disable-next-line camelcase
+        financial_problem: newSetting.financial_problem,
+        // eslint-disable-next-line camelcase
         updated_at: newSetting.updated_at,
         segment: newSetting.segment,
         // eslint-disable-next-line
@@ -65,6 +73,10 @@ export const updateSetting = async (req, res, next) => {
       monthly_income: Number(updatedSetting.monthly_income),
       // eslint-disable-next-line camelcase
       weekly_budget: Number(updatedSetting.weekly_budget),
+      // eslint-disable-next-line camelcase
+      financial_goal: updatedSetting.financial_goal,
+      // eslint-disable-next-line camelcase
+      financial_problem: updatedSetting.financial_problem,
       // eslint-disable-next-line camelcase
       updated_at: updatedSetting.updated_at,
       segment: updatedSetting.segment,
@@ -98,6 +110,10 @@ export const getSetting = async (req, res, next) => {
         monthly_income: Number(newSetting.monthly_income),
         // eslint-disable-next-line camelcase
         weekly_budget: Number(newSetting.weekly_budget),
+        // eslint-disable-next-line camelcase
+        financial_goal: newSetting.financial_goal,
+        // eslint-disable-next-line camelcase
+        financial_problem: newSetting.financial_problem,
         segment: newSetting.segment,
         // eslint-disable-next-line
         segment_label: newSetting.segment_label,
@@ -115,6 +131,10 @@ export const getSetting = async (req, res, next) => {
       monthly_income: Number(setting.monthly_income),
       // eslint-disable-next-line camelcase
       weekly_budget: Number(setting.weekly_budget),
+      // eslint-disable-next-line camelcase
+      financial_goal: setting.financial_goal,
+      // eslint-disable-next-line camelcase
+      financial_problem: setting.financial_problem,
       // eslint-disable-next-line camelcase
       updated_at: setting.updated_at,
       segment: setting.segment,

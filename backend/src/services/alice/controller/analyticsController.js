@@ -392,7 +392,11 @@ export const chatWithAlice = async (req, res, next) => {
       history,
       konteks_finansial: {
         nama: userProfile.username,
+        usia: userProfile.age,
+        pekerjaan: userProfile.occupation,
         penghasilan: Number(userSetting.monthly_income),
+        tujuan: userSetting.financial_goal,
+        masalah: userSetting.financial_problem,
         data_transaksi: {
           total_pengeluaran: totalPengeluaran,
           sisa_budget_mingguan: sisaBudgetMingguan,

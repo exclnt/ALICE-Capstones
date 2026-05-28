@@ -69,7 +69,7 @@ class UserRepositories {
 
   async getUserLogged(id) {
     const query = {
-      text: 'SELECT id, username,avatar, email, impulsive_ratio, created_at, updated_at FROM users WHERE id = $1',
+      text: 'SELECT id, username, avatar, email, impulsive_ratio, age, occupation, created_at, updated_at FROM users WHERE id = $1',
       values: [id],
     };
 
@@ -88,7 +88,7 @@ class UserRepositories {
     return result.rows;
   }
 
-  async updateUser(id, username) {
+  async updateUser(id, { username, age, occupation }) {
     const updatedAt = new Date().toISOString();
 
     const query = {
@@ -96,11 +96,13 @@ class UserRepositories {
       UPDATE users
       SET
         username = $1,
-        updated_at = $2
-      WHERE id = $3
-      RETURNING id, username,avatar, email, impulsive_ratio, created_at, updated_at
+        age = $2,
+        occupation = $3,
+        updated_at = $4
+      WHERE id = $5
+      RETURNING id, username, avatar, email, impulsive_ratio, age, occupation, created_at, updated_at
     `,
-      values: [username, updatedAt, id],
+      values: [username, age, occupation, updatedAt, id],
     };
 
     const result = await this._pool.query(query);
