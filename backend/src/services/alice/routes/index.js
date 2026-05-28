@@ -7,6 +7,7 @@ import {
   budgetOptimizationPayload,
   predictBalancePayload,
   predictRiskPayload,
+  chatPayload,
 } from '../validator/schema.js';
 
 const router = Router();
@@ -16,6 +17,7 @@ import {
   postSegmentation,
   predictBalance,
   predictRisk,
+  chatWithAlice,
 } from '../controller/analyticsController.js';
 
 /**
@@ -284,6 +286,52 @@ router.post(
   authetificate,
   validate(predictRiskPayload),
   predictRisk,
+);
+
+/**
+ * @swagger
+ * /alice/chat:
+ *   post:
+ *     summary: Chat with A.L.I.C.E. Financial Assistant
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - message
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: User message to the AI
+ *               history:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     role:
+ *                       type: string
+ *                       enum: [user, model]
+ *                     text:
+ *                       type: string
+ *                 description: Previous chat history context
+ *     responses:
+ *       200:
+ *         description: Chat response from ALICE returned successfully
+ *       400:
+ *         description: Bad request due to invalid payload
+ *       401:
+ *         description: Unauthorized request
+ */
+router.post(
+  '/alice/chat',
+  authetificate,
+  validate(chatPayload),
+  chatWithAlice,
 );
 
 export default router;

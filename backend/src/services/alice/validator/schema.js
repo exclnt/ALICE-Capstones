@@ -43,3 +43,16 @@ export const budgetOptimizationPayload = Joi.object({
   //   }),
   startDate: Joi.date().iso().optional(),
 });
+
+export const chatPayload = Joi.object({
+  message: Joi.string().required(),
+  history: Joi.array()
+    .items(
+      Joi.object({
+        role: Joi.string().valid('user', 'model').required(),
+        text: Joi.string().required(),
+      })
+    )
+    .optional()
+    .default([]),
+});
