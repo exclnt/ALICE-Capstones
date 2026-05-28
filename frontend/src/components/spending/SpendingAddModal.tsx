@@ -148,7 +148,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
               animate={isDesktop ? { opacity: 1, scale: 1 } : { opacity: 1, y: 0 }}
               exit={isDesktop ? { opacity: 0, scale: 0.8 } : { opacity: 0, y: '100%' }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="bg-bg-main z-30 pb-20 md:pb-0 md:rounded-2xl w-full md:max-w-150 flex items-center flex-col p-3 rounded-tl-4xl rounded-tr-4xl ring-1 ring-primary/20"
+              className="bg-bg-main z-30 pb-20 md:pb-0 md:rounded-2xl w-full md:max-w-150 flex items-center flex-col p-3 rounded-tl-4xl rounded-tr-4xl ring-1 ring-primary/25"
             >
               <div>
                 <h2 className="font-bold text-red-400">Pengeluaran</h2>

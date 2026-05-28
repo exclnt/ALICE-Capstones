@@ -133,7 +133,7 @@ export default function EditModalTransaction({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-primary`}
+                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-primary/25`}
               >
                 <form className="w-full p-5" onSubmit={handleSubmit}>
                   <CurrencyInput

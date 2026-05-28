@@ -54,15 +54,16 @@ export default function Alice() {
     <section className="p-5">
       <PageTitle title="Alice" />
       <AliceHeader />
-      <div className="mt-20 md:mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="flex flex-col gap-5">
+      <div className="mt-20 md:mt-5 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:max-h-145">
+        <ChatbotCard />
+        <div className="flex flex-col gap-5 lg:h-full">
           {isPending ? (
-            <div className="w-full h-60 bg-bg-main p-5 rounded-2xl flex items-center justify-center ring-1 ring-blue-600/20 shadow-md flex-col gap-5">
+            <div className="w-full lg:flex-1 h-70 bg-bg-main p-5 rounded-2xl flex items-center justify-center ring-1 ring-blue-600/20 shadow-md flex-col gap-5">
               <Icon icon="eos-icons:bubble-loading" className="text-blue-500 text-5xl" />
               <p className="text-text-muted">Memuat prediksi...</p>
             </div>
           ) : error ? (
-            <div className="w-full h-60 bg-bg-main p-5 rounded-2xl flex items-center justify-center flex-col ring-1 ring-blue-600/20 shadow-md">
+            <div className="w-full lg:flex-1 h-70 bg-bg-main p-5 rounded-2xl flex items-center justify-center flex-col ring-1 ring-blue-600/20 shadow-md">
               <Icon icon="emojione-monotone:thinking-face" className="text-blue-500 text-5xl" />
               <p className="text-blue-500">{extracted.message}</p>
             </div>
@@ -71,12 +72,12 @@ export default function Alice() {
           )}
 
           {isBudgetOptimizationLoading ? (
-            <div className="w-full h-60 bg-bg-main p-5 rounded-2xl flex items-center justify-center ring-1 ring-blue-600/20 shadow-md flex-col gap-5">
+            <div className="w-full lg:flex-1 h-70 bg-bg-main p-5 rounded-2xl flex items-center justify-center ring-1 ring-blue-600/20 shadow-md flex-col gap-5">
               <Icon icon="eos-icons:bubble-loading" className="text-blue-500 text-5xl" />
               <p className="text-text-muted">Memuat optimasi anggaran...</p>
             </div>
           ) : budgetOptimizationError ? (
-            <div className="w-full h-60 bg-bg-main p-5 rounded-2xl flex items-center justify-center flex-col ring-1 ring-blue-600/20 shadow-md">
+            <div className="w-full lg:flex-1 h-70 bg-bg-main p-5 rounded-2xl flex items-center justify-center flex-col ring-1 ring-blue-600/20 shadow-md">
               <Icon icon="emojione-monotone:thinking-face" className="text-blue-500 text-5xl" />
               <p className="text-blue-500">{extractError(budgetOptimizationError).message}</p>
             </div>
@@ -84,7 +85,6 @@ export default function Alice() {
             <OptimizeBudgetCard allocations={allocations} />
           )}
         </div>
-        <ChatbotCard />
       </div>
     </section>
   );

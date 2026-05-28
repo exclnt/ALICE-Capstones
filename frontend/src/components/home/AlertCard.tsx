@@ -60,7 +60,7 @@ export default function AlertCard() {
 
   return (
     <section className="">
-      <div className="bg-bg-main p-5 rounded-2xl  flex flex-col gap-3 ring-1 ring-primary/20 shadow-md">
+      <div className="bg-bg-main p-5 rounded-2xl  flex flex-col gap-3 ring-1 ring-primary/25 shadow-md">
         <h2 className="font-bold text-text-main text-sm">Anggaran Mingguan</h2>
         <div className="flex flex-row justify-between text-xs">
           <h2 className="text-text-muted">

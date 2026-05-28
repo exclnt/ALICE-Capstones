@@ -10,6 +10,7 @@ import CatchErrorAPI from '../components/utils/CatchErrorAPI';
 import { useUserProfile } from '../hooks/useUserProfileHooks';
 import { useStatusHandler } from '../hooks/useStatusHandler';
 import PageTitle from '../components/PageTitle';
+import ProfileConfig from '../components/profile/ProfileConfig';
 
 interface ProfileProp {
   setAuthedUser: (accessToken: null) => void;
@@ -64,9 +65,12 @@ export default function Profile({ setAuthedUser }: ProfileProp) {
 
       <ProfileCard UID={user.id} name={user.username} toggleEditing={toggleEditing} />
 
-      <section className="config text-text-main flex flex-col lg:flex-row md:justify-between gap-7">
-        <BudgetConfig />
-        <ThemeConfig />
+      <section className="config text-text-main grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <ProfileConfig />
+        <div className="flex flex-col gap-5">
+          <BudgetConfig />
+          <ThemeConfig />
+        </div>
       </section>
 
       <div className="actions w-full flex">

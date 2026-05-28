@@ -6,7 +6,7 @@ import PageTitle from '../components/PageTitle';
 export default function NotFound() {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate(-1);
+    navigate('/');
   };
 
   return (
