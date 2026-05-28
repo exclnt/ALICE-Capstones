@@ -83,6 +83,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
       type: 'expense',
       date: new Date().toISOString(),
     });
+    setSelectedId('');
     closeModal();
   };
 
