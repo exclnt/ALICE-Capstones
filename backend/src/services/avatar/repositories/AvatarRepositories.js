@@ -1,5 +1,4 @@
 import { Pool } from 'pg';
-import supabase from '../../../utils/supabase.js';
 
 class AvatarRepositories {
   constructor() {

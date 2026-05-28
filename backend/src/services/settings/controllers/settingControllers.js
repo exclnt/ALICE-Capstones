@@ -8,7 +8,8 @@ import response from '../../../utils/response.js';
 export const updateSetting = async (req, res, next) => {
   const userId = req.user.id;
   // eslint-disable-next-line camelcase
-  const { monthly_income, weekly_budget, financial_goal, financial_problem } = req.validated;
+  const { monthly_income, weekly_budget, financial_goal, financial_problem } =
+    req.validated;
   console.log('Validated data:', req.validated);
 
   const upSetting = {
