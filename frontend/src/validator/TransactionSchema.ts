@@ -24,9 +24,9 @@ export const TransactionItemSchema = z.object({
   category: z.enum([
     'Bills',
     'Entertainment',
-    'Food',
+    'Food & Beverage',
     'Hobby',
-    'Investment',
+    'Subscriptions',
     'Shopping',
     'Transport',
   ]),
