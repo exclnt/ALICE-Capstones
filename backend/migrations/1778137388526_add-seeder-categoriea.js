@@ -14,7 +14,7 @@ export const up = (pgm) => {
     VALUES
       ('category-1', 'Bills', 'expense'),
       ('category-2', 'Entertainment', 'expense'),
-      ('category-3', 'Food', 'expense'),
+      ('category-3', 'Food & Beverage', 'expense'),
       ('category-4', 'Hobby', 'expense'),
       ('category-5', 'Investment', 'expense'),
       ('category-6', 'Shopping', 'expense'),

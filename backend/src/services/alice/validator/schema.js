@@ -20,7 +20,7 @@ export const predictRiskPayload = Joi.object({
   hour_of_day: Joi.number().integer().min(0).max(23).required(),
   category: Joi.string().required(),
   amount: Joi.number().positive().required(),
-  weekly_budget: Joi.number().positive().required(),
+  weekly_budget: Joi.number().required(),
   segment: Joi.number().required(),
   /* eslint-enable camelcase */
 });
