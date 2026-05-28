@@ -2,10 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function WelcomeModal() {
-  const [isVisible, setIsVisible] = useState(() => {
-    return localStorage.getItem('hasSeenWelcomeModal') === null;
-  });
-
+  const [isVisible, setIsVisible] = useState(false);
   const handleChoice = (choice: string) => {
     localStorage.setItem('hasSeenWelcomeModal', 'true');
     setIsVisible(false);
