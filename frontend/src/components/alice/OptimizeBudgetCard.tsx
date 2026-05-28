@@ -26,7 +26,7 @@ export default function OptimizeBudgetCard({ allocations = [] }: OptimizeBudgetC
     }));
 
   return (
-    <section className="optimize-budget text-text-main forecast-card w-full h-fit bg-bg-main p-5 rounded-2xl flex flex-col gap-3 ring-1 ring-primary/20 shadow-md">
+    <section className="optimize-budget text-text-main forecast-card w-full h-fit bg-bg-main p-5 rounded-2xl flex flex-col gap-3 ring-1 ring-primary/25 shadow-md">
       <div>
         <div className="flex items-center gap-1">
           <Icon icon={'material-symbols:pie-chart'} className="text-xl text-primary" />

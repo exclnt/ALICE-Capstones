@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 
 import NavBar from './components/NavBar.tsx';
 import StatusIndicator from './components/StatusIndicator.tsx';
+import WelcomeModal from './components/tutorial/WelcomeModal.tsx';
 import AddModal from './components/spending/SpendingAddModal.tsx';
 import { GetCurrentUser } from './api/auth.ts';
 
@@ -88,6 +89,7 @@ export default function App() {
             authedUser ? (
               <div className="flex md:h-full md:w-full md:p-5">
                 <div className="flex h-full w-full flex-col md:flex-row gap-5 rounded-2xl bg-gray-400/30 dark:bg-zinc-800/65 md:p-5">
+                  <WelcomeModal />
                   <AddModal isVisible={addModalVisible} closeModal={closeModal} />
                   <NavBar toggleAddModal={toggleAddModal} />
                   <main className="flex-1 md:overflow-auto bg-bg-main md:rounded-xl md:relative pb-10 md:pb-1 lg:pb-0 inset-0 ">

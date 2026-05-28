@@ -2,11 +2,10 @@ import { Icon } from '@iconify/react';
 
 interface ProfileCardProp {
   name: string;
-  toggleEditing: () => void;
   UID: string;
 }
 
-export default function ProfileCard({ name, toggleEditing, UID }: ProfileCardProp) {
+export default function ProfileCard({ name, UID }: ProfileCardProp) {
   return (
     <section className="user-card text-bg-main flex items-center justify-between w-full bg-primary p-4 py-5 rounded-2xl">
       <div className="flex items-center gap-2">
@@ -18,11 +17,6 @@ export default function ProfileCard({ name, toggleEditing, UID }: ProfileCardPro
           </p>
         </div>
       </div>
-      <Icon
-        icon={'material-symbols:edit-square-outline'}
-        onClick={toggleEditing}
-        className="text-2xl"
-      />
     </section>
   );
 }

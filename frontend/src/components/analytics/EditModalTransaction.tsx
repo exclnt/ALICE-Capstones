@@ -133,7 +133,7 @@ export default function EditModalTransaction({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-primary`}
+                className={`bg-bg-main rounded-xl w-80 md:w-120 relative ring-1 ring-primary/25`}
               >
                 <form className="w-full p-5" onSubmit={handleSubmit}>
                   <CurrencyInput
@@ -149,19 +149,21 @@ export default function EditModalTransaction({
                     onChange={setOption}
                     options={options}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setIsDeleting(true)}
-                    className="bg-red-500 font-medium text-bg-main rounded-xl p-2 mt-15 w-full cursor-pointer hover:bg-red-600 transition-colors"
-                  >
-                    Hapus Transaksi
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-primary font-medium text-bg-main rounded-xl p-2 mt-5 mb-5 w-full cursor-pointer hover:opacity-90 transition-opacity"
-                  >
-                    Simpan Perubahan
-                  </button>
+                  <div className="flex flex-col md:flex-row  mt-5  gap-3 w-full">
+                    <button
+                      type="button"
+                      onClick={() => setIsDeleting(true)}
+                      className="bg-red-500 font-medium text-bg-main rounded-xl h-full p-2  w-full cursor-pointer hover:bg-red-600 transition-colors"
+                    >
+                      Hapus Transaksi
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-primary font-medium text-bg-main rounded-xl h-full  p-2  w-full cursor-pointer hover:opacity-90 transition-opacity"
+                    >
+                      Simpan Perubahan
+                    </button>
+                  </div>
                 </form>
               </motion.div>
             ) : (
@@ -178,20 +180,22 @@ export default function EditModalTransaction({
                   Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat
                   dibatalkan.
                 </p>
-                <button
-                  type="button"
-                  onClick={handleConfirmDelete}
-                  className="bg-red-500 font-medium text-bg-main rounded-xl p-2 w-full mb-3 cursor-pointer hover:bg-red-600 transition-colors"
-                >
-                  Ya, Hapus
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsDeleting(false)}
-                  className="bg-gray-200 text-black font-medium rounded-xl p-2 w-full cursor-pointer hover:bg-gray-300 transition-colors"
-                >
-                  Batal
-                </button>
+                <div className="flex flex-col md:flex-row   gap-3 w-full">
+                  <button
+                    type="button"
+                    onClick={handleConfirmDelete}
+                    className="bg-red-500 font-medium text-bg-main h-full rounded-xl p-2 w-full mb-3 cursor-pointer hover:bg-red-600 transition-colors"
+                  >
+                    Ya, Hapus
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleting(false)}
+                    className="bg-gray-200 text-black font-medium rounded-xl p-2 w-full h-full cursor-pointer hover:bg-gray-300 transition-colors"
+                  >
+                    Batal
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

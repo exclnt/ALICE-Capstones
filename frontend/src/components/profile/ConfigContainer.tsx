@@ -9,7 +9,7 @@ interface ConfigContainerPropType {
 
 export default function ConfigContainer({ label, icon, children }: ConfigContainerPropType) {
   return (
-    <div className="p-2 rounded-xl py-3 ring-1 ring-primary/20 w-full">
+    <div className="p-2 rounded-xl py-3 ring-1 ring-primary/25 w-full">
       <header className="flex flex-row items-center justify-between">
         <h2 className="font-medium text-text-main">{label}</h2>
         <Icon icon={icon} className="text-2xl text-text-main" />

@@ -32,7 +32,7 @@ export function CategorySelectionModal({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`bg-bg-main rounded-xl w-80 md:w-120  relative ring-1 ring-primary/50`}
+            className={`bg-bg-main rounded-xl w-80 md:w-120  relative ring-1 ring-primary/25/50`}
           >
             <div className="p-5">
               <div className="flex items-center justify-between mb-4">

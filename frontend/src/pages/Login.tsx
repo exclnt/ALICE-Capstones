@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import LoginInput from '../components/login/LoginInput';
 import { useHealth } from '../hooks/useAliceHook';
+import PageTitle from '../components/PageTitle';
 
 interface LoginProp {
   setAuthedUser: (accessToken: string) => void;
@@ -17,6 +18,7 @@ export default function Login({ setAuthedUser }: LoginProp) {
   }, []);
   return (
     <main className="flex flex-col items-center">
+      <PageTitle title="Masuk" />
       <div className="hidden">{healthData?.status}</div>
       <div className="flex md:items-center md:justify-end md:w-full md:mr-50 md:h-50 ">
         <h1 className="text-white font-geist text-5xl font-thin mt-35 mb-35">A L I C E</h1>

@@ -13,7 +13,7 @@ export default function SpendingActivityCard() {
     isSuccess: isSuccess,
   });
   return (
-    <section className="spending-activity-card bg-bg-main p-4 rounded-2xl w-full flex flex-col gap-3 ring-1 ring-primary/20 shadow-md h-full min-h-0">
+    <section className="spending-activity-card bg-bg-main p-4 rounded-2xl w-full flex flex-col gap-3 ring-1 ring-primary/25 shadow-md h-full min-h-0">
       <div className="flex justify-between w-full">
         <h2 className="font-medium text-text-main">
           Aktivitas Pengeluaran <br /> Harian

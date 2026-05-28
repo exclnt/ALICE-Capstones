@@ -114,11 +114,11 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
             value={currentQuery}
             onChange={handleSearchChange}
             placeholder="Ketikan Tanggal Waktu Pencarian"
-            className="w-full pl-10 pr-4 py-2 bg-gray-200 dark:bg-gray-800 border-none rounded-xl text-sm text-text-muted focus:text-text-main focus:ring-2 focus:ring-primary outline-none"
+            className="w-full pl-10 pr-4 py-2 bg-gray-200 dark:bg-gray-800 border-none rounded-xl text-sm text-text-muted focus:text-text-main focus:ring-2 focus:ring-primary/25 outline-none"
           />
         </div>
         <button
-          className="p-2 bg-gray-200 hover:text-primary text-gray-500 dark:bg-gray-800 rounded-xl transition-colors hover:ring-1 hover:ring-primary hover:bg-gray-300 dark:hover:bg-gray-700"
+          className="p-2 bg-gray-200 hover:text-primary text-gray-500 dark:bg-gray-800 rounded-xl transition-colors hover:ring-1 hover:ring-primary/25 hover:bg-gray-300 dark:hover:bg-gray-700"
           onClick={toggleSelecting}
         >
           <Icon icon="lucide:filter" className=" w-6 h-6" />
