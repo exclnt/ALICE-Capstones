@@ -1,8 +1,0 @@
-build
-coverage
-node_modules/
-eslint.config.js
-pretierrc
-package-lock.json
-package.json
-todo.md
