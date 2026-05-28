@@ -46,7 +46,7 @@ export const getUserByID = async (req, res, next) => {
 
 export const updateUserLogged = async (req, res, next) => {
   const userId = req.user.id;
-  const data = req.validated.username;
+  const data = req.validated;
 
   const dataUser = await UserRepositories.updateUser(userId, data);
   if (!dataUser) {

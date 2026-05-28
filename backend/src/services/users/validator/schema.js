@@ -9,4 +9,6 @@ export const userPayloadSchema = Joi.object({
 
 export const updateUserPayload = Joi.object({
   username: Joi.string().required(),
+  age: Joi.number().integer().min(10).optional(),
+  occupation: Joi.string().optional(),
 });

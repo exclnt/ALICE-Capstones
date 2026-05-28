@@ -8,6 +8,7 @@ import response from '../../../utils/response.js';
 import TransactionRepositories from '../../transaction/repositories/TransactionRepositories.js';
 import SettingRepositories from '../../settings/repositories/SettingRepositories.js';
 import CategoriesRepositories from '../../categories/repositories/CategoriesRepositories.js';
+import UserRepositories from '../../users/repositories/UserRepositories.js';
 import getRangedDate from '../../../utils/getRangedDate.js';
 
 export const predictBalance = async (req, res, next) => {
@@ -326,6 +327,98 @@ export const predictRisk = async (req, res, next) => {
   } catch (error) {
     console.error(error);
 
+    return next(error);
+  }
+};
+
+export const chatWithAlice = async (req, res, next) => {
+  const userId = req.user.id;
+  const { message, history } = req.validated;
+
+  try {
+    const [userProfile, userSetting] = await Promise.all([
+      UserRepositories.getUserById(userId),
+      SettingRepositories.getSettingByUserId(userId),
+    ]);
+
+    if (!userSetting) {
+      return response(res, 400, 'Silakan atur profil dan budget Anda terlebih dahulu.');
+    }
+
+    // Get current month transactions
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+
+    const transactionsResponse = await TransactionRepositories.getTransactionsByUserId(userId, {
+      startDate,
+      endDate,
+    });
+    const transactions = transactionsResponse?.data || [];
+
+    // Calculate metrics
+    let totalPengeluaran = 0;
+    let totalImpulsive = 0;
+    const categoryTotals = {};
+
+    transactions.forEach(t => {
+      if (t.type === 'expense') {
+        const amt = Number(t.amount);
+        totalPengeluaran += amt;
+        
+        // Use existing isImpulsive logic
+        if (isImpulsive(amt, Number(userSetting.weekly_budget))) {
+          totalImpulsive += 1;
+        }
+
+        categoryTotals[t.category] = (categoryTotals[t.category] || 0) + amt;
+      }
+    });
+
+    const sisaBudgetMingguan = Number(userSetting.weekly_budget) - (totalPengeluaran / 4); // Simplified estimation
+
+    let maxCategory = '-';
+    let maxAmount = -1;
+    for (const [cat, amt] of Object.entries(categoryTotals)) {
+      if (amt > maxAmount) {
+        maxAmount = amt;
+        maxCategory = cat;
+      }
+    }
+
+    const payloadToAlice = {
+      user_id: userId,
+      message,
+      history,
+      konteks_finansial: {
+        nama: userProfile.username,
+        usia: userProfile.age,
+        pekerjaan: userProfile.occupation,
+        penghasilan: Number(userSetting.monthly_income),
+        tujuan: userSetting.financial_goal,
+        masalah: userSetting.financial_problem,
+        data_transaksi: {
+          total_pengeluaran: totalPengeluaran,
+          sisa_budget_mingguan: sisaBudgetMingguan,
+          jumlah_transaksi_impulsif: totalImpulsive,
+          kategori_paling_boros: maxCategory,
+        },
+      },
+    };
+
+    const aiResponse = await axios.post(
+      `${process.env.ALICE_CHAT_URL}/api/v1/chat`,
+      payloadToAlice,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response(res, 200, 'Chat processed successfully', aiResponse.data.data);
+  } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
