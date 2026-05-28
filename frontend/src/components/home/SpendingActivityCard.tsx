@@ -24,15 +24,21 @@ export default function SpendingActivityCard() {
       </div>
       <div className="lg:relative overflow-y-auto  flex-1 overflow-hidden">
         <div className="lg:absolute p-1 lg:inset-0 flex-col flex gap-4 w-full">
-          {data?.transactions.map((transaction) => (
-            <TransactionItem
-              key={transaction.id}
-              category={transaction.category}
-              name={transaction.title}
-              date={format(new Date(transaction.transaction_date), 'dd MMMM yyyy')}
-              price={transaction.amount.toString()}
-            />
-          ))}
+          {(data?.transactions.length ?? 0) === 0 ? (
+            <p className="text-sm text-text-muted text-center mt-10">
+              Belum ada transaksi hari ini
+            </p>
+          ) : (
+            data?.transactions.map((transaction) => (
+              <TransactionItem
+                key={transaction.id}
+                category={transaction.category}
+                name={transaction.title}
+                date={format(new Date(transaction.transaction_date), 'dd MMMM yyyy')}
+                price={transaction.amount.toString()}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>

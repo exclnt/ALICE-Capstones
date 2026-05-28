@@ -60,7 +60,12 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 && 
+      originalRequest && 
+      !originalRequest._retry && 
+      !originalRequest.url?.includes('/authentications')
+    ) {
       if (isRefreshing) {
         const token = await new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
