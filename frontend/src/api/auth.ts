@@ -53,6 +53,18 @@ export const LogoutUser = async () => {
   }
 };
 
+export const GetCurrentUser = async () => {
+  const response =
+    await apiClient.get<ApiResponse<{ id: string; username: string }>>('/authentications');
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    statusCode: response.status,
+    data: response.data.data,
+  };
+};
+
 export const LoginWithGoogle = async (token: string) => {
   const response = await apiClient.post<ApiResponse<LoginResponse>>('/google-auth/login', {
     token,
