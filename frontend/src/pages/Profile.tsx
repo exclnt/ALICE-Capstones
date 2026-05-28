@@ -1,8 +1,7 @@
 import BudgetConfig from '../components/profile/BudgetConfig';
 import ThemeConfig from '../components/profile/ThemeConfig';
 import ProfileCard from '../components/profile/ProfileCard';
-import EditModal from '../components/profile/ProfileEditModal';
-import { useState } from 'react';
+
 import { LogoutUser } from '../api/auth';
 import { useStatus } from '../context/StatusContext';
 import { useNavigate } from 'react-router-dom';
@@ -17,15 +16,9 @@ interface ProfileProp {
 }
 
 export default function Profile({ setAuthedUser }: ProfileProp) {
-  const [isEditing, setIsEditing] = useState(false);
-
   const navigate = useNavigate();
 
   const { showLoading, showError, showSuccess } = useStatus();
-
-  const toggleEditing = () => {
-    setIsEditing((prevState) => !prevState);
-  };
 
   const handleLogout = async () => {
     showLoading();
@@ -59,19 +52,20 @@ export default function Profile({ setAuthedUser }: ProfileProp) {
   const user = data.data;
 
   return (
-    <div className="flex flex-col w-full gap-7 flex-1 md:pb-0 p-5">
+    <div className="flex flex-col w-full gap-7 flex-1 md:pb-5 p-5">
       <PageTitle title="Profil" />
-      <EditModal currentName={user.username} toggleEditing={toggleEditing} isEditing={isEditing} />
 
-      <ProfileCard UID={user.id} name={user.username} toggleEditing={toggleEditing} />
+      <ProfileCard UID={user.id} name={user.username} />
 
       <section className="config text-text-main grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <ProfileConfig />
-        <div className="flex flex-col gap-5">
-          <BudgetConfig />
-          <ThemeConfig />
-        </div>
+        <ProfileConfig
+          currentName={user.username}
+          currentAge={user.age}
+          currentOccupation={user.occupation}
+        />
+        <BudgetConfig />
       </section>
+      <ThemeConfig />
 
       <div className="actions w-full flex">
         <button

@@ -1,6 +1,10 @@
 import apiClient, { type ApiResponse } from './apiClient';
 import { UserSettingsSchema, type UserSettings } from '../validator/UserSettingsSchema';
-import { UserProfileSchema, UserProfileUpdateSchema } from '../validator/UserProfileSchema';
+import {
+  UserProfileSchema,
+  UserProfileUpdateSchema,
+  type UserProfileUpdate,
+} from '../validator/UserProfileSchema';
 
 export const getUserProfile = async () => {
   const response = await apiClient.get<ApiResponse<unknown>>('/authentications');
@@ -37,7 +41,7 @@ export const putUserSettings = async (payload: UserSettings) => {
   };
 };
 
-export const putUserProfile = async (payload: { username: string }) => {
+export const putUserProfile = async (payload: UserProfileUpdate) => {
   const parsedPayload = UserProfileUpdateSchema.parse(payload);
   const response = await apiClient.put<ApiResponse<unknown>>('/user/update', parsedPayload);
   return {
