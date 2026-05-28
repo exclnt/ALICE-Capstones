@@ -149,8 +149,8 @@ async function main() {
   console.log('[o] Generating seed...\n');
 
   // default range 1 tahun kalau tidak diubah
-  const startDate = new Date('2025-01-01');
-  const endDate = new Date('2025-12-31');
+  const startDate = new Date('2026-01-01');
+  const endDate = new Date('2026-12-31');
 
   const user = await createUser();
   await createSettings(user.id);
