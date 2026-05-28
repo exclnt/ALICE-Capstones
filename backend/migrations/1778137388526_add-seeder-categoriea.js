@@ -16,7 +16,7 @@ export const up = (pgm) => {
       ('category-2', 'Entertainment', 'expense'),
       ('category-3', 'Food & Beverage', 'expense'),
       ('category-4', 'Hobby', 'expense'),
-      ('category-5', 'Investment', 'expense'),
+      ('category-5', 'Subscriptions', 'expense'),
       ('category-6', 'Shopping', 'expense'),
       ('category-7', 'Transport', 'expense');
   `);
