@@ -61,10 +61,11 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
     if (
-      error.response?.status === 401 && 
-      originalRequest && 
-      !originalRequest._retry && 
-      !originalRequest.url?.includes('/authentications')
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/authentications') &&
+      !originalRequest.url?.includes('/google-auth')
     ) {
       if (isRefreshing) {
         const token = await new Promise<string | null>((resolve, reject) => {
