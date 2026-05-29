@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import TextInput from '../TextInput';
+import DateInput from '../DateInput';
 import useInput from '../../hooks/useInput.ts';
 import { useStatusHandler } from '../../hooks/useStatusHandler.ts';
 import { useTransactionsById } from '../../hooks/useTransactionHook.ts';
@@ -31,6 +32,7 @@ export default function EditModalTransaction({
   const [amount, setAmount] = useInput('');
   const [title, setTitle] = useInput('');
   const [option, setOption] = useInput('');
+  const [date, setDate] = useInput('');
 
   const options = useMemo(() => {
     return (
@@ -45,8 +47,11 @@ export default function EditModalTransaction({
     if (data?.transaction) {
       setAmount(data.transaction.amount.toString());
       setTitle(data.transaction.title);
+      if (data.transaction.transaction_date) {
+        setDate(new Date(data.transaction.transaction_date).toISOString().split('T')[0]);
+      }
     }
-  }, [data, setAmount, setTitle]);
+  }, [data, setAmount, setTitle, setDate]);
 
   useEffect(() => {
     if (options.length > 0 && !option) {
@@ -77,7 +82,7 @@ export default function EditModalTransaction({
           category: option,
           title,
           type: 'expense',
-          date: new Date().toISOString(),
+          date: new Date(date).toISOString(),
         },
       },
       {
@@ -149,6 +154,7 @@ export default function EditModalTransaction({
                     onChange={setOption}
                     options={options}
                   />
+                  <DateInput label="Tanggal" value={date} onChange={setDate} />
                   <div className="flex flex-col md:flex-row  mt-5  gap-3 w-full">
                     <button
                       type="button"

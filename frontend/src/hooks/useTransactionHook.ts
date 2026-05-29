@@ -8,6 +8,7 @@ import {
   getTransactionsById,
   putTransactionsById,
   deleteTransactionsById,
+  getTransactionsThisYear,
 } from '../api/transactions';
 import type { PostTransaction } from '../validator/TransactionSchema';
 
@@ -85,5 +86,12 @@ export function useDeleteTransactionsById() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
     },
+  });
+}
+
+export function useGetTransactionsThisYear(page: number) {
+  return useQuery({
+    queryKey: ['transactions', 'year', page],
+    queryFn: async () => getTransactionsThisYear(page),
   });
 }

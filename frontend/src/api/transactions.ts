@@ -170,3 +170,32 @@ export const deleteTransactionsById = async (id: null | string) => {
     statusCode: response.status,
   };
 };
+
+export const getTransactionsThisYear = async (page: number) => {
+  const now = new Date();
+  const startDate = format(new Date(now.getFullYear(), 0, 1), 'yyyy-MM-dd');
+  const endDate = format(new Date(now.getFullYear(), 11, 31), 'yyyy-MM-dd');
+
+  const limit = 10;
+
+  const response = await apiClient.get<ApiResponse<{ transaction: TransactionItemType[] }>>(
+    '/transactions',
+    {
+      params: {
+        startDate,
+        endDate,
+        page,
+        limit,
+      },
+    }
+  );
+
+  return {
+    status: response.data.status,
+    message: response.data.message,
+    transactions: response.data.data.transaction.map((transaction) =>
+      TransactionItemSchema.parse(transaction)
+    ),
+    statusCode: response.status,
+  };
+};
