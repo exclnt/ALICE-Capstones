@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backend API — To-Do List</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.4.0/dist/tabler-icons.min.css"
+    />
+    <style>
+      :root {
+        --green: #1d9e75;
+        --green-light: #e1f5ee;
+        --green-dark: #0f6e56;
+        --bg: #f9f9f8;
+        --bg-card: #ffffff;
+        --bg-secondary: #f1f0eb;
+        --border: rgba(0, 0, 0, 0.08);
+        --border-md: rgba(0, 0, 0, 0.13);
+        --text: #1a1a18;
+        --text-muted: #6b6b67;
+        --text-faint: #9b9b96;
+        --radius-md: 8px;
+        --radius-lg: 14px;
+        --shadow:
+          0 1px 4px rgba(0, 0, 0, 0.07), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+        --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --mono: 'SF Mono', 'Fira Code', monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1a1a18;
+          --bg-card: #242422;
+          --bg-secondary: #2c2c29;
+          --border: rgba(255, 255, 255, 0.08);
+          --border-md: rgba(255, 255, 255, 0.13);
+          --text: #f0efe8;
+          --text-muted: #9b9b96;
+          --text-faint: #6b6b67;
+          --shadow:
+            0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+          --green-light: #0a3326;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 1.5rem 1rem 4rem;
+      }
+
+      .container {
+        max-width: 680px;
+        margin: 0 auto;
+      }
+
+      /* Header */
+      .page-header {
+        margin-bottom: 1.5rem;
+      }
+      .page-title {
+        font-size: clamp(18px, 5vw, 22px);
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .page-sub {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      /* Progress card */
+      .progress-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .progress-title {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+      .progress-pct {
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--green);
+        line-height: 1;
+      }
+      .progress-bar-bg {
+        background: var(--bg-secondary);
+        border-radius: 99px;
+        height: 8px;
+        overflow: hidden;
+        margin-bottom: 0.6rem;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--green-dark), var(--green));
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .progress-counts {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .progress-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 8px;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 0.5px solid var(--border);
+      }
+      .phase-stat {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 8px 10px;
+        text-align: center;
+      }
+      .phase-stat-num {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        display: block;
+      }
+      .phase-stat-lbl {
+        font-size: 10px;
+        color: var(--text-faint);
+        margin-top: 2px;
+        display: block;
+        line-height: 1.3;
+      }
+
+      /* Phase blocks */
+      .phase {
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        margin-bottom: 0.875rem;
+        overflow: hidden;
+      }
+      .phase-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.875rem 1.125rem;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .phase-header:hover {
+        background: var(--bg-secondary);
+      }
+      .phase-header:active {
+        background: var(--bg-secondary);
+      }
+
+      .phase-chevron {
+        font-size: 16px;
+        color: var(--text-faint);
+        transition: transform 0.22s ease;
+        flex-shrink: 0;
+      }
+      .phase-chevron.open {
+        transform: rotate(90deg);
+      }
+
+      .phase-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: var(--bg-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        flex-shrink: 0;
+      }
+      .phase-num.done-full {
+        background: var(--green-light);
+        color: var(--green-dark);
+      }
+
+      .phase-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .phase-name {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .phase-progress-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .phase-mini-bar {
+        flex: 1;
+        height: 4px;
+        border-radius: 99px;
+        background: var(--bg-secondary);
+        overflow: hidden;
+        max-width: 100px;
+      }
+      .phase-mini-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: var(--green);
+        transition: width 0.4s ease;
+      }
+      .phase-badge {
+        font-size: 11px;
+        color: var(--text-faint);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      /* Task list */
+      .phase-body {
+        display: none;
+        border-top: 0.5px solid var(--border);
+        padding: 0.375rem 0;
+      }
+      .phase-body.open {
+        display: block;
+      }
+
+      .task {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 0.6rem 1.125rem;
+        cursor: pointer;
+        transition: background 0.12s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .task:hover {
+        background: var(--bg-secondary);
+      }
+      .task:active {
+        background: var(--bg-secondary);
+      }
+
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 1.5px solid var(--border-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+        background: var(--bg);
+      }
+      .checkbox.checked {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .checkbox i {
+        font-size: 12px;
+        color: white;
+        display: none;
+      }
+      .checkbox.checked i {
+        display: block;
+      }
+
+      .task-label {
+        font-size: 13.5px;
+        color: var(--text);
+        line-height: 1.55;
+        flex: 1;
+      }
+      .task-label.done {
+        color: var(--text-faint);
+        text-decoration: line-through;
+        text-decoration-color: var(--text-faint);
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        background: var(--bg-secondary);
+        padding: 1px 5px;
+        border-radius: 4px;
+        color: var(--text);
+        border: 0.5px solid var(--border);
+      }
+      .task-label.done code {
+        color: var(--text-faint);
+      }
+
+      /* Reset button */
+      .reset-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 1.5rem auto 0;
+        padding: 8px 16px;
+        background: none;
+        border: 0.5px solid var(--border-md);
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        font-size: 13px;
+        cursor: pointer;
+        font-family: var(--font);
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .reset-btn:hover {
+        background: var(--bg-secondary);
+        color: var(--text);
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem 0.75rem 3rem;
+        }
+        .progress-card {
+          padding: 1rem 1.125rem;
+        }
+        .phase-header {
+          padding: 0.75rem 1rem;
+        }
+        .task {
+          padding: 0.55rem 1rem;
+        }
+        .phase-name {
+          font-size: 13px;
+        }
+        .task-label {
+          font-size: 13px;
+        }
+        .progress-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">📝 Backend API Development</h1>
+        <p class="page-sub">To-Do List — A.L.I.C.E Project</p>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">Total Progress</span>
+          <span class="progress-pct" id="pct">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="bar" style="width: 0%"></div>
+        </div>
+        <div class="progress-meta">
+          <span class="progress-counts" id="counts"
+            >0 dari 24 task selesai</span
+          >
+        </div>
+        <div class="progress-grid" id="stat-grid"></div>
+      </div>
+
+      <div id="phases"></div>
+
+      <button class="reset-btn" onclick="resetAll()">
+        <i class="ti ti-refresh" aria-hidden="true"></i> Reset semua
+      </button>
+    </div>
+
+    <script>
+      const data = [
+        {
+          name: 'Tahap 1: Setup & Fondasi Database',
+          short: 'Database',
+          tasks: [
+            'Membuat <code>Migration / Schema Database</code> untuk tabel <code>users</code>, <code>categories</code>, <code>settings</code>, dan <code>transactions</code>',
+            'Membuat <code>Seeder</code> untuk tabel <code>categories</code> dengan 7 kategori baku (<code>Bills</code>, <code>Entertainment</code>, <code>Food</code>, <code>Hobby</code>, <code>Investment</code>, <code>Shopping</code>, <code>Transport</code>)',
+          ],
+        },
+        {
+          name: 'Tahap 2: Autentikasi & Manajemen Pengguna',
+          short: 'Auth',
+          tasks: [
+            '<code>POST /users</code> — Registrasi user baru',
+            '<code>POST /authentications</code> — Login & generate Access Token',
+            '<code>PUT /authentications</code> — Pembaruan Access Token',
+            '<code>DELETE /authentications</code> — Logout & pencabutan token',
+            '<code>GET /users</code> — Menampilkan daftar user',
+            '<code>GET /users/:id</code> — Menampilkan detail profil spesifik',
+            'Membuat Middleware Autentikasi untuk memblokir akses tanpa token valid',
+          ],
+        },
+        {
+          name: 'Tahap 3: Master Data & Pengaturan Awal',
+          short: 'Settings',
+          tasks: [
+            '<code>GET /categories</code> — Endpoint 7 kategori baku (dengan middleware auth)',
+            '<code>PUT /settings</code> — Inisialisasi / update profil finansial user (<code>monthlyIncome</code> & <code>weeklyBudget</code>)',
+            '<code>GET /settings</code> — Menarik pengaturan saat ini untuk frontend',
+          ],
+        },
+        {
+          name: 'Tahap 4: Core Feature (Transaksi)',
+          short: 'Transaksi',
+          tasks: [
+            '<code>POST /transactions</code> — Memasukkan data pengeluaran/pemasukan baru',
+            '<code>GET /transactions?month=MM&year=YYYY</code> — Riwayat transaksi dengan filter bulan & tahun',
+            '<code>GET /transactions/:id</code> — Detail satu transaksi spesifik',
+            '<code>PUT /transactions/:id</code> — Mengubah detail transaksi',
+            '<code>DELETE /transactions/:id</code> — Menghapus transaksi',
+          ],
+        },
+        {
+          name: 'Tahap 5: Integrasi AI (A.L.I.C.E)',
+          short: 'AI',
+          tasks: [
+            '<code>POST /transactions/analyze-risk</code> — Ambil <code>weeklyBudget</code>, kirim ke Model C-2 (Predict Risk)',
+            '<code>POST /users/me/segmentation</code> — Hitung agregasi statistik, kirim ke Model C-1 (Segment User), simpan ke <code>users</code>',
+            '<code>GET /analytics/budget-optimization</code> — Hitung persentase 7 kategori, kirim ke Model B',
+            '<code>GET /analytics/balance-forecast</code> — Tarik 30 hari transaksi, kirim ke Model A untuk prediksi 10 hari ke depan',
+          ],
+        },
+        {
+          name: 'Tahap 6: Finalisasi & Testing',
+          short: 'Testing',
+          tasks: [
+            'Testing seluruh route menggunakan Postman / Insomnia / Swagger',
+            'Error Handling — Pastikan error dari FastAPI ditangkap & dikembalikan ke frontend dengan format ramah',
+            'Dokumentasi — Pembaruan jika ada perubahan struktur response',
+          ],
+        },
+      ];
+
+      const KEY = 'backend_todo_v2';
+      let state = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!state) state = data.map((p) => p.tasks.map(() => false));
+
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      function updateProgress() {
+        let total = 0,
+          done = 0;
+        state.forEach((p) =>
+          p.forEach((v) => {
+            total++;
+            if (v) done++;
+          }),
+        );
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        document.getElementById('pct').textContent = pct + '%';
+        document.getElementById('bar').style.width = pct + '%';
+        document.getElementById('counts').textContent =
+          done + ' dari ' + total + ' task selesai';
+        state.forEach((p, pi) => {
+          const d = p.filter(Boolean).length;
+          const el = document.getElementById('stat-num-' + pi);
+          if (el) el.textContent = d + '/' + p.length;
+        });
+      }
+
+      function updatePhaseBar(pi) {
+        const p = state[pi];
+        const done = p.filter(Boolean).length;
+        const pct = p.length ? Math.round((done / p.length) * 100) : 0;
+        document.getElementById('mini-fill-' + pi).style.width = pct + '%';
+        document.getElementById('badge-' + pi).textContent =
+          done + '/' + p.length;
+        const numEl = document.getElementById('phase-num-' + pi);
+        if (done === p.length) numEl.classList.add('done-full');
+        else numEl.classList.remove('done-full');
+      }
+
+      function toggleTask(pi, ti) {
+        state[pi][ti] = !state[pi][ti];
+        save();
+        const cb = document.getElementById('cb-' + pi + '-' + ti);
+        const lbl = document.getElementById('lbl-' + pi + '-' + ti);
+        if (state[pi][ti]) {
+          cb.classList.add('checked');
+          lbl.classList.add('done');
+        } else {
+          cb.classList.remove('checked');
+          lbl.classList.remove('done');
+        }
+        updatePhaseBar(pi);
+        updateProgress();
+      }
+
+      function togglePhase(pi) {
+        const body = document.getElementById('body-' + pi);
+        const icon = document.getElementById('icon-' + pi);
+        const open = body.classList.toggle('open');
+        icon.classList.toggle('open', open);
+      }
+
+      function resetAll() {
+        if (!confirm('Reset semua checklist?')) return;
+        state = data.map((p) => p.tasks.map(() => false));
+        save();
+        location.reload();
+      }
+
+      // Build stat grid
+      const grid = document.getElementById('stat-grid');
+      data.forEach((phase, pi) => {
+        const el = document.createElement('div');
+        el.className = 'phase-stat';
+        el.innerHTML = `<span class="phase-stat-num" id="stat-num-${pi}">0/${phase.tasks.length}</span><span class="phase-stat-lbl">${phase.short}</span>`;
+        grid.appendChild(el);
+      });
+
+      // Build phases
+      const container = document.getElementById('phases');
+      data.forEach((phase, pi) => {
+        const div = document.createElement('div');
+        div.className = 'phase';
+
+        const header = document.createElement('div');
+        header.className = 'phase-header';
+        header.setAttribute('role', 'button');
+        header.setAttribute('aria-expanded', 'true');
+        header.onclick = () => togglePhase(pi);
+        header.innerHTML = `
+    <i class="ti ti-chevron-right phase-chevron open" id="icon-${pi}" aria-hidden="true"></i>
+    <div class="phase-num done-full" id="phase-num-${pi}" style="background:var(--bg-secondary);color:var(--text-muted)">${pi + 1}</div>
+    <div class="phase-info">
+      <div class="phase-name">${phase.name}</div>
+      <div class="phase-progress-row">
+        <div class="phase-mini-bar"><div class="phase-mini-fill" id="mini-fill-${pi}" style="width:0%"></div></div>
+        <span class="phase-badge" id="badge-${pi}">0/${phase.tasks.length}</span>
+      </div>
+    </div>
+  `;
+
+        const body = document.createElement('div');
+        body.className = 'phase-body open';
+        body.id = 'body-' + pi;
+
+        phase.tasks.forEach((task, ti) => {
+          const checked = state[pi] && state[pi][ti];
+          const t = document.createElement('div');
+          t.className = 'task';
+          t.onclick = () => toggleTask(pi, ti);
+          t.innerHTML = `
+      <div class="checkbox ${checked ? 'checked' : ''}" id="cb-${pi}-${ti}">
+        <i class="ti ti-check" aria-hidden="true"></i>
+      </div>
+      <span class="task-label ${checked ? 'done' : ''}" id="lbl-${pi}-${ti}">${task}</span>
+    `;
+          body.appendChild(t);
+        });
+
+        div.appendChild(header);
+        div.appendChild(body);
+        container.appendChild(div);
+
+        updatePhaseBar(pi);
+      });
+
+      // Fix phase-num initial style
+      data.forEach((_, pi) => {
+        const p = state[pi];
+        const done = p.filter(Boolean).length;
+        const el = document.getElementById('phase-num-' + pi);
+        el.style.background = '';
+        el.style.color = '';
+        if (done === p.length && p.length > 0) el.classList.add('done-full');
+        else el.classList.remove('done-full');
+      });
+
+      updateProgress();
+    </script>
+  </body>
+</html>

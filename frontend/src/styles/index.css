@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap');
+
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --theme-bg-main: #f4f9f8;
+  --theme-bg-content: #d8dfdd;
+  --theme-primary: #176b5c;
+  --theme-secondary: #0d473c;
+  --theme-accent: #d4a363;
+  --theme-text-main: #0b2923;
+  --theme-text-muted: #68857f;
+}
+
+[data-theme='dark'] {
+  --theme-bg-main: #0a1715;
+  --theme-bg-content: #122b26;
+  --theme-primary: #2fb59c;
+  --theme-secondary: #176b5c;
+  --theme-accent: #f2c78d;
+  --theme-text-main: #edf5f3;
+  --theme-text-muted: #8ba6a0;
+}
+
+@theme {
+  --font-geist: 'Geist Mono', monospace;
+  --font-mplus: 'M PLUS Rounded 1c', sans-serif;
+
+  --color-bg-main: var(--theme-bg-main);
+  --color-bg-content: var(--theme-bg-content);
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-accent: var(--theme-accent);
+  --color-text-main: var(--theme-text-main);
+  --color-text-muted: var(--theme-text-muted);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-content);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 10px;
+}
+
+body {
+  background-color: var(--color-bg-main);
+}
+
+body,
+nav,
+main {
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke,
+    --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
+}
+
+.special-page-body {
+  background-image: url('/assets/img/background-mobile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
+.recharts-wrapper,
+.recharts-surface,
+.recharts-surface *:focus {
+  outline: none !important;
+}
+
+.special-page-body {
+  background-image: url('/assets/img/background-mobile.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+@media (width >= 48rem) {
+  body {
+    background-image: url('/assets/img/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .special-page-body {
+    background-color: #0b1a1a;
+    background-image: url('/assets/img/background.png');
+  }
+}
