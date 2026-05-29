@@ -37,6 +37,28 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
     );
   }, [data]);
   const [selectedId, setSelectedId] = useInput();
+  const [selectedDate, setSelectedDate] = useState(() => {
+    return new Date().toISOString().split('T')[0];
+  });
+
+  const dayOptions = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    return Array.from({ length: daysInMonth }, (_, i) => ({
+      id: (i + 1).toString(),
+      name: `${i + 1} ${now.toLocaleString('id-ID', { month: 'long' })}`,
+    }));
+  }, []);
+
+  const handleDayChange = (day: string) => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const dayPadded = day.padStart(2, '0');
+    setSelectedDate(`${year}-${month}-${dayPadded}`);
+  };
 
   const currentOptionId = selectedId || options[0]?.id;
   const currentOptionName = options.find((opt) => opt.id === currentOptionId)?.name || '';
@@ -81,7 +103,7 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
       category: selectedId,
       title,
       type: 'expense',
-      date: new Date().toISOString(),
+      date: new Date(selectedDate).toISOString(),
     });
     setSelectedId('');
     closeModal();
@@ -154,18 +176,24 @@ export default function AddModal({ closeModal, isVisible }: AddModalProp) {
                 <h2 className="font-bold text-red-400">Pengeluaran</h2>
               </div>
               <form className="w-full p-5" onSubmit={handleSumbit}>
+                <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
                 <CurrencyInput
                   label="Jumlah (Rp)"
                   onValueChange={setAmount}
                   value={amount}
                   max={1000000000}
                 />
-                <TextInput label="Judul Catatan" value={title} onChange={setTitle} />
                 <SelectionInput
                   value={selectedId}
                   label="Kategori"
                   onChange={setSelectedId}
                   options={options}
+                />
+                <SelectionInput
+                  label="Tanggal"
+                  value={selectedDate.split('-')[2]}
+                  onChange={handleDayChange}
+                  options={dayOptions}
                 />
                 <button
                   type="submit"
