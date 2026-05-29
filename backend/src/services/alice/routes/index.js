@@ -22,66 +22,6 @@ import {
 
 /**
  * @swagger
- * /analytics/balance-forecast:
- *   get:
- *     summary: Forecast user balance using AI analytics
- *     tags: [Analytics]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: startDate
- *         schema:
- *           type: string
- *           format: date
- *         description: Start date for the balance forecast range (optional)
- *       - in: query
- *         name: endDate
- *         schema:
- *           type: string
- *           format: date
- *         description: End date for the balance forecast range (optional)
- *     responses:
- *       200:
- *         description: Predicted balance returned successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: success
- *                 message:
- *                   type: string
- *                   example: Prediksi saldo berhasil
- *                 data:
- *                   type: object
- *                   properties:
- *                     predictions:
- *                       type: array
- *                       items:
- *                         type: number
- *                       example: [0.68635, 0.689978, 0.692854, 0.694225, 0.697995, 0.701579, 0.705232, 0.707809, 0.712038, 0.713881]
- *                     warnings:
- *                       type: array
- *                       items:
- *                         type: string
- *                       example: []
- *       400:
- *         description: Bad request due to invalid query parameters
- *       401:
- *         description: Unauthorized request
- */
-router.get(
-  '/analytics/balance-forecast',
-  authetificate,
-  validateQuery(predictBalancePayload),
-  predictBalance,
-);
-
-/**
- * @swagger
  * /analytics/budget-optimization:
  *   post:
  *     summary: Get budget optimization suggestions for the user
@@ -147,6 +87,66 @@ router.post(
   authetificate,
   validateQuery(budgetOptimizationPayload),
   budgetOptimization,
+);
+
+/**
+ * @swagger
+ * /analytics/balance-forecast:
+ *   get:
+ *     summary: Forecast user balance using AI analytics
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for the balance forecast range (optional)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for the balance forecast range (optional)
+ *     responses:
+ *       200:
+ *         description: Predicted balance returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Prediksi saldo berhasil
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     predictions:
+ *                       type: array
+ *                       items:
+ *                         type: number
+ *                       example: [0.68635, 0.689978, 0.692854, 0.694225, 0.697995, 0.701579, 0.705232, 0.707809, 0.712038, 0.713881]
+ *                     warnings:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: []
+ *       400:
+ *         description: Bad request due to invalid query parameters
+ *       401:
+ *         description: Unauthorized request
+ */
+router.get(
+  '/analytics/balance-forecast',
+  authetificate,
+  validateQuery(predictBalancePayload),
+  predictBalance,
 );
 
 /**
