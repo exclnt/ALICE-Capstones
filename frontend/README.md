@@ -1,75 +1,85 @@
-# React + TypeScript + Vite
+# ALICE-Capstones Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ALICE is a smart financial management application designed to help users track their spending, analyze their financial habits, and optimize their budget through an AI-powered assistant.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **AI Financial Assistant (Alice)**: An interactive chatbot that provides budget optimization tips and answers financial queries.
+- **Spending Tracking**: Easy-to-use interface for adding and managing daily expenditures.
+- **Advanced Analytics**: Visual data representations of spending patterns using Recharts, including category-based breakdowns.
+- **Budget Configuration**: Customizable budget limits and user-defined financial goals.
+- **Secure Authentication**: Comprehensive auth system including Login, Registration, and Google OAuth integration.
+- **Responsive Design**: A modern, mobile-first UI built with Tailwind CSS, featuring a clean aesthetic and dark mode support.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **State Management & Data Fetching**: [TanStack Query v5](https://tanstack.com/query/latest)
+- **Routing**: [React Router Dom v7](https://reactrouter.com/)
+- **Visualizations**: [Recharts](https://recharts.org/)
+- **Validation**: [Zod](https://zod.dev/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+- **Animations**: [Motion](https://motion.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
 
-Note: This will impact Vite dev & build performances.
+## 📦 Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (Latest LTS recommended)
+- npm or yarn
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd frontend
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add your backend API URL and Google Client ID:
+   ```env
+   VITE_API_URL=your_api_url_here
+   VITE_ALICE_API_BASE_URL=your_alice_ai_api_url_here
+   VITE_GOOGLE_CLIENT_ID=your_google_client_id_here
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### Available Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the project for production.
+- `npm run lint`: Runs ESLint to check for code quality issues.
+- `npm run format`: Formats the code using Prettier.
+- `npm run preview`: Previews the production build locally.
+
+## 📂 Project Structure
+
+```text
+src/
+├── api/            # API service definitions (axios instances)
+├── components/     # Reusable UI components
+│   ├── alice/      # AI Assistant components
+│   ├── analytics/  # Data visualization components
+│   ├── profile/    # User settings components
+│   ├── spending/   # Transaction management components
+│   └── tutorial/   # Onboarding and modals
+├── hooks/          # Custom React hooks
+├── pages/          # Page-level components (Routes)
+├── validator/      # Zod schemas for request/response validation
+├── App.tsx         # Main application routing and layout
+└── main.tsx        # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
