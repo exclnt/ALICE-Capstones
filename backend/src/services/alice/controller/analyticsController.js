@@ -342,31 +342,37 @@ export const chatWithAlice = async (req, res, next) => {
     ]);
 
     if (!userSetting) {
-      return response(res, 400, 'Silakan atur profil dan budget Anda terlebih dahulu.');
+      return response(
+        res,
+        400,
+        'Silakan atur profil dan budget Anda terlebih dahulu.',
+      );
     }
 
-    // Get current month transactions
     const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+      .toISOString()
+      .split('T')[0];
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+      .toISOString()
+      .split('T')[0];
 
-    const transactionsResponse = await TransactionRepositories.getTransactionsByUserId(userId, {
-      startDate,
-      endDate,
-    });
+    const transactionsResponse =
+      await TransactionRepositories.getTransactionsByUserId(userId, {
+        startDate,
+        endDate,
+      });
     const transactions = transactionsResponse?.data || [];
 
-    // Calculate metrics
     let totalPengeluaran = 0;
     let totalImpulsive = 0;
     const categoryTotals = {};
 
-    transactions.forEach(t => {
+    transactions.forEach((t) => {
       if (t.type === 'expense') {
         const amt = Number(t.amount);
         totalPengeluaran += amt;
-        
-        // Use existing isImpulsive logic
+
         if (isImpulsive(amt, Number(userSetting.weekly_budget))) {
           totalImpulsive += 1;
         }
@@ -375,7 +381,8 @@ export const chatWithAlice = async (req, res, next) => {
       }
     });
 
-    const sisaBudgetMingguan = Number(userSetting.weekly_budget) - (totalPengeluaran / 4); // Simplified estimation
+    const sisaBudgetMingguan =
+      Number(userSetting.weekly_budget) - totalPengeluaran / 4; // Simplified estimation
 
     let maxCategory = '-';
     let maxAmount = -1;
@@ -387,6 +394,7 @@ export const chatWithAlice = async (req, res, next) => {
     }
 
     const payloadToAlice = {
+      /* eslint-disable */
       user_id: userId,
       message,
       history,
@@ -413,10 +421,15 @@ export const chatWithAlice = async (req, res, next) => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
-    return response(res, 200, 'Chat processed successfully', aiResponse.data.data);
+    return response(
+      res,
+      200,
+      'Chat processed successfully',
+      aiResponse.data.data,
+    );
   } catch (error) {
     console.error(error);
     return next(error);

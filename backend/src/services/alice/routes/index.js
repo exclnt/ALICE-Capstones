@@ -327,11 +327,6 @@ router.post(
  *       401:
  *         description: Unauthorized request
  */
-router.post(
-  '/alice/chat',
-  authetificate,
-  validate(chatPayload),
-  chatWithAlice,
-);
+router.post('/alice/chat', authetificate, validate(chatPayload), chatWithAlice);
 
 export default router;

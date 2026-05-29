@@ -51,7 +51,7 @@ export const chatPayload = Joi.object({
       Joi.object({
         role: Joi.string().valid('user', 'model').required(),
         text: Joi.string().required(),
-      })
+      }),
     )
     .optional()
     .default([]),

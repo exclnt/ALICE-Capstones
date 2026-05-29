@@ -21,7 +21,14 @@ class SettingRepositories {
 
     const query = {
       text: 'UPDATE settings SET monthly_income = $1, weekly_budget = $2, financial_goal = $3, financial_problem = $4, updated_at = $6 WHERE user_id = $5 RETURNING monthly_income, weekly_budget, financial_goal, financial_problem, segment, segment_label, updated_at, created_at',
-      values: [setting.monthly_income, setting.weekly_budget, setting.financial_goal, setting.financial_problem, userid, updateAt],
+      values: [
+        setting.monthly_income,
+        setting.weekly_budget,
+        setting.financial_goal,
+        setting.financial_problem,
+        userid,
+        updateAt,
+      ],
     };
 
     const result = await this._pool.query(query);
