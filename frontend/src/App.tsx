@@ -1,11 +1,10 @@
-import { useState, lazy, Suspense, useEffect } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
 
 import NavBar from './components/NavBar.tsx';
 import StatusIndicator from './components/StatusIndicator.tsx';
 import WelcomeModal from './components/tutorial/WelcomeModal.tsx';
 import AddModal from './components/spending/SpendingAddModal.tsx';
-import { GetCurrentUser } from './api/auth.ts';
 
 const Analytics = lazy(() => import('./pages/Analytics.tsx'));
 const Profile = lazy(() => import('./pages/Profile.tsx'));
