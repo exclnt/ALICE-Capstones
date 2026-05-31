@@ -20,24 +20,6 @@ export default function App() {
     () => localStorage.getItem('accessToken') || null
   );
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await GetCurrentUser();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        console.error('Session expired. Redirecting to login.');
-        setAuthedUser(null);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      }
-    };
-
-    if (authedUser) {
-      checkAuth();
-    }
-  }, [authedUser]);
-
   const [addModalVisible, setAddModalVisible] = useState(false);
   const toggleAddModal = () => setAddModalVisible((prev) => !prev);
   const closeModal = () => setAddModalVisible(false);
