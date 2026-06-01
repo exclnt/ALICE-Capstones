@@ -23,7 +23,9 @@ export const getHealth = async () => {
 
 export const postAliceChat = async (payload: ChatBotRequest) => {
   const parsedPayload = ChatBotRequestSchema.parse(payload);
-  const response = await apiClient.post<ApiResponse<unknown>>('/alice/chat', parsedPayload);
+  const response = await apiClient.post<ApiResponse<unknown>>('/alice/chat', parsedPayload, {
+    timeout: 20000,
+  });
 
   return {
     status: response.data.status,
