@@ -12,7 +12,7 @@ export default function ForecastChart({ data }: ForecastChartProp) {
   return (
     <ResponsiveContainer
       width="100%"
-      height={150}
+      height="100%"
       minWidth={0}
       minHeight={0}
       style={{ outline: 'none' }}

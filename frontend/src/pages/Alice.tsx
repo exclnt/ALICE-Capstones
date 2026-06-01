@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useBudgetOptimization, usePredictBalance } from '../hooks/useAnalyzeHook';
 import AliceHeader from '../components/alice/AliceHeader';
 import ForecastChartCard from '../components/alice/ForecastChartCard';
@@ -30,23 +29,18 @@ export default function Alice() {
       };
     }) || [];
 
+  const { data: settingsData } = useUserSettings();
+
+  const optimizationPayload = {
+    week: settingsData?.setting?.weekly_budget || 0,
+    month: settingsData?.setting?.monthly_income || 0,
+  };
+
   const {
-    mutate,
     data: budgetOptimizationData,
     isPending: isBudgetOptimizationLoading,
     error: budgetOptimizationError,
-  } = useBudgetOptimization();
-
-  const { data: settingsData } = useUserSettings();
-
-  useEffect(() => {
-    if (settingsData?.setting) {
-      mutate({
-        week: settingsData.setting.weekly_budget || 0,
-        month: settingsData.setting.monthly_income || 0,
-      });
-    }
-  }, [settingsData, mutate]);
+  } = useBudgetOptimization(optimizationPayload);
 
   const allocations = budgetOptimizationData?.data?.allocations || [];
 

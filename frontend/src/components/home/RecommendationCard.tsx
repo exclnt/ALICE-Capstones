@@ -1,14 +1,7 @@
 import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 
-// 1. Define the props for the component
-interface RecommendationCardProps {
-  hasData?: boolean;
-}
-
-export default function RecommendationCard({ hasData = false }: RecommendationCardProps) {
-  if (!hasData) return null;
-
+export default function RecommendationCard() {
   return (
     <section className="recommendation-card flex flex-row bg-blue-600/20 rounded-2xl gap-3 ring-1 ring-blue-600/40 shadow-md">
       <div className="rounded-tl-2xl rounded-bl-2xl p-1 bg-blue-600/30 flex items-center">

@@ -11,7 +11,7 @@ interface ForecastChartCardProp {
 
 export default function ForecastChartCard({ data, hasWarnings }: ForecastChartCardProp) {
   return (
-    <section className="forecast-card w-full h-60 bg-bg-main p-5 rounded-2xl flex flex-col gap-3 ring-1 ring-blue-600/20 shadow-md">
+    <section className="forecast-card w-full h-100   bg-bg-main p-5 rounded-2xl flex flex-col gap-3 ring-1 ring-blue-600/20 shadow-md">
       <div className="text-text-main flex justify-between shrink-0">
         <div>
           <div className="flex items-center gap-1">
@@ -23,7 +23,7 @@ export default function ForecastChartCard({ data, hasWarnings }: ForecastChartCa
 
         {hasWarnings && <h2 className="text-xs font-medium text-red-400">WARNING</h2>}
       </div>
-      <div className="h-60 w-full ">
+      <div className="h-100  w-full ">
         <ForecastChart data={data} />
       </div>
     </section>

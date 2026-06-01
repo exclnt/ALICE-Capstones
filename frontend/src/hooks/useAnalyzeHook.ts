@@ -5,6 +5,7 @@ import {
   postAnalyzeRisk,
   postBudgetOptimization,
 } from '../api/analytics';
+import type { BudgetOptimizationPayload } from '../validator/AliceSchema';
 
 export function usePredictTransaction() {
   return useMutation({
@@ -26,8 +27,11 @@ export function usePredictBalance() {
   });
 }
 
-export function useBudgetOptimization() {
-  return useMutation({
-    mutationFn: postBudgetOptimization,
+export function useBudgetOptimization(payload?: BudgetOptimizationPayload) {
+  return useQuery({
+    queryKey: ['budgetOptimization', payload?.week, payload?.month],
+    queryFn: () => postBudgetOptimization(payload!),
+    enabled: !!payload?.week && !!payload?.month,
+    staleTime: 1000 * 60 * 5,
   });
 }
