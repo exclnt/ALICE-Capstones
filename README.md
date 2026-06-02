@@ -22,6 +22,14 @@ A.L.I.C.E adalah sebuah platform _fintech_ revolusioner yang dirancang khusus un
 
 ---
 
+## 📘 Dokumentasi File
+
+- User Guide : [A.L.I.C.E User Guide](https://www.notion.so/Panduan-Pengguna-ALICE-372513e08fa480878838fe789196f80e)
+- Mockups Design : [A.L.I.C.E Wireframe](./assets//mockups-design.png)
+- Setup Projek: [DEVELOPER_GUID.md](./DEVELOPER_GUIDE.md)
+
+---
+
 ## 🏗️ Arsitektur & Tech Stack
 
 Sistem A.L.I.C.E dibangun menggunakan arsitektur **Microservices** yang canggih:

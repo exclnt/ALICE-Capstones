@@ -1,92 +1,115 @@
-# Setup Database Lokal
+# 🛠️ Panduan Setup Backend A.L.I.C.E.
 
-Panduan lengkap untuk membuat database PostgreSQL beserta user khusus di lingkungan lokal.
+Panduan ini berisi langkah-langkah detail untuk menyiapkan *environment* backend di komputer lokal Anda, dimulai dari konfigurasi database PostgreSQL hingga menjalankan server.
 
 ---
 
-## 1. Masuk ke PostgreSQL sebagai Super User
+## 1. Setup Database PostgreSQL
 
+Jika Anda belum memiliki database lokal, ikuti langkah berikut untuk membuat database beserta *user role* khususnya.
+
+**A. Masuk ke PostgreSQL sebagai Super User (Postgres):**
 ```bash
-psql -U <super-user> -d postgres
+psql -U postgres
 ```
 
----
-
-## 2. Buat Database
-
+**B. Buat Database untuk A.L.I.C.E:**
 ```sql
-CREATE DATABASE <nama-database>;
+CREATE DATABASE alice_db;
 ```
 
----
-
-## 3. Buat User (Role) Khusus
-
+**C. Buat User (Role) Khusus:**
 ```sql
-CREATE USER <user> WITH PASSWORD '<password-user>';
+CREATE USER alice_user WITH PASSWORD 'password_rahasia';
 ```
 
----
-
-## 4. Beri Akses User ke Database
-
+**D. Berikan Akses ke User:**
 ```sql
-GRANT ALL PRIVILEGES ON DATABASE <nama-database> TO <user>;
+GRANT ALL PRIVILEGES ON DATABASE alice_db TO alice_user;
+\c alice_db
+GRANT ALL ON SCHEMA public TO alice_user;
 ```
 
----
-
-## 5. Masuk ke Database Baru
-
-```sql
-\c <nama-database>
-```
-
----
-
-## 6. Atur Akses Skema untuk User
-
-```sql
-GRANT ALL ON SCHEMA public TO <user>;
-```
-
----
-
-## 7. Keluar dan Test Login User
-
-Keluar dari sesi PostgreSQL:
-
+**E. Keluar dan Uji Coba Login:**
+Keluar dengan mengetik `\q`, kemudian coba masuk menggunakan user baru:
 ```bash
-\q
+psql -U alice_user -d alice_db -h localhost
 ```
-
-Login menggunakan user yang baru dibuat:
-
-```bash
-psql -U <user> -d <nama-database> -h localhost
-```
+Jika berhasil masuk, berarti database sudah siap.
 
 ---
 
-## 8. Konfigurasi File `.env`
+## 2. Konfigurasi File `.env`
 
-Buat file `.env` di root project dan tambahkan variabel berikut:
+Buat file `.env` di direktori `backend` dengan menyalin template dari `.env.example`:
+```bash
+cp .env.example .env
+```
+
+Buka file `.env` dan lengkapi *environment variables* yang dibutuhkan:
 
 ```env
 # Server
-HOST=<host-ip>
-PORT=<running-port>
+HOST=localhost
+PORT=3000
 
-# Database
-PGUSER=<user>
-PGPASSWORD=<password-user>
-PGDATABASE=<nama-database>
-PGHOST=<host-database>
+# Database (Sesuaikan dengan langkah 1)
+PGUSER=alice_user
+PGPASSWORD=password_rahasia
+PGDATABASE=alice_db
+PGHOST=localhost
 PGPORT=5432
 
-# Security
-ACCESS_TOKEN_KEY=<secret-token1>
-REFRESH_TOKEN_KEY=<secret-token2>
+# Security (Gunakan string acak/secret untuk keamanan JWT)
+ACCESS_TOKEN_KEY=masukkan_secret_access_token_di_sini
+REFRESH_TOKEN_KEY=masukkan_secret_refresh_token_di_sini
+
+# Google Auth
+GOOGLE_CLIENT_ID=client_id_google_console_anda
+
+# Microservices URLs
+APP_URL=http://localhost:5173
+AI_URL=http://localhost:10000
+ALICE_CHAT_URL=http://localhost:8001
+
+# Supabase Storage (Untuk upload image/file)
+SUPABASE_URL=url_project_supabase_anda
+SUPABASE_SERVICE_ROLE_KEY=service_role_key_supabase_anda
 ```
 
-> **Catatan:** Jangan pernah meng-commit file `.env` ke repository. Tambahkan `.env` ke dalam `.gitignore`.
+> **Catatan Penting:** File `.env` berisi data sensitif. Jangan pernah men-commit file ini ke Git.
+
+---
+
+## 3. Jalankan Migrasi & Seeding
+
+Setelah database dan `.env` terkonfigurasi, Anda perlu membuat struktur tabel-tabel A.L.I.C.E ke dalam database PostgreSQL.
+
+1. **Instal dependensi NPM (jika belum):**
+   ```bash
+   npm install
+   ```
+
+2. **Jalankan Migrasi Database:**
+   Perintah ini akan membaca file di folder `migrations/` dan membuat tabel-tabel di database secara otomatis:
+   ```bash
+   npm run migrate
+   ```
+
+3. **(Opsional) Jalankan Seeding Data:**
+   Untuk keperluan pengujian/development, Anda bisa mengisi database dengan data dummy awal (seperti kategori transaksi):
+   ```bash
+   npm run server:generate-seed
+   ```
+
+---
+
+## 4. Jalankan Server
+
+Terakhir, jalankan backend Node.js pada mode _development_:
+
+```bash
+npm run start:dev
+```
+
+Jika muncul pesan *Server berjalan di http://localhost:3000*, berarti setup Anda telah selesai dan berhasil! Anda bisa mengakses dokumentasi API di `http://localhost:3000/docs`.
