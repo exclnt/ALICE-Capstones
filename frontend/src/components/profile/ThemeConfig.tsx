@@ -8,7 +8,7 @@ export default function ThemeConfig() {
   return (
     <ConfigContainer label="KONFIGURASI APP" icon="ph:gear-six-light">
       <div className="flex mt-5 p-3">
-        <div className="flex w-full rounded-2xl p-2 border-2 overflow-hidden">
+        <div className="flex w-full rounded-2xl p-2 border-2 border-primary overflow-hidden">
           <ThemeButton
             label="Dark"
             isActive={theme}

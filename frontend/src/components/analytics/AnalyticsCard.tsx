@@ -21,12 +21,23 @@ const formatDate = (isoDate: string, options: Intl.DateTimeFormatOptions) => {
   return new Intl.DateTimeFormat('id-ID', options).format(new Date(isoDate));
 };
 
-export default function AnalyticsCard({ data = [] }: { data: TransactionItemType[] }) {
+export default function AnalyticsCard({
+  data = [],
+  viewMode,
+  setViewMode,
+  selectedMonth,
+  setSelectedMonth,
+}: {
+  data: TransactionItemType[];
+  viewMode: 'month' | 'year';
+  setViewMode: (mode: 'month' | 'year') => void;
+  selectedMonth: Date;
+  setSelectedMonth: (date: Date) => void;
+}) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
   const toggleSelecting = () => setIsSelecting((prev) => !prev);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<'month' | 'year'>('month');
   const [page, setPage] = useState(1);
 
   const {
@@ -107,8 +118,10 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
     viewMode === 'month'
       ? filteredData.filter((tx) => {
           const date = new Date(tx.transaction_date);
-          const now = new Date();
-          return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+          return (
+            date.getMonth() === selectedMonth.getMonth() &&
+            date.getFullYear() === selectedMonth.getFullYear()
+          );
         })
       : filteredData;
 
@@ -181,63 +194,109 @@ export default function AnalyticsCard({ data = [] }: { data: TransactionItemType
         </button>
       </div>
 
-      <div className="space-y-8 overflow-y-scroll p-2">
-        {filteredData.length === 0 ? (
-          <div className="text-center text-sm text-gray-500 py-10">Tidak ada data transaksi.</div>
-        ) : (
-          <>
-            {Object.entries(groupedData).map(([group, txs]) => (
-              <div key={group} className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-bold text-primary uppercase tracking-wide">
-                    {group}
-                  </h3>
-                </div>
+      <div className="flex-1 flex flex-col justify-between h-full">
+        <div className="space-y-4 overflow-y-scroll p-2">
+          {filteredData.length === 0 ? (
+            <div className="text-center text-sm text-gray-500 py-10">Tidak ada data transaksi.</div>
+          ) : (
+            <>
+              {Object.entries(groupedData).map(([group, txs]) => {
+                const totalAmount = txs.reduce((sum, tx) => sum + Number(tx.amount), 0);
+                const formattedTotal = new Intl.NumberFormat('id-ID', {
+                  style: 'currency',
+                  currency: 'IDR',
+                  minimumFractionDigits: 0,
+                }).format(totalAmount);
 
-                <div className="space-y-4">
-                  {txs.map((tx) => (
+                if (viewMode === 'year') {
+                  return (
                     <div
-                      key={tx.id}
-                      onClick={() => toggleEditing(tx.id)}
-                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      key={group}
+                      onClick={() => {
+                        const parts = group.split(' ');
+                        const monthName = parts[0].toLowerCase();
+                        const year = parseInt(parts[1], 10);
+
+                        const months = [
+                          'januari',
+                          'februari',
+                          'maret',
+                          'april',
+                          'mei',
+                          'juni',
+                          'juli',
+                          'agustus',
+                          'september',
+                          'oktober',
+                          'november',
+                          'desember',
+                        ];
+                        const monthIdx = months.indexOf(monthName);
+
+                        if (monthIdx !== -1) {
+                          setSelectedMonth(new Date(year, monthIdx));
+                          setViewMode('month');
+                        }
+                      }}
+                      className="flex justify-between group items-center p-4 cursor-pointer bg-gray-100 dark:bg-gray-800 rounded-xl  ring-1 ring-primary/25 shadow-md hover:-translate-y-1 active:-translate-y-1 active:bg-primary active:scale-95 hover:bg-primary transition-transform duration-200 "
                     >
-                      <TransactionItem
-                        category={tx.category}
-                        name={tx.title}
-                        date={formatDate(
-                          tx.transaction_date,
-                          viewMode === 'month'
-                            ? DATE_OPTIONS
-                            : { day: 'numeric', month: 'long', year: 'numeric' }
-                        )}
-                        price={String(tx.amount)}
-                      />
+                      <span className="text-sm font-semibold text-text-main ">{group}</span>
+                      <span className="text-sm font-bold text-primary group-hover:text-bg-main">
+                        {formattedTotal}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </>
+                  );
+                }
+
+                return (
+                  <div key={group} className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-sm font-bold text-primary uppercase tracking-wide">
+                        {group}
+                      </h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      {txs.map((tx) => (
+                        <div
+                          key={tx.id}
+                          onClick={() => toggleEditing(tx.id)}
+                          className="cursor-pointer hover:opacity-80 transition-opacity"
+                        >
+                          <TransactionItem
+                            category={tx.category}
+                            name={tx.title}
+                            date={formatDate(tx.transaction_date, DATE_OPTIONS)}
+                            price={String(tx.amount)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
+        {viewMode === 'year' && (
+          <div className="flex justify-center gap-4 pt-4">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <span className="text-xs self-center">Page {page}</span>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
-      {viewMode === 'year' && (
-        <div className="flex justify-center gap-4 pt-4">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg disabled:opacity-50"
-          >
-            Prev
-          </button>
-          <span className="text-xs self-center">Page {page}</span>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg"
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 }

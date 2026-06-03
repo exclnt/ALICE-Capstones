@@ -26,7 +26,7 @@ export default function ChatBotInput({ onSend, isLoading }: ChatBotInputProps) {
         onChange={(e) => setInput(e.target.value)}
         disabled={isLoading}
         placeholder="Ketik pesan..."
-        className="w-full bg-bg-main rounded-tl-xl rounded-bl-xl py-2 px-5 ring-primary/25 ring-1 focus:ring-2 focus:outline-none focus:ring-primary transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-text-main"
+        className="w-full bg-gray-200 dark:bg-gray-800 rounded-tl-xl rounded-bl-xl py-2 px-5 ring-primary/25 ring-1 focus:ring-2 focus:outline-none focus:ring-primary transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-text-main"
       />
       <button
         type="submit"

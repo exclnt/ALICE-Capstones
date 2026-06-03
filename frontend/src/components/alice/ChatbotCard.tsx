@@ -18,7 +18,13 @@ export default function ChatbotCard() {
   const { showError } = useStatus();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => []);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    {
+      role: 'model',
+      text: 'Halo! Saya ALICE, asisten keuangan pribadi Anda. Bagaimana saya bisa membantu Anda hari ini?',
+      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+    },
+  ]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
