@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./assets/alice_dashboard_mockup.png" alt="A.L.I.C.E Dashboard" width="100%">
-  
+
   # A.L.I.C.E.
   **Artificial Intelligence for Literacy, Insight , and Cost Efficiency**
   <p><em>Asisten Keuangan Cerdas Berbasis AI Generatif dan Prediktif Machine Learning</em></p>
@@ -14,7 +14,6 @@ A.L.I.C.E adalah sebuah platform _fintech_ revolusioner yang dirancang khusus un
 
 ## ✨ Fitur Utama
 
-- **AI Financial Assistant (Chatbot):** Teman diskusi cerdas yang memahami profil, tujuan finansial, dan riwayat transaksi Anda menggunakan Google Gemini / Llama 3.
 - **Budget Optimization:** Menggunakan _Deep Neural Network (DNN)_ untuk memberikan rekomendasi alokasi dana ideal agar Anda bisa lebih banyak menabung.
 - **Early Warning System (Balance Forecasting):** Menggunakan model LSTM untuk memprediksi saldo 10 hari ke depan, memberi peringatan dini sebelum Anda kehabisan uang.
 - **Risk Prediction (Behavioral Nudging):** Mendeteksi transaksi yang berisiko tinggi (Impulsive Buying) dan memberikan peringatan sebelum Anda melakukan transaksi.
