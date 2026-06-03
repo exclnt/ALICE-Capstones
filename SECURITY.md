@@ -21,4 +21,4 @@ We take the security of A.L.I.C.E seriously. If you discover a security vulnerab
 
 You should receive a response acknowledging receipt of your email within 48 hours. We will then triage the report and work on a fix as quickly as possible. Once the issue is resolved, we will publish a security advisory and notify users.
 
-Thank you for helping keep A.L.I.C.E safe!
+Thank you for helping  keep A.L.I.C.E safe!
