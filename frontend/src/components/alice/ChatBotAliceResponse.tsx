@@ -22,7 +22,7 @@ export default function ChatBotAliceResponse({
       ) : (
         <p className="text-bg-main whitespace-pre-wrap">{text}</p>
       )}
-      <p className="dark:text-black/50 text-xs">{time}</p>
+      <p className="dark:text-black/50 text-white/50 text-xs">{time}</p>
     </div>
   );
 }
