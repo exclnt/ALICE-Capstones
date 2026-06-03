@@ -38,15 +38,8 @@ export default function AnalyticsCard({
   const [isSelecting, setIsSelecting] = useState(false);
   const toggleSelecting = () => setIsSelecting((prev) => !prev);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
 
-  const {
-    data: queryData,
-    isLoading,
-    isError,
-    error,
-    isSuccess,
-  } = useGetTransactionsThisYear(page);
+  const { data: queryData, isLoading, isError, error, isSuccess } = useGetTransactionsThisYear();
 
   const transactions = viewMode === 'month' ? data : queryData?.transactions || [];
 
@@ -194,7 +187,7 @@ export default function AnalyticsCard({
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col justify-between h-full">
+      <div className="flex-1 flex flex-col justify-between h-100">
         <div className="space-y-4 overflow-y-scroll p-2">
           {filteredData.length === 0 ? (
             <div className="text-center text-sm text-gray-500 py-10">Tidak ada data transaksi.</div>
@@ -278,24 +271,6 @@ export default function AnalyticsCard({
             </>
           )}
         </div>
-        {viewMode === 'year' && (
-          <div className="flex justify-center gap-4 pt-4">
-            <button
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span className="text-xs self-center">Page {page}</span>
-            <button
-              onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-800 rounded-lg"
-            >
-              Next
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

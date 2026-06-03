@@ -10,7 +10,7 @@ export default function Analytics() {
   const [viewMode, setViewMode] = useState<'month' | 'year'>('month');
   const [selectedMonth, setSelectedMonth] = useState<Date>(() => new Date());
 
-  const { data, isPending, isError, error, isSuccess } = useGetTransactionsThisYear(1);
+  const { data, isPending, isError, error, isSuccess } = useGetTransactionsThisYear();
 
   useStatusHandler({
     pending: isPending,

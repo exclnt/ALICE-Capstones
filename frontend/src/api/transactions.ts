@@ -171,12 +171,10 @@ export const deleteTransactionsById = async (id: null | string) => {
   };
 };
 
-export const getTransactionsThisYear = async (page: number) => {
+export const getTransactionsThisYear = async () => {
   const now = new Date();
   const startDate = format(new Date(now.getFullYear(), 0, 1), 'yyyy-MM-dd');
   const endDate = format(new Date(now.getFullYear(), 11, 31), 'yyyy-MM-dd');
-
-  const limit = 10;
 
   const response = await apiClient.get<ApiResponse<{ transaction: TransactionItemType[] }>>(
     '/transactions',
@@ -184,8 +182,6 @@ export const getTransactionsThisYear = async (page: number) => {
       params: {
         startDate,
         endDate,
-        page,
-        limit,
       },
     }
   );

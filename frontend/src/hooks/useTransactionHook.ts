@@ -89,9 +89,9 @@ export function useDeleteTransactionsById() {
   });
 }
 
-export function useGetTransactionsThisYear(page: number) {
+export function useGetTransactionsThisYear() {
   return useQuery({
-    queryKey: ['transactions', 'year', page],
-    queryFn: async () => getTransactionsThisYear(page),
+    queryKey: ['transactions', 'year'],
+    queryFn: getTransactionsThisYear,
   });
 }
