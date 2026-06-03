@@ -1,4 +1,4 @@
-# 🛠️ Panduan Setup Predictive ML Engine
+#  Panduan Setup Predictive ML Engine
 
 Panduan ini berisi langkah-langkah untuk mengonfigurasi dan menjalankan *microservice Machine Learning* **A.L.I.C.E** yang berjalan di atas FastAPI dan TensorFlow.
 
@@ -7,7 +7,11 @@ Panduan ini berisi langkah-langkah untuk mengonfigurasi dan menjalankan *microse
 ## 1. Prasyarat (Prerequisites)
 
 - Pastikan Anda menggunakan **Python versi 3.12** (versi yang sama saat model ML ini dilatih, sangat disarankan untuk menghindari inkompatibilitas arsitektur model Keras/TensorFlow).
+# A.L.I.C.E.
 
+**Artificial Intelligence for Literacy, Insight , and Cost Efficiency**
+
+  <p><em>Asisten Keuangan Cerdas Berbasis AI Generatif dan Prediktif Machine Learning</em></p>
 ---
 
 ## 2. Pembuatan Virtual Environment
@@ -54,7 +58,7 @@ uvicorn api.main:app --reload --port 10000
 - `--port 10000` mengatur _port_ aplikasi agar sesuai dengan yang dikonfigurasi pada environment file utama (`VITE_ALICE_API_BASE_URL` di Frontend).
 
 Server ML Engine Anda akan mulai memuat _file-file_ model `.keras` ke memori dan akhirnya dapat diakses di:
-👉 **`http://localhost:10000`**
+ **`http://localhost:10000`**
 
 Anda dapat memverifikasi status kelengkapan model (Health Check) dengan membuka:
-👉 **`http://localhost:10000/health`**
+ **`http://localhost:10000/health`**

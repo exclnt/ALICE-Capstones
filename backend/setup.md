@@ -1,4 +1,4 @@
-# 🛠️ Panduan Setup Backend A.L.I.C.E.
+#  Panduan Setup Backend A.L.I.C.E.
 
 Panduan ini berisi langkah-langkah detail untuk menyiapkan *environment* backend di komputer lokal Anda, dimulai dari konfigurasi database PostgreSQL hingga menjalankan server.
 

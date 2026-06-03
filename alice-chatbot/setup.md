@@ -1,4 +1,4 @@
-# 🛠️ Panduan Setup AI Chatbot (A.L.I.C.E.)
+#  Panduan Setup AI Chatbot (A.L.I.C.E.)
 
 Panduan ini berisi langkah-langkah untuk menjalankan *microservice* AI Chatbot berbasis **FastAPI** di lingkungan lokal Anda.
 
@@ -73,7 +73,7 @@ uvicorn main:app --reload --port 8001
 - Parameter `--port 8001` menentukan agar _service_ chatbot ini berjalan di port 8001, sehingga tidak bentrok dengan backend Node.js (3000) atau Predictive ML (10000).
 
 Server akan dapat diakses di:
-👉 **`http://localhost:8001`**
+ **`http://localhost:8001`**
 
 Dokumentasi endpoint (Swagger UI) dapat dibuka di:
-👉 **`http://localhost:8001/docs`**
+ **`http://localhost:8001/docs`**

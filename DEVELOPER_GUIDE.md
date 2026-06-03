@@ -1,4 +1,4 @@
-# 🚀 Panduan Setup Lokal A.L.I.C.E. (Developer Guide)
+#  Panduan Setup Lokal A.L.I.C.E. (Developer Guide)
 
 Panduan ini dibuat khusus untuk developer yang ingin menjalankan, berkontribusi, atau melakukan replikasi proyek **A.L.I.C.E.** secara lokal. Karena proyek ini menggunakan arsitektur **Microservices**, Anda perlu menjalankan beberapa servis secara bersamaan.
 
@@ -7,7 +7,7 @@ Panduan ini dibuat khusus untuk developer yang ingin menjalankan, berkontribusi,
 
 ---
 
-## 🛠️ Prasyarat (Prerequisites)
+##  Prasyarat (Prerequisites)
 Pastikan perangkat Anda telah terinstal perangkat lunak berikut sebelum memulai:
 - **Node.js** (Direkomendasikan v20 LTS atau lebih baru)
 - **Python** (Direkomendasikan v3.12 atau lebih baru)
@@ -16,7 +16,7 @@ Pastikan perangkat Anda telah terinstal perangkat lunak berikut sebelum memulai:
 
 ---
 
-## 🏗️ Langkah-langkah Instalasi
+##  Langkah-langkah Instalasi
 
 ### 1. Setup Backend (Node.js + Express)
 Backend bertindak sebagai orkestrator utama, mengelola API, autentikasi pengguna, dan menyimpan riwayat data ke database.
@@ -142,7 +142,7 @@ Ini adalah antarmuka klien yang akan berinteraksi dengan API dari Backend utama.
 
 ---
 
-## 🚦 Urutan Menjalankan Servis (Best Practice)
+##  Urutan Menjalankan Servis (Best Practice)
 Untuk menghindari error koneksi antar-microservices, disarankan menjalankan servis dengan urutan berikut saat _development_:
 1. Pastikan layanan Database (PostgreSQL) menyala.
 2. Jalankan **Backend** Node.js.

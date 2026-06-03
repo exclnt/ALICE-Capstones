@@ -1,4 +1,4 @@
-# ⚙️ A.L.I.C.E. - Backend Service
+#  A.L.I.C.E. - Backend Service
 
 Backend utama untuk aplikasi **A.L.I.C.E.** (_Artificial Intelligence for Literacy, Insight, and Cost Efficiency_). Berperan sebagai API Gateway yang menangani autentikasi pengguna, manajemen database, pengelolaan riwayat transaksi, dan penyuntikan data keuangan pengguna (_context_) ke AI Microservices.
 
@@ -6,7 +6,7 @@ Backend utama untuk aplikasi **A.L.I.C.E.** (_Artificial Intelligence for Litera
 
 ---
 
-## 📖 Deskripsi
+##  Deskripsi
 
 Proyek ini merupakan server backend tangguh berbasis Node.js dan Express. Fokus utamanya adalah menangani:
 - **Autentikasi Pengguna** (JWT & Google OAuth2).
@@ -16,7 +16,7 @@ Proyek ini merupakan server backend tangguh berbasis Node.js dan Express. Fokus 
 
 ---
 
-## 🚀 Fitur Utama
+##  Fitur Utama
 
 - **Authentication & Security:** JWT-based Auth, Google Auth Library, Bcrypt Password Hashing.
 - **Database & Migrations:** Menggunakan driver `pg` untuk PostgreSQL dengan `node-pg-migrate` untuk manajemen skema secara terstruktur.
@@ -26,7 +26,7 @@ Proyek ini merupakan server backend tangguh berbasis Node.js dan Express. Fokus 
 
 ---
 
-## 🏗️ Struktur Proyek
+##  Struktur Proyek
 
 Proyek ini menggunakan struktur modular (_Controller-Service-Route_) untuk kemudahan skalabilitas:
 ```text
@@ -50,7 +50,7 @@ backend/
 
 ---
 
-## 💻 Cara Menjalankan (Instalasi & Setup)
+##  Cara Menjalankan (Instalasi & Setup)
 
 Pastikan [Node.js](https://nodejs.org) dan PostgreSQL sudah terpasang di komputer Anda.
 
@@ -85,7 +85,7 @@ Pastikan [Node.js](https://nodejs.org) dan PostgreSQL sudah terpasang di kompute
 
 ---
 
-## 📜 Skrip NPM yang Tersedia
+##  Skrip NPM yang Tersedia
 
 | Perintah                     | Deskripsi                                             |
 | ---------------------------- | ----------------------------------------------------- |
@@ -101,7 +101,7 @@ Pastikan [Node.js](https://nodejs.org) dan PostgreSQL sudah terpasang di kompute
 
 ---
 
-## 🔗 Dokumentasi API Khusus
+##  Dokumentasi API Khusus
 
 Dokumentasi lengkap dan interaktif dapat langsung diakses melalui peramban (browser) saat server Anda berjalan di alamat berikut:
 - **`GET /docs`** -> Membuka antarmuka interaktif **Swagger UI**.
