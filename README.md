@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./assets/logo.png" alt="A.L.I.C.E Dashboard" width="100%">
-
+ 
 
 </div>
 
@@ -141,6 +141,6 @@ Berdasarkan ukuran paket dan dukungan teknologi, berikut adalah strategi deploym
 | **Backend**       | Vercel       |   https://alice-predicted.vercel.app/                                                                                                                                               |
 | **Chatbot AI**    | Vercel               | https://alice-chatbot.vercel.app/                                                                                                                                                          |
 | **Predictive ML** | Render.com           | https://alice-capstones.onrender.com/ |
-| **Dashboard Analytic** | Streamlit           | https://alice-capstones-pzaoknd7htnjtgknfwats8.streamlit.app/ |
+| **Dashboard Analytic** | Streamlit            | https://alice-capstones-pzaoknd7htnjtgknfwats8.streamlit.app/ |
 
 ---
