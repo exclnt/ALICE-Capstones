@@ -1,11 +1,11 @@
 """
-A.L.I.C.E — FastAPI REST API
+A.L.I.C.E — FastAPI REST API (Versi Revisi dengan Dynamic Rescaling)
 Artificial Intelligence for Literacy, Investment, and Cost Efficiency
 
 Endpoints:
   GET  /health                    → Health check
   POST /api/v1/predict-balance    → Model A: LSTM saldo forecasting
-  POST /api/v1/optimize-budget    → Model B: DNN budget optimization
+  POST /api/v1/optimize-budget    → Model B: DNN budget optimization (Bebas Batas Maksimal)
   POST /api/v1/segment-user       → Model C-1: Autoencoder segmentation
   POST /api/v1/predict-risk       → Model C-2: DNN risk classification
 """
@@ -34,12 +34,11 @@ from .schemas import (
 async def lifespan(app: FastAPI):
     registry.load_all()
     yield
-    # cleanup (if needed)
 
 
 app = FastAPI(
-    title="A.L.I.C.E API",
-    description="REST API untuk model AI keuangan A.L.I.C.E",
+    title="A.L.I.C.E API (Revised)",
+    description="REST API untuk model AI keuangan A.L.I.C.E dengan Dynamic Rescaling",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -59,7 +58,7 @@ app.add_middleware(
 # ============================================================
 
 CATEGORIES = ["Bills", "Entertainment", "Food & Beverage", "Hobby",
-              "Investment", "Shopping", "Transport"]
+              "Shopping", "Subscriptions", "Transport"]
 LABELS = CATEGORIES + ["Savings"]
 RISK_THRESHOLD = 0.4
 
@@ -133,7 +132,7 @@ async def predict_balance(req: BalancePredictionRequest):
 
 
 # ============================================================
-# Model B: Optimize Budget (DNN)
+# Model B: Optimize Budget (DNN) - DYNAMIC SCALING VERSION
 # ============================================================
 
 @app.post("/api/v1/optimize-budget", response_model=BudgetOptimizationResponse)
@@ -141,23 +140,60 @@ async def optimize_budget(req: BudgetOptimizationRequest):
     try:
         if registry.budget_model is None or registry.budget_scaler is None:
             raise HTTPException(
-                status_code=503, 
-                detail="Model B (Budget Optimization) belum siap. Silakan 'Run All' pada notebook budget_optimization_ga.ipynb terlebih dahulu untuk men-generate budget_scaler.pkl."
+                status_code=503,
+                detail="Model B (Budget Optimization) belum siap."
             )
 
-        # Input: 7 proportions + income + budget = 9 features
+        # Untuk mencegah neural network jenuh (saturation/stuck 100% Bills) karena nilai income/budget
+        # yang jauh di luar distribusi data training, kita lakukan re-scaling nilai absolut tersebut
+        # ke nilai rata-rata data training (mean income = 5.238.449,26) dengan tetap menjaga proporsinya.
+        mean_income = 5238449.26
+        raw_income = req.monthly_income
+        raw_budget = req.weekly_budget
+
+        scaling_factor = mean_income / raw_income if raw_income > 0 else 1.0
+
+        scaled_income = raw_income * scaling_factor
+        scaled_budget = raw_budget * scaling_factor
+
+        # Input: 7 proportions + scaled_income + scaled_budget = 9 features
         raw = np.array(
-            req.category_proportions + [req.monthly_income, req.weekly_budget],
+            req.category_proportions + [scaled_income, scaled_budget],
             dtype=np.float32
         ).reshape(1, -1)
 
         scaled = registry.budget_scaler.transform(raw).astype(np.float32)
         pred = registry.budget_model.predict(scaled, verbose=0)[0]
+        pred = pred.tolist()
+
+        # Post-processing dengan Guardrails (Iterative Projection) untuk memastikan alokasi
+        # di setiap kategori tetap logis dan seimbang, serta membatasi outlier/extrapolasi ekstrem model.
+        bounds = [
+            (0.05, 0.35), # Bills
+            (0.00, 0.15), # Entertainment
+            (0.15, 0.35), # Food & Beverage
+            (0.00, 0.15), # Hobby
+            (0.00, 0.15), # Shopping
+            (0.00, 0.15), # Subscriptions
+            (0.08, 0.25), # Transport
+            (0.10, 0.50)  # Savings
+        ]
+
+        current_pred = pred.copy()
+        for _ in range(10):
+            # Clip ke batas min dan max
+            clipped = [max(b[0], min(b[1], p)) for p, b in zip(current_pred, bounds)]
+            s = sum(clipped)
+            # Re-normalisasi agar totalnya selalu 1.0 (100%)
+            current_pred = [c / s for c in clipped]
+
+        pred = current_pred
 
         allocations = []
         for i, label in enumerate(LABELS):
             current = req.category_proportions[i] * 100 if i < 7 else 0.0
             optimal = float(pred[i]) * 100
+            # Gunakan budget ASLI untuk menghitung nominal Rupiah alokasi optimal
             amount = req.weekly_budget * float(pred[i])
             allocations.append(BudgetAllocation(
                 category=label,
@@ -166,7 +202,7 @@ async def optimize_budget(req: BudgetOptimizationRequest):
                 optimal_amount=round(amount, 0),
             ))
 
-        savings = req.weekly_budget * float(pred[-1]) * 4  # Monthly
+        savings = req.weekly_budget * float(pred[-1]) * 4  # Monthly savings potential dari budget asli
 
         return BudgetOptimizationResponse(
             allocations=allocations,
@@ -185,7 +221,7 @@ async def optimize_budget(req: BudgetOptimizationRequest):
 async def segment_user(req: UserSegmentRequest):
     try:
         if registry.autoencoder is None or registry.ae_scaler is None:
-            raise HTTPException(status_code=503, detail="Model C-1 (Autoencoder) belum siap. Run behavior_nudging.ipynb terlebih dahulu.")
+            raise HTTPException(status_code=503, detail="Model C-1 (Autoencoder) belum siap.")
 
         raw = np.array([[
             req.avg_spending, req.impulsive_ratio, req.spending_cv,
@@ -316,7 +352,7 @@ async def predict_risk(req: RiskPredictionRequest):
 @app.get("/")
 async def root():
     return {
-        "name": "A.L.I.C.E API",
+        "name": "A.L.I.C.E API (Revised with Rescaling)",
         "version": "1.0.0",
         "description": "Artificial Intelligence for Literacy, Investment, and Cost Efficiency",
         "docs": "/docs",
