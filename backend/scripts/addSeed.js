@@ -103,7 +103,7 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function seedTransactions(userId, total, startDate, endDate) {
+async function seedTransactions(userId, startDate, endDate) {
   const CATEGORIES = {
     bills: 'category-1',
     entertainment: 'category-2',
@@ -113,16 +113,6 @@ async function seedTransactions(userId, total, startDate, endDate) {
     shopping: 'category-6',
     transport: 'category-7',
   };
-
-  const CATEGORY_WEIGHTS = [
-    ['food', 40],
-    ['transport', 20],
-    ['shopping', 12],
-    ['bills', 10],
-    ['entertainment', 8],
-    ['subscriptions', 5],
-    ['hobby', 5],
-  ];
 
   const TITLES = {
     food: [
@@ -161,60 +151,6 @@ async function seedTransactions(userId, total, startDate, endDate) {
     hobby: ['Gaming', 'Fotografi', 'Sepeda', 'Koleksi'],
   };
 
-  function weightedCategory() {
-    const rand = Math.random() * 100;
-
-    let cumulative = 0;
-
-    for (const [name, weight] of CATEGORY_WEIGHTS) {
-      cumulative += weight;
-
-      if (rand <= cumulative) {
-        return name;
-      }
-    }
-
-    return 'food';
-  }
-
-  function amountByCategory(category) {
-    switch (category) {
-      case 'food': {
-        return 10000 + Math.floor(Math.random() * 40000); // 10k - 50k
-      }
-
-      case 'transport': {
-        return 5000 + Math.floor(Math.random() * 25000); // 5k - 30k
-      }
-
-      case 'shopping': {
-        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
-      }
-
-      case 'bills': {
-        return 20000 + Math.floor(Math.random() * 30000); // 20k - 50k
-      }
-
-      case 'entertainment': {
-        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
-      }
-
-      case 'subscriptions': {
-        return 20000 + Math.floor(Math.random() * 30000); // 20k - 50k
-      }
-
-      case 'hobby': {
-        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
-      }
-
-      default: {
-        return 10000 + Math.floor(Math.random() * 40000);
-      }
-    }
-  }
-
-  const expensiveCounter = {};
-
   const values = [];
   const placeholders = [];
 
@@ -224,47 +160,8 @@ async function seedTransactions(userId, total, startDate, endDate) {
   let impulsive = 0;
   let expenseAmount = 0;
 
-  for (let i = 0; i < total; i++) {
-    const date = randomTransactionDate(startDate, endDate);
-
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-
-    if (!expensiveCounter[monthKey]) {
-      expensiveCounter[monthKey] = 0;
-    }
-
+  function addTransaction(categoryKey, amount, date) {
     const weekend = date.getDay() === 0 || date.getDay() === 6;
-
-    let categoryKey = weightedCategory();
-
-    if (weekend && Math.random() < 0.3) {
-      categoryKey = Math.random() < 0.5 ? 'shopping' : 'entertainment';
-    }
-
-    let amount = amountByCategory(categoryKey);
-
-    // Ramadan & Lebaran
-    if ([2, 3].includes(date.getMonth())) {
-      amount = Math.floor(amount * 1.2);
-    }
-
-    // Desember
-    if (date.getMonth() === 11) {
-      amount = Math.floor(amount * 1.5);
-    }
-
-    // Hard limit maksimal 50 ribu per transaksi
-    amount = Math.min(amount, 50000);
-
-    // const monthlyBigLimit = 1 + Math.floor(Math.random() * 3);
-
-    // if (amount >= 500000 && expensiveCounter[monthKey] >= monthlyBigLimit) {
-    //   amount = 50000 + Math.floor(Math.random() * 200000);
-    // }
-
-    // if (amount >= 500000) {
-    //   expensiveCounter[monthKey]++;
-    // }
 
     let impulsiveRate = 0.15;
 
@@ -286,7 +183,10 @@ async function seedTransactions(userId, total, startDate, endDate) {
 
     const isImpulsive = Math.random() < impulsiveRate;
 
-    const title = pick(TITLES[categoryKey]);
+    const title =
+      TITLES[categoryKey][
+        Math.floor(Math.random() * TITLES[categoryKey].length)
+      ];
 
     expense++;
     expenseAmount += amount;
@@ -313,6 +213,104 @@ async function seedTransactions(userId, total, startDate, endDate) {
     p += 8;
   }
 
+  const current = new Date(startDate);
+
+  while (current <= endDate) {
+    const dayStart = new Date(current);
+
+    const dayEnd = new Date(current);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const weekend = current.getDay() === 0 || current.getDay() === 6;
+
+    // MAKAN 2-3 KALI PER HARI
+    const mealCount = 2 + Math.floor(Math.random() * 2);
+
+    for (let i = 0; i < mealCount; i++) {
+      addTransaction(
+        'food',
+        10000 + Math.floor(Math.random() * 25000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // NGOPI
+    if (Math.random() < 0.45) {
+      addTransaction(
+        'food',
+        10000 + Math.floor(Math.random() * 15000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // TRANSPORT BERANGKAT
+    if (Math.random() < 0.8) {
+      addTransaction(
+        'transport',
+        5000 + Math.floor(Math.random() * 15000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // TRANSPORT PULANG
+    if (Math.random() < 0.4) {
+      addTransaction(
+        'transport',
+        5000 + Math.floor(Math.random() * 15000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // SHOPPING
+    if (Math.random() < 0.12) {
+      addTransaction(
+        'shopping',
+        20000 + Math.floor(Math.random() * 30000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // ENTERTAINMENT WEEKEND
+    if (weekend && Math.random() < 0.35) {
+      addTransaction(
+        'entertainment',
+        20000 + Math.floor(Math.random() * 30000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // HOBBY
+    if (Math.random() < 0.05) {
+      addTransaction(
+        'hobby',
+        25000 + Math.floor(Math.random() * 25000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    // BILLS
+    if ([1, 5, 10, 15, 20, 25].includes(current.getDate())) {
+      if (Math.random() < 0.3) {
+        addTransaction(
+          'bills',
+          25000 + Math.floor(Math.random() * 25000),
+          randomTransactionDate(dayStart, dayEnd),
+        );
+      }
+    }
+
+    // SUBSCRIPTION BULANAN
+    if (current.getDate() === 1) {
+      addTransaction(
+        'subscriptions',
+        30000 + Math.floor(Math.random() * 10000),
+        randomTransactionDate(dayStart, dayEnd),
+      );
+    }
+
+    current.setDate(current.getDate() + 1);
+  }
+
   await pool.query(
     `
     INSERT INTO transactions
@@ -332,7 +330,7 @@ async function seedTransactions(userId, total, startDate, endDate) {
   );
 
   return {
-    total,
+    total: expense,
     expense,
     income: 0,
     impulsive,
@@ -378,7 +376,8 @@ async function main() {
 
   await createSettings(user.id);
 
-  const stats = await seedTransactions(user.id, 600, startDate, endDate);
+  // const stats = await seedTransactions(user.id, 600, startDate, endDate);
+  const stats = await seedTransactions(user.id, startDate, endDate);
 
   printStats(user, stats, startDate, endDate);
 
