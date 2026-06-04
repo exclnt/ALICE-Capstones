@@ -180,67 +180,36 @@ async function seedTransactions(userId, total, startDate, endDate) {
   function amountByCategory(category) {
     switch (category) {
       case 'food': {
-        const r = Math.random();
-
-        if (r < 0.8) {
-          return 15000 + Math.floor(Math.random() * 50000);
-        }
-
-        return 65000 + Math.floor(Math.random() * 85000);
+        return 10000 + Math.floor(Math.random() * 40000); // 10k - 50k
       }
 
-      case 'transport':
-        return 5000 + Math.floor(Math.random() * 30000);
+      case 'transport': {
+        return 5000 + Math.floor(Math.random() * 25000); // 5k - 30k
+      }
 
       case 'shopping': {
-        const r = Math.random();
-
-        if (r < 0.85) {
-          return 20000 + Math.floor(Math.random() * 100000);
-        }
-
-        if (r < 0.97) {
-          return 100000 + Math.floor(Math.random() * 300000);
-        }
-
-        return 500000 + Math.floor(Math.random() * 1500000);
+        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
       }
 
       case 'bills': {
-        const r = Math.random();
-
-        if (r < 0.8) {
-          return 100000 + Math.floor(Math.random() * 200000);
-        }
-
-        return 300000 + Math.floor(Math.random() * 700000);
+        return 20000 + Math.floor(Math.random() * 30000); // 20k - 50k
       }
 
       case 'entertainment': {
-        const r = Math.random();
-
-        if (r < 0.9) {
-          return 25000 + Math.floor(Math.random() * 100000);
-        }
-
-        return 150000 + Math.floor(Math.random() * 350000);
+        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
       }
 
-      case 'subscriptions':
-        return 30000 + Math.floor(Math.random() * 120000);
+      case 'subscriptions': {
+        return 20000 + Math.floor(Math.random() * 30000); // 20k - 50k
+      }
 
       case 'hobby': {
-        const r = Math.random();
-
-        if (r < 0.9) {
-          return 50000 + Math.floor(Math.random() * 150000);
-        }
-
-        return 300000 + Math.floor(Math.random() * 1200000);
+        return 15000 + Math.floor(Math.random() * 35000); // 15k - 50k
       }
 
-      default:
-        return 10000 + Math.floor(Math.random() * 50000);
+      default: {
+        return 10000 + Math.floor(Math.random() * 40000);
+      }
     }
   }
 
@@ -284,15 +253,18 @@ async function seedTransactions(userId, total, startDate, endDate) {
       amount = Math.floor(amount * 1.5);
     }
 
-    const monthlyBigLimit = 1 + Math.floor(Math.random() * 3);
+    // Hard limit maksimal 50 ribu per transaksi
+    amount = Math.min(amount, 50000);
 
-    if (amount >= 500000 && expensiveCounter[monthKey] >= monthlyBigLimit) {
-      amount = 50000 + Math.floor(Math.random() * 200000);
-    }
+    // const monthlyBigLimit = 1 + Math.floor(Math.random() * 3);
 
-    if (amount >= 500000) {
-      expensiveCounter[monthKey]++;
-    }
+    // if (amount >= 500000 && expensiveCounter[monthKey] >= monthlyBigLimit) {
+    //   amount = 50000 + Math.floor(Math.random() * 200000);
+    // }
+
+    // if (amount >= 500000) {
+    //   expensiveCounter[monthKey]++;
+    // }
 
     let impulsiveRate = 0.15;
 
