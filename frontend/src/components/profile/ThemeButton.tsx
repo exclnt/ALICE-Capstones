@@ -1,5 +1,4 @@
 import { Icon } from '@iconify/react';
-// Use the import you already have in your project
 import { motion } from 'motion/react';
 
 interface ThemeButtonPropType {

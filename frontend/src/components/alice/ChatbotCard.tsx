@@ -1,4 +1,3 @@
-// ChatbotCard.tsx
 import { useState, useRef, useEffect } from 'react';
 import ChatBotAliceResponse from './ChatBotAliceResponse';
 import ChatBotInput from './ChatBotInput';

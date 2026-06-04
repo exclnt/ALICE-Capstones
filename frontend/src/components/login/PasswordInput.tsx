@@ -7,7 +7,6 @@ interface PasswordInputProps {
   value: string;
   onChange: (val: string) => void;
   isRequired?: boolean;
-  // 1. Add the autoComplete prop here
   autoComplete?: string;
 }
 

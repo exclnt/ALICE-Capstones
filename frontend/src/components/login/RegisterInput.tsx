@@ -92,7 +92,6 @@ export default function RegisterInput() {
 
         <p className="text-text-muted mt-5 mb-5">Atau</p>
 
-        {/* 3. Render the official Google Login component */}
         <div className="w-full flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
