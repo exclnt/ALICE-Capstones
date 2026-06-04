@@ -6,7 +6,7 @@
 
 
 
-##  Tentang Proyek
+## Tentang Proyek
 
 A.L.I.C.E adalah sebuah platform _fintech_ revolusioner yang dirancang khusus untuk generasi muda dalam mengelola, menganalisis, dan memprediksi kesehatan finansial mereka. Dengan menggabungkan teknologi Web Modern, Generative AI (LLM), dan Predictive Machine Learning, A.L.I.C.E memberikan panduan keuangan yang sangat terpersonalisasi secara _real-time_.
 
