@@ -115,12 +115,12 @@ async function seedTransactions(userId, total, startDate, endDate) {
   };
 
   const CATEGORY_WEIGHTS = [
-    ['food', 35],
+    ['food', 40],
     ['transport', 20],
-    ['shopping', 15],
+    ['shopping', 12],
     ['bills', 10],
     ['entertainment', 8],
-    ['subscriptions', 7],
+    ['subscriptions', 5],
     ['hobby', 5],
   ];
 
@@ -132,32 +132,23 @@ async function seedTransactions(userId, total, startDate, endDate) {
       'Ngopi',
       'GoFood',
       'GrabFood',
-      'Jajan',
       'Warung',
       'Restoran',
     ],
 
-    transport: ['Grab', 'Gojek', 'Bensin', 'Parkir', 'Tol', 'Transportasi'],
+    transport: ['Grab', 'Gojek', 'Bensin', 'Parkir', 'Tol'],
 
     shopping: [
       'Shopee',
       'Tokopedia',
-      'Beli Baju',
-      'Elektronik',
-      'Aksesoris',
       'Belanja Online',
+      'Aksesoris',
+      'Beli Baju',
     ],
 
-    bills: ['PLN', 'PDAM', 'Internet', 'Pulsa', 'BPJS', 'Tagihan Bulanan'],
+    bills: ['PLN', 'PDAM', 'Internet', 'Pulsa', 'BPJS'],
 
-    entertainment: [
-      'Netflix',
-      'Spotify',
-      'Cinema',
-      'Game',
-      'Nongkrong',
-      'Karaoke',
-    ],
+    entertainment: ['Netflix', 'Cinema', 'Game', 'Nongkrong', 'Karaoke'],
 
     subscriptions: [
       'Netflix Premium',
@@ -167,7 +158,7 @@ async function seedTransactions(userId, total, startDate, endDate) {
       'Canva Pro',
     ],
 
-    hobby: ['Gaming', 'Fotografi', 'Sepeda', 'Mancing', 'Koleksi'],
+    hobby: ['Gaming', 'Fotografi', 'Sepeda', 'Koleksi'],
   };
 
   function weightedCategory() {
@@ -188,31 +179,72 @@ async function seedTransactions(userId, total, startDate, endDate) {
 
   function amountByCategory(category) {
     switch (category) {
-      case 'food':
-        return 15000 + Math.floor(Math.random() * 120000);
+      case 'food': {
+        const r = Math.random();
+
+        if (r < 0.8) {
+          return 15000 + Math.floor(Math.random() * 50000);
+        }
+
+        return 65000 + Math.floor(Math.random() * 85000);
+      }
 
       case 'transport':
-        return 5000 + Math.floor(Math.random() * 45000);
+        return 5000 + Math.floor(Math.random() * 30000);
 
-      case 'shopping':
-        return 50000 + Math.floor(Math.random() * 2000000);
+      case 'shopping': {
+        const r = Math.random();
 
-      case 'bills':
-        return 100000 + Math.floor(Math.random() * 1000000);
+        if (r < 0.85) {
+          return 20000 + Math.floor(Math.random() * 100000);
+        }
 
-      case 'entertainment':
-        return 25000 + Math.floor(Math.random() * 500000);
+        if (r < 0.97) {
+          return 100000 + Math.floor(Math.random() * 300000);
+        }
+
+        return 500000 + Math.floor(Math.random() * 1500000);
+      }
+
+      case 'bills': {
+        const r = Math.random();
+
+        if (r < 0.8) {
+          return 100000 + Math.floor(Math.random() * 200000);
+        }
+
+        return 300000 + Math.floor(Math.random() * 700000);
+      }
+
+      case 'entertainment': {
+        const r = Math.random();
+
+        if (r < 0.9) {
+          return 25000 + Math.floor(Math.random() * 100000);
+        }
+
+        return 150000 + Math.floor(Math.random() * 350000);
+      }
 
       case 'subscriptions':
-        return 50000 + Math.floor(Math.random() * 250000);
+        return 30000 + Math.floor(Math.random() * 120000);
 
-      case 'hobby':
-        return 50000 + Math.floor(Math.random() * 1500000);
+      case 'hobby': {
+        const r = Math.random();
+
+        if (r < 0.9) {
+          return 50000 + Math.floor(Math.random() * 150000);
+        }
+
+        return 300000 + Math.floor(Math.random() * 1200000);
+      }
 
       default:
-        return 10000 + Math.floor(Math.random() * 100000);
+        return 10000 + Math.floor(Math.random() * 50000);
     }
   }
+
+  const expensiveCounter = {};
 
   const values = [];
   const placeholders = [];
@@ -226,25 +258,40 @@ async function seedTransactions(userId, total, startDate, endDate) {
   for (let i = 0; i < total; i++) {
     const date = randomTransactionDate(startDate, endDate);
 
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+    if (!expensiveCounter[monthKey]) {
+      expensiveCounter[monthKey] = 0;
+    }
+
     const weekend = date.getDay() === 0 || date.getDay() === 6;
 
     let categoryKey = weightedCategory();
 
-    // weekend lebih sering shopping dan hiburan
     if (weekend && Math.random() < 0.3) {
       categoryKey = Math.random() < 0.5 ? 'shopping' : 'entertainment';
     }
 
     let amount = amountByCategory(categoryKey);
 
-    // Ramadan & Lebaran (Mar-Apr)
+    // Ramadan & Lebaran
     if ([2, 3].includes(date.getMonth())) {
       amount = Math.floor(amount * 1.2);
     }
 
-    // Desember lebih boros
+    // Desember
     if (date.getMonth() === 11) {
       amount = Math.floor(amount * 1.5);
+    }
+
+    const monthlyBigLimit = 1 + Math.floor(Math.random() * 3);
+
+    if (amount >= 500000 && expensiveCounter[monthKey] >= monthlyBigLimit) {
+      amount = 50000 + Math.floor(Math.random() * 200000);
+    }
+
+    if (amount >= 500000) {
+      expensiveCounter[monthKey]++;
     }
 
     let impulsiveRate = 0.15;
@@ -359,7 +406,7 @@ async function main() {
 
   await createSettings(user.id);
 
-  const stats = await seedTransactions(user.id, 1200, startDate, endDate);
+  const stats = await seedTransactions(user.id, 600, startDate, endDate);
 
   printStats(user, stats, startDate, endDate);
 
