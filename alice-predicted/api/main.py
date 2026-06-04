@@ -169,15 +169,15 @@ async def optimize_budget(req: BudgetOptimizationRequest):
         # Post-processing dengan Guardrails (Iterative Projection) untuk memastikan alokasi
         # di setiap kategori tetap logis dan seimbang, serta membatasi outlier/extrapolasi ekstrem model.
         bounds = [
-            (0.05, 0.35), # Bills
-            (0.00, 0.15), # Entertainment
-            (0.15, 0.35), # Food & Beverage
-            (0.00, 0.15), # Hobby
-            (0.00, 0.15), # Shopping
-            (0.00, 0.15), # Subscriptions
-            (0.08, 0.25), # Transport
-            (0.10, 0.50)  # Savings
-        ]
+    (0.10, 0.25),  # Bills
+    (0.02, 0.10),  # Entertainment
+    (0.20, 0.30),  # Food & Beverage
+    (0.02, 0.10),  # Hobby
+    (0.02, 0.10),  # Shopping
+    (0.01, 0.08),  # Subscriptions
+    (0.10, 0.20),  # Transport
+    (0.20, 0.40),  # Savings
+]
 
         current_pred = pred.copy()
         for _ in range(10):
