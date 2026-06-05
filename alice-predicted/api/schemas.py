@@ -1,5 +1,5 @@
 """
-Pydantic Schemas — Request/Response models untuk FastAPI endpoints.
+Pydantic Schemas — Request/Response models untuk FastAPI endpoints v2.
 """
 from pydantic import BaseModel, Field
 from typing import List, Optional

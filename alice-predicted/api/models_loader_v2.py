@@ -1,6 +1,6 @@
 """
-Model Loader — Memuat semua model .keras untuk inference.
-Custom class harus didefinisikan sebelum load_model() dipanggil.
+Model Loader v2 — Memuat semua model .keras untuk inference.
+Versi ini memuat budget_model_v2.keras dan budget_scaler_v2.pkl.
 """
 import os
 import pickle
@@ -40,7 +40,7 @@ class EarlyWarningLSTM(keras.Model):
 
 
 @keras.saving.register_keras_serializable()
-class BudgetOptimizer(keras.Model):
+class BudgetOptimizerV2(keras.Model):
     def __init__(self, n_output=8, **kwargs):
         super().__init__(**kwargs)
         self.n_output = n_output
@@ -54,9 +54,14 @@ class BudgetOptimizer(keras.Model):
         self.output_layer = keras.layers.Dense(n_output, activation="softmax")
 
     def call(self, inputs, training=False):
-        x = self.dropout1(self.bn1(self.dense1(inputs), training=training), training=training)
-        x = self.dropout2(self.bn2(self.dense2(x), training=training), training=training)
-        return self.output_layer(self.dense3(x))
+        x = self.dense1(inputs)
+        x = self.bn1(x, training=training)
+        x = self.dropout1(x, training=training)
+        x = self.dense2(x)
+        x = self.bn2(x, training=training)
+        x = self.dropout2(x, training=training)
+        x = self.dense3(x)
+        return self.output_layer(x)
 
     def get_config(self):
         c = super().get_config()
@@ -120,7 +125,7 @@ class RiskClassifier(keras.Model):
 # Model Registry — Singleton loader
 # ============================================================
 
-class ModelRegistry:
+class ModelRegistryV2:
     """Memuat dan menyimpan semua model dalam memory."""
 
     def __init__(self):
@@ -159,16 +164,16 @@ class ModelRegistry:
     def load_all(self):
         if self._loaded:
             return
-        print("[ModelRegistry] Loading models...")
+        print("[ModelRegistryV2] Loading models...")
 
         # Model A: LSTM
         self.lstm_model = self._load_model("lstm_model.keras")
         self.lstm_config = self._load_pickle("lstm_config.pkl")
         self.lstm_scaler = self._load_pickle("lstm_scaler.pkl")
 
-        # Model B: Budget Optimizer
-        self.budget_model = self._load_model("budget_model.keras")
-        self.budget_scaler = self._load_pickle("budget_scaler.pkl")
+        # Model B: Budget Optimizer v2 (Menggunakan model dan scaler baru)
+        self.budget_model = self._load_model("budget_model_v2.keras")
+        self.budget_scaler = self._load_pickle("budget_scaler_v2.pkl")
 
         # Model C-1: Autoencoder
         self.autoencoder = self._load_model("autoencoder_model.keras")
@@ -180,8 +185,8 @@ class ModelRegistry:
         self.label_encoder = self._load_pickle("label_encoder.pkl")
 
         self._loaded = True
-        print("[ModelRegistry] Model loading complete!")
+        print("[ModelRegistryV2] Model loading complete!")
 
 
 # Global instance
-registry = ModelRegistry()
+registry = ModelRegistryV2()

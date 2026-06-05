@@ -1,14 +1,23 @@
 """
-A.L.I.C.E — FastAPI REST API (Versi Revisi dengan Dynamic Rescaling)
+A.L.I.C.E — FastAPI REST API (Versi v2)
 Artificial Intelligence for Literacy, Investment, and Cost Efficiency
 
 Endpoints:
   GET  /health                    → Health check
   POST /api/v1/predict-balance    → Model A: LSTM saldo forecasting
-  POST /api/v1/optimize-budget    → Model B: DNN budget optimization (Bebas Batas Maksimal)
+  POST /api/v1/optimize-budget    → Model B: DNN budget optimization v2 (Tanpa dynamic scaling agresif)
   POST /api/v1/segment-user       → Model C-1: Autoencoder segmentation
   POST /api/v1/predict-risk       → Model C-2: DNN risk classification
 """
+
+import sys
+import os
+
+# Menambahkan direktori saat ini ke sys.path agar import lokal berfungsi
+# baik saat dijalankan dari folder root maupun dari dalam folder api_v2.
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.append(CURRENT_DIR)
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,8 +25,8 @@ from contextlib import asynccontextmanager
 import numpy as np
 import tensorflow as tf
 
-from .models_loader import registry
-from .schemas import (
+from models_loader_v2 import registry
+from schemas import (
     BalancePredictionRequest, BalancePredictionResponse,
     BudgetOptimizationRequest, BudgetOptimizationResponse, BudgetAllocation,
     UserSegmentRequest, UserSegmentResponse,
@@ -37,9 +46,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="A.L.I.C.E API (Revised)",
-    description="REST API untuk model AI keuangan A.L.I.C.E dengan Dynamic Rescaling",
-    version="1.0.0",
+    title="A.L.I.C.E API (v2)",
+    description="REST API untuk model AI keuangan A.L.I.C.E menggunakan Model B v2",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -132,7 +141,7 @@ async def predict_balance(req: BalancePredictionRequest):
 
 
 # ============================================================
-# Model B: Optimize Budget (DNN) - DYNAMIC SCALING VERSION
+# Model B: Optimize Budget (DNN v2)
 # ============================================================
 
 @app.post("/api/v1/optimize-budget", response_model=BudgetOptimizationResponse)
@@ -140,25 +149,18 @@ async def optimize_budget(req: BudgetOptimizationRequest):
     try:
         if registry.budget_model is None or registry.budget_scaler is None:
             raise HTTPException(
-                status_code=503,
-                detail="Model B (Budget Optimization) belum siap."
+                status_code=503, 
+                detail="Model B (Budget Optimization v2) belum siap."
             )
 
-        # Untuk mencegah neural network jenuh (saturation/stuck 100% Bills) karena nilai income/budget
-        # yang jauh di luar distribusi data training, kita lakukan re-scaling nilai absolut tersebut
-        # ke nilai rata-rata data training (mean income = 5.238.449,26) dengan tetap menjaga proporsinya.
-        mean_income = 5238449.26
+        # Model v2 dilatih langsung dengan nominal income & budget asli user.
+        # Sehingga kita tidak membutuhkan dynamic rescaling lagi.
         raw_income = req.monthly_income
         raw_budget = req.weekly_budget
 
-        scaling_factor = mean_income / raw_income if raw_income > 0 else 1.0
-
-        scaled_income = raw_income * scaling_factor
-        scaled_budget = raw_budget * scaling_factor
-
-        # Input: 7 proportions + scaled_income + scaled_budget = 9 features
+        # Input: 7 proportions + income + budget = 9 features
         raw = np.array(
-            req.category_proportions + [scaled_income, scaled_budget],
+            req.category_proportions + [raw_income, raw_budget],
             dtype=np.float32
         ).reshape(1, -1)
 
@@ -166,19 +168,19 @@ async def optimize_budget(req: BudgetOptimizationRequest):
         pred = registry.budget_model.predict(scaled, verbose=0)[0]
         pred = pred.tolist()
 
-        # Post-processing dengan Guardrails (Iterative Projection) untuk memastikan alokasi
-        # di setiap kategori tetap logis dan seimbang, serta membatasi outlier/extrapolasi ekstrem model.
+        # Post-processing dengan Guardrails (Iterative Projection) sebagai jaring pengaman tambahan
+        # Batasan ini disesuaikan dengan constraints pada training GA v2.
         bounds = [
-    (0.10, 0.25),  # Bills
-    (0.02, 0.10),  # Entertainment
-    (0.20, 0.30),  # Food & Beverage
-    (0.02, 0.10),  # Hobby
-    (0.02, 0.10),  # Shopping
-    (0.01, 0.08),  # Subscriptions
-    (0.10, 0.20),  # Transport
-    (0.20, 0.40),  # Savings
-]
-
+            (0.05, 0.30),  # Bills: 5% - 30%
+            (0.00, 0.15),  # Entertainment: 0% - 15%
+            (0.12, 0.35),  # Food & Beverage: 12% - 35%
+            (0.00, 0.15),  # Hobby: 0% - 15%
+            (0.00, 0.15),  # Shopping: 0% - 15%
+            (0.00, 0.15),  # Subscriptions: 0% - 15%
+            (0.08, 0.25),  # Transport: 8% - 25% (Maksimal dikunci di 25% agar tidak meledak)
+            (0.10, 0.50)   # Savings: 10% - 50%
+        ]
+        
         current_pred = pred.copy()
         for _ in range(10):
             # Clip ke batas min dan max
@@ -186,7 +188,7 @@ async def optimize_budget(req: BudgetOptimizationRequest):
             s = sum(clipped)
             # Re-normalisasi agar totalnya selalu 1.0 (100%)
             current_pred = [c / s for c in clipped]
-
+            
         pred = current_pred
 
         allocations = []
@@ -352,8 +354,8 @@ async def predict_risk(req: RiskPredictionRequest):
 @app.get("/")
 async def root():
     return {
-        "name": "A.L.I.C.E API (Revised with Rescaling)",
-        "version": "1.0.0",
+        "name": "A.L.I.C.E API (v2)",
+        "version": "2.0.0",
         "description": "Artificial Intelligence for Literacy, Investment, and Cost Efficiency",
         "docs": "/docs",
         "endpoints": [
