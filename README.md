@@ -10,7 +10,7 @@
 
 A.L.I.C.E adalah sebuah platform _fintech_ revolusioner yang dirancang khusus untuk generasi muda dalam mengelola, menganalisis, dan memprediksi kesehatan finansial mereka. Dengan menggabungkan teknologi Web Modern, Generative AI (LLM), dan Predictive Machine Learning, A.L.I.C.E memberikan panduan keuangan yang sangat terpersonalisasi secara _real-time_.
 
-##  Fitur Utama
+## Fitur Utama
 
 - **Budget Optimization:** Menggunakan _Deep Neural Network (DNN)_ untuk memberikan rekomendasi alokasi dana ideal agar Anda bisa lebih banyak menabung.
 - **Early Warning System (Balance Forecasting):** Menggunakan model LSTM untuk memprediksi saldo 10 hari ke depan, memberi peringatan dini sebelum Anda kehabisan uang.
